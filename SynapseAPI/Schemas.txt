@@ -11,15 +11,6 @@ CREATE TABLE public.attachments
     size numeric,
     CONSTRAINT attachments_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.attachments
-    OWNER to postgres;
-
-
 
 
 -- Table: public.bugs
@@ -45,14 +36,6 @@ CREATE TABLE public.bugs
     description text COLLATE pg_catalog."default",
     CONSTRAINT bugs_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.bugs
-    OWNER to postgres;
-
 
 
 
@@ -69,15 +52,6 @@ CREATE TABLE public.comments
     message character varying(500) COLLATE pg_catalog."default",
     CONSTRAINT comments_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.comments
-    OWNER to postgres;
-
-
 
 
 -- Table: public.documents
@@ -97,14 +71,6 @@ CREATE TABLE public.documents
     created_date timestamp without time zone,
     CONSTRAINT documents_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.documents
-    OWNER to postgres;
-
 
 
 
@@ -120,17 +86,23 @@ CREATE TABLE public.histories
     activity_log character varying(50) COLLATE pg_catalog."default",
     CONSTRAINT histories_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
+
+-- Table: public.people
+
+-- DROP TABLE public.people;
+
+CREATE TABLE public.people
+(
+    id uuid NOT NULL,
+    user_name character varying(25) COLLATE pg_catalog."default",
+    password character varying(25) COLLATE pg_catalog."default",
+    full_name character varying(25) COLLATE pg_catalog."default",
+    role character varying(15) COLLATE pg_catalog."default",
+    address character varying(150) COLLATE pg_catalog."default",
+    phone character varying(15) COLLATE pg_catalog."default",
+    email character varying(25) COLLATE pg_catalog."default",
+    CONSTRAINT people_pkey PRIMARY KEY (id)
 )
-TABLESPACE pg_default;
-
-ALTER TABLE public.histories
-    OWNER to postgres;
-
-
-
-
 
 
 -- Table: public.projects
@@ -148,13 +120,6 @@ CREATE TABLE public.projects
     description character varying(250) COLLATE pg_catalog."default",
     CONSTRAINT projects_pkey PRIMARY KEY (id)
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.projects
-    OWNER to postgres;
 
 
 
@@ -165,18 +130,8 @@ ALTER TABLE public.projects
 
 CREATE TABLE public.settings
 (
-    people_id uuid,
+    
+	_id uuid,
     project_id uuid
 )
-WITH (
-    OIDS = FALSE
-)
-TABLESPACE pg_default;
-
-ALTER TABLE public.settings
-    OWNER to postgres;
-
-
-
-    OWNER to postgres;
 
