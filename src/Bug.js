@@ -3,13 +3,32 @@ import { Footer } from './Footer';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Link } from 'react-router-dom';
-
+import moment from 'moment';
+import axios from 'axios';
+import config from './Config';
 
 export class Bug extends Component {
 
     constructor(props) {
         super(props);
+        this.state = {
+            bugs: []
+        }
     }
+
+    componentDidMount() {
+        this.getAllBugs();
+    }
+
+
+    getAllBugs = () => {
+        axios.get(config.serverUrl + "/api/bug/getall").then(response=> {
+            this.setState({
+                bugs: response.data
+            })
+        })
+    }
+
 
     addBug =()=> {
         this.props.history.push("/add-bug");
@@ -18,7 +37,20 @@ export class Bug extends Component {
     bugDetail =()=> {
         this.props.history.push("/bug-detail");
     }
-    
+
+    renderTracker = (priority, tracker) => {
+        if (priority == 'High') {
+            return(
+                <span class="label label-danger"><b>{tracker}</b></span>
+            )
+        } else {
+            return(
+                <span class="label label-success"><b>{tracker}</b></span>
+            )
+        }
+    }
+
+
     render() {
 
         const style0 = {
@@ -82,12 +114,9 @@ export class Bug extends Component {
                                <div class="pull-right search">
                                    <input class="form-control" type="text" placeholder="Search"/>
                                </div>
-                               
-
-
                                <br/><br/><br/>
                            
-                               <div class="box-body table-responsive no-padding">
+                        <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">
                           <tbody>
                            <tr>
@@ -100,26 +129,19 @@ export class Bug extends Component {
                             <th style={style1}><u>CREATED DATE</u></th>   
                             
                           </tr>
-
-                          <tr style={fontStyle}>
-                              <td><span class="label label-danger"><b>SYN-431</b></span></td>
-                              <td><Link to="/bug-detail">Create new bug doesn't work properly</Link></td>
-                              <td>High</td>
-                            
-                              <td>Ariyanto</td>
-                              <td>New</td>
-                              <td>13/01/2019 10:47</td>
-                          </tr>
-                          <tr style={fontStyle}>
-                              <td><span class="label label-success"><b>SYN-435</b></span></td>
-                              <td><Link to="/bug-detail">Save people error in validation</Link></td>
-                              <td>Medium</td>
-                             
-                              <td>Ariyanto</td>
-                              <td>On Progress</td>
-                              <td>14/01/2019 11:17</td>
-                          </tr>
                         
+                         {this.state.bugs.map(b=>
+                          <tr style={fontStyle}>
+                              <td>
+                                {this.renderTracker(b.priority, b.tracker)}
+                              </td>
+                              <td><Link to="/bug-detail">{b.title}</Link></td>
+                              <td>{b.priority}</td>
+                              <td>{b.assignee}</td>
+                              <td>{b.status}</td>
+                              <td>{moment(b.createdDate).format("MM/DD/YYYY")}</td>
+                          </tr>
+                          )}
                        
                         </tbody></table>
                

@@ -19,6 +19,28 @@ namespace Synapse.Controllers
             context = new AppDbContext();
         }
 
+        [HttpGet]
+        public async Task<IActionResult> GetAll()
+        {
+            var bugs = await context.Bugs
+                .Include(b=>b.Assignee)
+                .Select(b=>new {
+                    b.ID,
+                    b.Tracker,
+                    b.Title,
+                    b.Priority,
+                    Assignee = b.Assignee.FullName,
+                    b.Status,
+                    b.CreatedDate
+                })
+                .OrderByDescending(b=>b.CreatedDate)
+                .ToListAsync();
+            
+            return Ok(bugs);
+        }
+
+
+
         [HttpGet("{projectId}")]
         public async Task<IActionResult> GetByProject(Guid projectId)
         {
@@ -48,8 +70,14 @@ namespace Synapse.Controllers
         
         
         [HttpPost]
-        public async Task<IActionResult> Save(Bug bug)
+        public async Task<IActionResult> Save([FromBody] Bug bug)
         {
+            var project = await context.Projects.Where(p=>p.ID == bug.ProjectId)
+                            .SingleOrDefaultAsync();
+            
+            var initial = project.Initial;
+            //select top from project
+
             bug.ID = Guid.NewGuid();
             bug.CreatedDate = DateTime.Now;
             bug.Status = "New";

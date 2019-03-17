@@ -23,8 +23,8 @@ namespace Synapse.Models
         public string Version { get; set; }
         public string Status { get; set; }
         public DateTime CreatedDate { get; set; }
-        public DateTime ModifiedDate { get; set; }
-        public DateTime ClosedDate { get; set; }
+        public DateTime? ModifiedDate { get; set; }
+        public DateTime? ClosedDate { get; set; }
         public string Description { get; set; }
 
 

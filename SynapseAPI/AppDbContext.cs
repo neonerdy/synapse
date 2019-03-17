@@ -20,7 +20,7 @@ namespace Synapse
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            optionBuilder.UseNpgsql("host=localhost;database=synapse;username=postgres;password=postgres");
+            optionBuilder.UseNpgsql("host=localhost;database=synapse;username=postgres;password=postgre");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -71,6 +71,7 @@ namespace Synapse
                 entity.ToTable("bugs");
                 entity.Property(e => e.ID).HasColumnName("id");
                 entity.Property(e => e.ProjectId).HasColumnName("project_id");
+                entity.Property(e => e.Tracker).HasColumnName("tracker");
                 entity.Property(e => e.Title).HasColumnName("title");
                 entity.Property(e => e.Priority).HasColumnName("priority");
                 entity.Property(e => e.ReporterId).HasColumnName("reporter_id");
@@ -83,7 +84,7 @@ namespace Synapse
                 entity.Property(e => e.ModifiedDate).HasColumnName("modified_date");
                 entity.Property(e => e.ClosedDate).HasColumnName("closed_date");
                 entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.Status).HasColumnName("description");
+                entity.Property(e => e.Description).HasColumnName("description");
             });
             
 
