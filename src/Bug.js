@@ -17,7 +17,14 @@ export class Bug extends Component {
     }
 
     componentDidMount() {
-        this.getAllBugs();
+        
+        let status = this.props.match.params.status;
+        if (status == undefined) {
+            this.getAllBugs();
+        } else {
+            this.getBugByStatus(status);
+        }
+
     }
 
 
@@ -29,13 +36,21 @@ export class Bug extends Component {
         })
     }
 
+    getBugByStatus = (status) => {
+        axios.get(config.serverUrl + "/api/bug/getbystatus/" + status).then(response=> {
+            this.setState({
+                bugs: response.data
+            })
+            console.log("bugs=" + response.data);
+        })
+    }
 
     addBug =()=> {
         this.props.history.push("/add-bug");
     }
 
-    bugDetail =()=> {
-        this.props.history.push("/bug-detail");
+    bugDetail =(id)=> {
+        this.props.history.push("/bug-detail/" + id);
     }
 
     renderTracker = (priority, tracker) => {
@@ -52,18 +67,6 @@ export class Bug extends Component {
 
 
     render() {
-
-        const style0 = {
-            width:'8%'
-        }
-
-        const style1 = {
-            width:'10%'
-        }
-
-        const style2 = {
-            width:'40%'
-        }
 
         const fontStyle = {
             fontWeight:'normal'
@@ -120,13 +123,13 @@ export class Bug extends Component {
                         <table class="table table-hover">
                           <tbody>
                            <tr>
-                            <th style={style0}><u>TRACKER</u></th>   
-                            <th style={style2}><u>TITLE</u></th>
-                            <th style={style1}><u>PRIORITY</u></th>
+                            <th style={{width:'8%'}}><u>TRACKER</u></th>   
+                            <th style={{width:'40%'}}><u>TITLE</u></th>
+                            <th style={{width:'10%'}}><u>PRIORITY</u></th>
                            
-                            <th style={style1}><u>ASSIGNEE</u></th>
-                            <th style={style1}><u>STATUS</u></th>
-                            <th style={style1}><u>CREATED DATE</u></th>   
+                            <th style={{width:'10%'}}><u>ASSIGNEE</u></th>
+                            <th style={{width:'8%'}}><u>STATUS</u></th>
+                            <th style={{width:'12%'}}><u>CREATED DATE</u></th>   
                             
                           </tr>
                         
@@ -135,11 +138,11 @@ export class Bug extends Component {
                               <td>
                                 {this.renderTracker(b.priority, b.tracker)}
                               </td>
-                              <td><Link to="/bug-detail">{b.title}</Link></td>
+                              <td><a href="#" onClick={()=>this.bugDetail(b.id)}>{b.title}</a></td>
                               <td>{b.priority}</td>
                               <td>{b.assignee}</td>
                               <td>{b.status}</td>
-                              <td>{moment(b.createdDate).format("MM/DD/YYYY")}</td>
+                              <td>{moment(b.createdDate).format("MM/DD/YYYY hh:mm:ss")}</td>
                           </tr>
                           )}
                        

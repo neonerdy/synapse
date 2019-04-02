@@ -2,7 +2,6 @@
 import React, {Component} from 'react';
 import {Link,NavLink} from 'react-router-dom';
 
-
 export class NavBar extends Component {
 
   constructor(props) {
@@ -10,11 +9,7 @@ export class NavBar extends Component {
   }  
 
 
-    onDashboardClick =()=> {
-      
-      console.log("on dashboard click");
 
-    }
 
     render() {
 
@@ -74,11 +69,11 @@ export class NavBar extends Component {
           </a>
           <ul class="treeview-menu">
             <li><Link to="/bug"><i class="fa fa-circle-o text-grey"></i>All Issues</Link></li>
-            <li><a href="javascript: return false;"><i class="fa fa-circle-o text-blue"></i>New</a></li>
-           <li><a href="javascript: return false;"><i class="fa fa-circle-o text-orange"></i>On Progress</a></li>
+            <li><Link to="/bug/New"><i class="fa fa-circle-o text-blue"></i>New</Link></li>
+           <li><a href="javascript: return false;"><i class="fa fa-circle-o text-orange"></i>Coding</a></li>
             <li><a href="javascript: return false;"><i class="fa fa-circle-o text-green"></i>Resolved</a></li>
-            <li><a href="javascript: return false;"><i class="fa fa-circle-o text-maroon"></i>Testing</a></li>
-            <li><a href="javascript: return false;"><i class="fa fa-circle-o text-purple"></i>Rework</a></li>
+            <li><a href="javascript: return false;"><i class="fa fa-circle-o text-purple"></i>Testing</a></li>
+            <li><a href="javascript: return false;"><i class="fa fa-circle-o text-maroon"></i>Rework</a></li>
             <li><a href="javascript: return false;"><i class="fa fa-circle-o text-aqua"></i>Closed</a></li>
            
             

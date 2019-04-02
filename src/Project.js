@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
+import moment from 'moment';
 import axios from 'axios';
 import config from './Config';
 
@@ -112,7 +113,7 @@ export class Project extends Component
                                             <td>{p.projectName}</td>
                                             <td>{p.initial}</td>
                                             <td>{p.projectManager}</td>
-                                            <td>{p.createdDate}</td>
+                                            <td>{moment(p.createdDate).format("MM/DD/YYYY")}</td>
                                             <td>{p.description}</td>
                                             <td>{p.status}</td>
                                             <td>

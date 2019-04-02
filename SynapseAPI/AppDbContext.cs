@@ -20,7 +20,7 @@ namespace Synapse
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            optionBuilder.UseNpgsql("host=localhost;database=synapse;username=postgres;password=postgre");
+            optionBuilder.UseNpgsql("host=localhost;database=synapse;username=postgres;password=postgres");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

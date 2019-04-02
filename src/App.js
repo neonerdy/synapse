@@ -30,11 +30,12 @@ class App extends Component {
           <Route path="/people" component={People}/> 
           <Route path="/document" component={Document}/> 
           <Route path="/bug" component={Bug}/> 
-          <Route path="/bug-detail" component={BugDetail}/> 
+          <Route path="/bug/:status" component={Bug}/> 
+          <Route path="/bug-detail/:id" component={BugDetail}/> 
           <Route path="/add-project" component={AddProject}/>
           <Route path="/add-people" component={AddPeople}/>
           <Route path="/add-document" component={AddDocument}/>
-          <Route path="/add-bug" component={AddBug}/> 
+          <Route path="/add-bug" component={AddBug}/>
           <Route path="/edit-people/:id" component={EditPeople}/>
           <Route path="/edit-project/:id" component={EditProject}/>
           <Route path="/edit-document/:id" component={EditDocument}/>

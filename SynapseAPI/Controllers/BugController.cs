@@ -62,11 +62,28 @@ namespace Synapse.Controllers
                 .Include(b=>b.Reporter)
                 .Include(b=>b.Assignee)
                 .Include(b=>b.Tester)
-                .Where(b=>b.ProjectId == id)
+                .Where(b=>b.ID == id)
                 .SingleOrDefaultAsync();
             
             return Ok(bug);
         }
+
+
+        [HttpGet("{status}")]
+        public async Task<IActionResult> GetByStatus(string status)
+        {
+            var bugs = await context.Bugs
+                .Include(b=>b.Project)
+                .Include(b=>b.Reporter)
+                .Include(b=>b.Assignee)
+                .Include(b=>b.Tester)
+                .Where(b=>b.Status == status)
+                .OrderByDescending(b=>b.CreatedDate)
+                .ToListAsync();
+
+            return Ok(bugs);
+        }
+
         
         
         [HttpPost]
@@ -75,16 +92,33 @@ namespace Synapse.Controllers
             var project = await context.Projects.Where(p=>p.ID == bug.ProjectId)
                             .SingleOrDefaultAsync();
             
-            var initial = project.Initial;
-            //select top from project
+            var existingBug = await context.Bugs
+                .OrderByDescending(b=>b.CreatedDate)
+                .Where(b=>b.ProjectId == bug.ProjectId)    
+                .Take(1)
+                .SingleOrDefaultAsync();
+
+            string newTracker =  "";
+          
+            if (existingBug != null) {
+
+                var tracker = existingBug.Tracker;;
+                var trackers = tracker.Split('-');
+                var increment = Convert.ToInt32(trackers[1]) + 1;
+                newTracker = trackers[0] + "-" + increment;
+
+            } else {
+                newTracker = project.Initial + "-1";
+            }
 
             bug.ID = Guid.NewGuid();
+            bug.Tracker = newTracker;
             bug.CreatedDate = DateTime.Now;
             bug.Status = "New";
 
             context.Add(bug);
             var result = await context.SaveChangesAsync();
-
+           
             return Ok(result);    
         }
 

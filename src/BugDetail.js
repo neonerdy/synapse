@@ -3,15 +3,105 @@ import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
 
+import axios from 'axios';
+import config from './Config';
+import moment from 'moment';
+
 export class BugDetail extends Component
 {
     constructor(props) {
         super(props);
+        this.state = {
+            tracker: '',
+            title: '',
+            assignee: '',
+            priority: ''
+
+        }
+    }
+
+    componentDidMount() {
+        let id = this.props.match.params.id;
+        this.getBugById(id);
+    }
+
+    getBugById = (id) => {
+        axios.get(config.serverUrl + "/api/bug/getbyid/" + id).then(response=> {
+            this.setState({
+                project: response.data.project.projectName,
+                tracker: response.data.tracker,
+                title: response.data.title,
+                priority: response.data.priority,
+                reporter: response.data.reporter.fullName,
+                assignee: response.data.assignee.fullName,
+                tester: response.data.tester.fullName,
+                module: response.data.module,
+                platform: response.data.platform,
+                version: response.data.version,
+                createdDate: response.data.createdDate,
+                modifiedDate: response.data.modifiedDate,
+                closedDate: response.data.closedDate,
+                status: response.data.status,
+                description: response.data.description
+            })
+      })
+        
+    }
+
+
+    updateStatus = (status) => {
+
+        let id = this.props.match.params.id;
+        axios.get(config.serverUrl + "/api/bug/updatestatus/" + id + "/" + status).then(response=> {
+            this.getBugById(id);
+        })
     }
 
     addBug =()=> {
         this.props.history.push("/add-bug");
     }
+
+
+    renderTracker = (priority, tracker) => {
+        if (priority == 'High') {
+            return(
+                <span class="label label-danger">{tracker}</span>
+            )
+        } else {
+            return(
+                <span class="label label-success">{tracker}</span>
+            )
+        }
+    }
+
+    renderStatus = (status) => {
+        if (status == "New") {
+            return(
+                <i class="fa fa-circle-o text-blue"></i>
+            )
+        }else if (status == "Coding") {
+            return(
+                <i class="fa fa-circle-o text-orange"></i>
+            )
+        } else if (status == "Resolved") {
+            return(
+                <i class="fa fa-circle-o text-green"></i>
+            )
+        } else if (status == "Testing") {
+            return(
+                <i class="fa fa-circle-o text-purple"></i>
+            )
+        } else if (status == "Rework") {
+            return(
+                <i class="fa fa-circle-o text-maroon"></i>
+            )
+        } else if (status == "Closed") {
+            return(
+                <i class="fa fa-circle-o text-aqua"></i>
+            )
+        }
+    }
+
 
     render() {
 
@@ -130,7 +220,7 @@ export class BugDetail extends Component
                                 <div class="box box-default">
                                     <br/>
                                     <div class="box-header with-border">
-                                        <h3 class="box-title"><span class="label label-danger">SYN-431</span> &nbsp;Create new bug doesn't work properly</h3>
+                                        <h3 class="box-title">{this.renderTracker(this.state.priority, this.state.tracker)} {this.state.title}</h3>
                                         
                                      </div>
 
@@ -160,12 +250,12 @@ export class BugDetail extends Component
                                                 
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="#">New</a></li>
-                                                    <li><a href="#">On Progress</a></li>
-                                                    <li><a href="#">Resolved</a></li>
-                                                    <li><a href="#">Testing</a></li>
-                                                    <li><a href="#">Rework</a></li>
-                                                    <li><a href="#">Closed</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("New")}>New</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("Coding")}>Coding</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("Resolved")}>Resolved</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("Testing")}>Testing</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("Rework")}>Rework</a></li>
+                                                    <li><a href="#" onClick={()=>this.updateStatus("Closed")}>Closed</a></li>
                                                     
                                                 </ul>
                                         </div>
@@ -180,53 +270,57 @@ export class BugDetail extends Component
                                 <div class = "row">
                                     <div class="col-md-6">
                                         <div class="row">
+                                            <div class="col-lg-3"><label style={fontStyle}>Project</label> </div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.project}</label></div>
+                                        </div>
+                                        <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Priority</label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>High</label></div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.priority}</label></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Reporter</label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>Erika Kartawidjaja</label></div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.reporter}</label></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Assignee </label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>Ariyanto</label>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.assignee}</label>
                                             <br/><a href="/workitem/assigntome/<%=id%>" >Assign to me</a> <br/></div>
                                         </div>
                                       
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Tester </label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>Erika</label>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.tester}</label>
                                             <br/><a href="/workitem/assigntestertome/<%=id%>">Assign to me</a> <br/></div>
                                     </div>
                                     
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Module </label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>UI</label></div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.module}</label></div>
                                         </div>
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Platform </label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>Web</label></div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.platform}</label></div>
                                         </div>
                                         
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Version</label> </div>
-                                            <div class="col-lg-6"><label style={fontStyle}>1.2.1</label></div>
+                                            <div class="col-lg-6"><label style={fontStyle}>{this.state.version}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Created Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>14/02/2019 12:30:11</label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.createdDate).format("MM/DD/YYYY hh:mm:ss")}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Modified Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>14/02/2019 12:30:11</label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.state.modifiedDate}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Closed Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}></label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.state.closedDate}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Status</label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}><span class="label label-info" >New</span></label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.renderStatus(this.state.status)}&nbsp;{this.state.status}</label></div>
                                         </div>
                                         
                                     </div>
@@ -243,8 +337,19 @@ export class BugDetail extends Component
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                         </button>
                                     </div>
+                                   
+                                </div>
+
+                                <div class="box-body">
+                                    <div class="row">
+                                      <div class="col-md-12">
+                                       {this.state.description}
+                                       </div>
+                                    </div>
                                 </div>
                                 <br/><br/>
+                              
+
 
                                  <div class="box-header with-border">
                                     <h3 class="box-title"><b>Attachments</b></h3>
@@ -253,6 +358,9 @@ export class BugDetail extends Component
                                         </button>
                                     </div>
                                     <br/><br/>
+                                  
+
+                                  {/*}
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -309,6 +417,10 @@ export class BugDetail extends Component
                                             </div>    
                                         </div>
                                     </div>    
+
+                                    {*/}
+
+
                                 </div>
 
                                 <br/>

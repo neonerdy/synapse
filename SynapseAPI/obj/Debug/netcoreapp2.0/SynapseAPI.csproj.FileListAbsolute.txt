@@ -19,3 +19,13 @@ D:\Repos\Projects\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.Assembly
 D:\Repos\Projects\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.AssemblyInfo.cs
 D:\Repos\Projects\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.dll
 D:\Repos\Projects\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.pdb
+C:\ARI\Project\synapse\SynapseAPI\bin\Debug\netcoreapp2.0\SynapseAPI.deps.json
+C:\ARI\Project\synapse\SynapseAPI\bin\Debug\netcoreapp2.0\SynapseAPI.runtimeconfig.json
+C:\ARI\Project\synapse\SynapseAPI\bin\Debug\netcoreapp2.0\SynapseAPI.runtimeconfig.dev.json
+C:\ARI\Project\synapse\SynapseAPI\bin\Debug\netcoreapp2.0\SynapseAPI.dll
+C:\ARI\Project\synapse\SynapseAPI\bin\Debug\netcoreapp2.0\SynapseAPI.pdb
+C:\ARI\Project\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.csproj.CoreCompileInputs.cache
+C:\ARI\Project\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.AssemblyInfoInputs.cache
+C:\ARI\Project\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.AssemblyInfo.cs
+C:\ARI\Project\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.dll
+C:\ARI\Project\synapse\SynapseAPI\obj\Debug\netcoreapp2.0\SynapseAPI.pdb
