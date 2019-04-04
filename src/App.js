@@ -16,6 +16,7 @@ import { AddDocument } from './AddDocument';
 import { EditPeople } from './EditPeople';
 import { EditProject } from './EditProject';
 import { EditDocument } from './EditDocument';
+import { EditBug } from './EditBug';
 
 
 class App extends Component {
@@ -30,7 +31,6 @@ class App extends Component {
           <Route path="/people" component={People}/> 
           <Route path="/document" component={Document}/> 
           <Route path="/bug" component={Bug}/> 
-          <Route path="/bug/:status" component={Bug}/> 
           <Route path="/bug-detail/:id" component={BugDetail}/> 
           <Route path="/add-project" component={AddProject}/>
           <Route path="/add-people" component={AddPeople}/>
@@ -39,6 +39,8 @@ class App extends Component {
           <Route path="/edit-people/:id" component={EditPeople}/>
           <Route path="/edit-project/:id" component={EditProject}/>
           <Route path="/edit-document/:id" component={EditDocument}/>
+          <Route path="/edit-bug/:id" component={EditBug}/>
+          
           
          
       </div>

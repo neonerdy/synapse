@@ -123,7 +123,7 @@ namespace Synapse.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Bug bug)
+        public async Task<IActionResult> Update([FromBody] Bug bug)
         {
             bug.ModifiedDate = DateTime.Now;
             context.Update(bug);

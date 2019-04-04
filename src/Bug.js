@@ -12,26 +12,25 @@ export class Bug extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            bugs: []
+            bugs: [],
+            initialBugs: [],
+            title: 'All Bugs'
         }
     }
 
     componentDidMount() {
         
         let status = this.props.match.params.status;
-        if (status == undefined) {
-            this.getAllBugs();
-        } else {
-            this.getBugByStatus(status);
-        }
-
+        this.getAllBugs();
+      
     }
 
 
     getAllBugs = () => {
         axios.get(config.serverUrl + "/api/bug/getall").then(response=> {
             this.setState({
-                bugs: response.data
+                bugs: response.data,
+                initialBugs: response.data
             })
         })
     }
@@ -52,6 +51,56 @@ export class Bug extends Component {
     bugDetail =(id)=> {
         this.props.history.push("/bug-detail/" + id);
     }
+
+
+    onFilterChange = (status) => {
+
+        let filteredBugs = this.state.initialBugs.filter(b => b.status.toLowerCase()
+            .includes(status.toLowerCase()));
+        
+        if (status == 'All')
+        {
+            this.setState( {
+                bugs: this.state.initialBugs,
+                title: 'All Bugs'
+            })
+        }
+        else {
+            this.setState( {
+                bugs: filteredBugs,
+                title: status + " Bugs"
+            })
+    
+        }
+
+
+    }
+
+    onSearchChange = (e) => {
+
+        let filteredBugs = this.state.initialBugs.filter(b => b.tracker.toLowerCase()
+                .includes(e.target.value.toLowerCase()) ||
+                b.title.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                b.priority.toLowerCase().includes(e.target.value.toLowerCase()) ||
+                b.assignee.toLowerCase().includes(e.target.value.toLowerCase())
+            );
+        
+        if (e.target.value == '')
+        {
+            this.setState( {
+                bugs: this.state.initialBugs
+            })
+        }
+        else {
+            this.setState( {
+                bugs: filteredBugs
+            })
+    
+        }
+        
+    }
+
+
 
     renderTracker = (priority, tracker) => {
         if (priority == 'High') {
@@ -76,6 +125,10 @@ export class Bug extends Component {
             minHeight: '959.8px'
         }
 
+        const buttonStyle = {
+            height: '34px'
+        }
+
         return(
 
             <div class="wrapper">
@@ -86,7 +139,7 @@ export class Bug extends Component {
             
                 <section class="content-header">
                 <h1>
-                    Bugs (15)
+                    {this.state.title} ({this.state.bugs.length})
                 </h1>
                 <ol class="breadcrumb">
                     <button class="btn btn-primary" onClick={this.addBug}>Create New Bug</button>
@@ -103,19 +156,40 @@ export class Bug extends Component {
                        
                            
                            <div class="box-body">
+
+                           <div class="btn-group">
+                                <button class="btn btn-default" type="button">Bug Status</button>
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
+                                <span class="caret"></span>
+                                
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" onClick={()=>this.onFilterChange("All")}>All</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("New")}>New</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("Coding")}>Coding</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("Resolved")}>Resolved</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("Testing")}>Testing</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("Rework")}>Rework</a></li>
+                                    <li><a href="#" onClick={()=>this.onFilterChange("Closed")}>Closed</a></li>
+                                    
+                                </ul>
+                            </div>
                               
                                <div class="pull-right">
                                     <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh"><i class="fa fa-refresh"></i></button>
                                     <button class="btn btn-default" type="button" name="advancedSearch" aria-label="advanced search" title="Advanced search"><i class="fa fa fa-search-plus"></i></button>
-                                    <button type="button" aria-label="columns" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-columns"></i> <span class="caret"></span></button>
+                                  
+                                   
                                     <div class="export btn-group">
                                        <button class="btn btn-default" data-toggle="dropdown" type="button">
                                            <i class="fa fa-download"></i> 
                                         </button>
-                                     </div>     
+                                     </div>    
+                                     
+                                     
                                </div>
                                <div class="pull-right search">
-                                   <input class="form-control" type="text" placeholder="Search"/>
+                                   <input class="form-control" type="text" placeholder="Search" onChange={this.onSearchChange}/>
                                </div>
                                <br/><br/><br/>
                            

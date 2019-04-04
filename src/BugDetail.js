@@ -12,11 +12,22 @@ export class BugDetail extends Component
     constructor(props) {
         super(props);
         this.state = {
+            id: '',
+            project: '',
             tracker: '',
             title: '',
+            priority: '',
+            reporter: '',
             assignee: '',
-            priority: ''
-
+            tester: '',
+            module: '',
+            platform: '',
+            version: '',
+            createdDate: '',
+            modifiedDate: '',
+            closedDate: '',
+            status: '',
+            description: ''
         }
     }
 
@@ -28,6 +39,7 @@ export class BugDetail extends Component
     getBugById = (id) => {
         axios.get(config.serverUrl + "/api/bug/getbyid/" + id).then(response=> {
             this.setState({
+                id: response.data.id,
                 project: response.data.project.projectName,
                 tracker: response.data.tracker,
                 title: response.data.title,
@@ -59,6 +71,10 @@ export class BugDetail extends Component
 
     addBug =()=> {
         this.props.history.push("/add-bug");
+    }
+
+    editBug = (id) => {
+        this.props.history.push("/edit-bug/" + id);
     }
 
 
@@ -228,7 +244,7 @@ export class BugDetail extends Component
 
 
                                     <div class="pull-right">
-                                      <button class="btn btn-default" type="button" data-target="#editWorkItem" data-toggle="modal" data-id="<%=id%>"><i class="fa fa-pencil-square-o"></i>
+                                      <button class="btn btn-default" type="button" onClick={()=>this.editBug(this.state.id)}><i class="fa fa-pencil-square-o"></i>
                                             &nbsp;Edit
                                         </button>
                                         <div class="btn-group">
