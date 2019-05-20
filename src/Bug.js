@@ -40,13 +40,14 @@ export class Bug extends Component {
             this.setState({
                 bugs: response.data
             })
-            console.log("bugs=" + response.data);
         })
     }
+
 
     addBug =()=> {
         this.props.history.push("/add-bug");
     }
+
 
     bugDetail =(id)=> {
         this.props.history.push("/bug-detail/" + id);
@@ -70,12 +71,10 @@ export class Bug extends Component {
                 bugs: filteredBugs,
                 title: status + " Bugs"
             })
-    
         }
-
-
     }
 
+    
     onSearchChange = (e) => {
 
         let filteredBugs = this.state.initialBugs.filter(b => b.tracker.toLowerCase()
@@ -113,6 +112,7 @@ export class Bug extends Component {
             )
         }
     }
+
 
 
     render() {

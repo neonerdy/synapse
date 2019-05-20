@@ -27,14 +27,26 @@ export class BugDetail extends Component
             modifiedDate: '',
             closedDate: '',
             status: '',
-            description: ''
+            description: '',
+            comments: [],
+            histories: [],
+            comment: {}
         }
     }
 
     componentDidMount() {
         let id = this.props.match.params.id;
         this.getBugById(id);
+        this.getCommentByBugId(id);
+        this.getHistoriesByBugId(id);
     }
+
+    onValueChange = (e) => {
+        this.setState({
+            [e.target.name]: e.target.value
+        })
+    }
+
 
     getBugById = (id) => {
         axios.get(config.serverUrl + "/api/bug/getbyid/" + id).then(response=> {
@@ -60,12 +72,29 @@ export class BugDetail extends Component
         
     }
 
+    getCommentByBugId = (id) => {
+        axios.get(config.serverUrl + "/api/comment/getbybugid/" + id).then(response=> {
+            this.setState({
+                comments: response.data
+            })
+        })
+    }
+
+    getHistoriesByBugId = (id) => {
+        axios.get(config.serverUrl + "/api/history/getbybugid/" + id).then(response=> {
+            this.setState({
+                histories: response.data
+            })
+        })
+    }
+
 
     updateStatus = (status) => {
 
         let id = this.props.match.params.id;
         axios.get(config.serverUrl + "/api/bug/updatestatus/" + id + "/" + status).then(response=> {
             this.getBugById(id);
+            this.getHistoriesByBugId(id);
         })
     }
 
@@ -75,6 +104,48 @@ export class BugDetail extends Component
 
     editBug = (id) => {
         this.props.history.push("/edit-bug/" + id);
+    }
+
+
+    saveComment = () => {
+
+        var comment = {
+            bugId : this.state.id,
+            commenterId: 'f3ffc7e7-38f3-4dde-ad4f-fad8ef6ed0c8',
+            message: this.state.message
+        }
+
+        axios.post(config.serverUrl + "/api/comment/save", comment).then(response=> {
+            this.getCommentByBugId(this.state.id);
+        })
+    }
+
+    editComment = (id) => {
+        axios.get(config.serverUrl + "/api/comment/getbyid/" + id).then(response=> {
+            this.setState({
+               comment: response.data
+            })
+        })
+    }
+
+    updateComment = () => {
+        var comment = {
+            bugId : this.state.id,
+            commenterId: 'f3ffc7e7-38f3-4dde-ad4f-fad8ef6ed0c8',
+            message: this.state.message,
+            createdDate: this.state.createdDate
+        }
+        axios.put(config.serverUrl + "/api/comment/update", comment).then(response=> {
+            this.getCommentByBugId(this.state.id);
+        })
+    }
+
+
+
+    deleteComment = (id) => {
+        axios.delete(config.serverUrl + "/api/comment/delete/" + id).then(response=> {
+            this.getCommentByBugId(this.state.id);
+        })
     }
 
 
@@ -170,22 +241,42 @@ export class BugDetail extends Component
 
 
                    <div id="addComment" class="modal fade" role="dialog">
-                            <div class="modal-dialog" style={popupStyle}>
-                                <div class="modal-content">
-                                    <div class="modal-header">
-                                        <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                        <h4 class="modal-title">Add Comment</h4>
-                                    </div>
-                                    <div class="modal-body">
-                                        
-                                    <textarea class="form-control" rows="8"></textarea>
-                                    </div>
-                                    <div class="modal-footer">
-                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                        <button type="button" class="btn btn-primary">Save changes</button>
-                                    </div>
+                        <div class="modal-dialog" style={popupStyle}>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Add Comment</h4>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                <textarea class="form-control" rows="8" name="message" onChange={this.onValueChange}></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.saveComment} data-dismiss="modal">Save</button>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+
+                    <div id="editComment" class="modal fade" role="dialog">
+                        <div class="modal-dialog" style={popupStyle}>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Edit Comment</h4>
+                                </div>
+                                <div class="modal-body">
+                                    
+                                <textarea class="form-control" rows="8" name="message" 
+                                    onChange={this.onValueChange} value={this.state.message}></textarea>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.updateComment} data-dismiss="modal">Update</button>
+                                </div>
+                            </div>
+                        </div>
                     </div>
 
 
@@ -248,9 +339,8 @@ export class BugDetail extends Component
                                             &nbsp;Edit
                                         </button>
                                         <div class="btn-group">
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addComment" data-id="<%=id%>">Comment</button>
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment" data-id="<%=id%>">Attachment</button>
-                                                          
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addComment">Comment</button>
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
                                         </div>
                                         <div class="btn-group">
                                             <button class="btn btn-default" style={buttonStyle} type="button"><i class="fa fa-refresh"></i></button>    
@@ -324,15 +414,24 @@ export class BugDetail extends Component
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Created Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.createdDate).format("MM/DD/YYYY hh:mm:ss")}</label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.createdDate).format("MM/DD/YYYY hh:mm")}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Modified Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>{this.state.modifiedDate}</label></div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.modifiedDate).format("MM/DD/YYYY hh:mm")}</label></div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Closed Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>{this.state.closedDate}</label></div>
+                                                <div class="col-lg-6">
+                                                    {this.state.closedDate != null? 
+                                                    <label style={fontStyle}>
+                                                        {moment(this.state.closedDate).format("MM/DD/YYYY hh:mm")}
+                                                    </label>
+                                                    : (
+                                                        <label style={fontStyle}>
+                                                        </label>     
+                                                    )}
+                                                </div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Status</label> </div>
@@ -460,10 +559,46 @@ export class BugDetail extends Component
                                         <div class="tab-content">
                         
                                             <div class="tab-pane active" id="tab_comment">
-                                          
+
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                    <div class="col-md-12">
+                                                        {this.state.comments.map(c=> 
+                                                        <div> 
+                                                        <div><b>{c.commenter}</b> - {moment(this.state.commendDate).format("MM/DD/YYYY hh:mm")}</div>
+                                                        <br/>
+                                                        <div>{c.message}</div> 
+                                                        <br/>
+                                                        <div><a href="#!" data-toggle="modal" data-target="#editComment">Edit</a>&nbsp;|&nbsp;<a href="#!" onClick={()=>this.deleteComment(c.id)}>Delete</a></div>
+                                                            <br/>
+                                                        </div>
+                                                        )}
+                                                    
+                                                    </div>
+                                                    </div>
+                                                </div>
+                                            
+
                                             </div>
                                             <div class="tab-pane" id="tab_history">
                                           
+
+                                                 <div class="box-body">
+                                                    <div class="row">
+                                                    <div class="col-md-12">
+                                                        {this.state.histories.map(h=> 
+                                                        <div> 
+                                                          <div>{h.activityLog}</div> 
+                                                        <br/>
+                                                        
+                                                          
+                                                        </div>
+                                                        )}
+                                                    
+                                                    </div>
+                                                    </div>
+                                                </div>
+
                                             </div>
 
                                         </div>

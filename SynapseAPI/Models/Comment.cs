@@ -10,7 +10,6 @@ namespace Synapse.Models
         public DateTime CreatedDate { get; set; }
         public Guid CommenterId { get; set; }
         public People Commenter { get; set; }
-        public People CreatedBy { get; set; }   
         public string Message { get; set; }        
     }
 

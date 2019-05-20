@@ -19,18 +19,32 @@ namespace Synapse.Controllers
         }
 
         [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(Guid id)
+        {
+            var comment = await context.Comments.FindAsync(id);
+            return Ok(comment);
+        }
+
+
+        [HttpGet("{id}")]
         public async Task<IActionResult> GetByBugId(Guid id)
         {
             var comments = await context.Comments
                 .Include(c=>c.Commenter)
-                .Where(c=>c.BugId == id).ToListAsync();
+                .Where(c=>c.BugId == id)
+                .Select(c=>new {
+                    c.ID,
+                    Commenter = c.Commenter.FullName,
+                    CommentDate = c.CreatedDate,
+                    Message = c.Message
+                }).ToListAsync();
             
             return Ok(comments); 
         }
         
 
         [HttpPost]
-        public async Task<IActionResult> Save(Comment comment)
+        public async Task<IActionResult> Save([FromBody] Comment comment)
         {
             comment.ID = Guid.NewGuid();
             comment.CreatedDate = DateTime.Now;
@@ -41,7 +55,7 @@ namespace Synapse.Controllers
         }
 
         [HttpPut]
-        public async Task<IActionResult> Update(Comment comment)
+        public async Task<IActionResult> Update([FromBody]Comment comment)
         {
             context.Update(comment);
             var result = await context.SaveChangesAsync();

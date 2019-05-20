@@ -28,9 +28,9 @@ export class EditBug extends Component
             platform: '',
             version: '',
             testerId: '',
-            createdDate: '',
-            modifiedDate: '',
-            closedDate: '',
+            createdDate: null,
+            modifiedDate: null,
+            closedDate: null,
             description: '',
             status: ''
         }

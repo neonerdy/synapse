@@ -138,8 +138,27 @@ namespace Synapse.Controllers
         {
             var bug = await context.Bugs.FindAsync(id);
             bug.Status = status;
+          
+            if (status == "Closed") {
+                bug.ClosedDate = DateTime.Now;
+            } else {
+                bug.ModifiedDate = DateTime.Now;
+                bug.ClosedDate = null;
+            }
+
             context.Update(bug);
 
+
+            //history
+
+            var history = new History();
+            history.ID = Guid.NewGuid();
+            history.BugId = bug.ID;
+            history.Date = DateTime.Now;
+            history.ActivityLog = "Change to " + bug.Status + " on " + DateTime.Now;
+
+            context.Add(history);
+            
             var result = await context.SaveChangesAsync();
             return Ok(result);    
         }
