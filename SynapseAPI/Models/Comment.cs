@@ -1,12 +1,12 @@
 
 using System;
 
-namespace Synapse.Models
+namespace TaskMaster.Models
 {
     public class Comment
     {
         public Guid ID { get; set; }
-        public Guid BugId { get; set; }
+        public Guid TaskId { get; set; }
         public DateTime CreatedDate { get; set; }
         public Guid CommenterId { get; set; }
         public People Commenter { get; set; }

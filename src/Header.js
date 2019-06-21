@@ -2,8 +2,27 @@
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
 
+
 export class Header extends Component {
 
+
+    constructor(props) {
+        super(props);
+        this.state = {
+            fullName: '',
+            role: ''
+        }
+    }
+
+    componentDidMount() {
+
+
+        
+    }
+
+    logout() {
+        //this.props.history.push("/");
+    }
 
     render() {
 
@@ -18,8 +37,8 @@ export class Header extends Component {
                     
     
                     <Link to="/dashboard" class="logo">
-                        <span class="logo-mini">SBT</span>
-                        <span class="logo-lg">Synapse Bug Tracker</span>
+                        <span class="logo-mini">TM</span>
+                        <span class="logo-lg">Task Master</span>
                     </Link>
 
                     <div class="navbar-custom-menu">
@@ -80,15 +99,12 @@ export class Header extends Component {
 
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <img src="lib/dist/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
-                            <span class="hidden-xs">Alexander Pierce</span>
+                            <span class="hidden-xs">Ariyanto</span>
                             </a>
                             <ul class="dropdown-menu">
                             <li class="user-header">
-                                <img src="lib/dist/img/user2-160x160.jpg" class="img-circle" alt="User Image"/>
-
                                 <p>
-                                Alexander Pierce - Web Developer
+                                Ariyanto - Developer
                                 <small>Member since Nov. 2012</small>
                                 </p>
                             </li>
@@ -110,7 +126,7 @@ export class Header extends Component {
                                 <a href="#" class="btn btn-default btn-flat">Profile</a>
                                 </div>
                                 <div class="pull-right">
-                                <a href="#" class="btn btn-default btn-flat">Sign out</a>
+                                <a href="#" onClick= {this.logout.bind(this)} class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                             </ul>

@@ -3,7 +3,7 @@
 using System;
 
 
-namespace Synapse.Models
+namespace TaskMaster.Models
 {
     public class People
     {

@@ -3,9 +3,9 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-using Synapse.Models;
+using TaskMaster.Models;
 
-namespace Synapse
+namespace TaskMaster
 {
     public class AppDbContext : DbContext
     {
@@ -13,10 +13,11 @@ namespace Synapse
         public DbSet<People> People { get; set; }
         public DbSet<Project> Projects { get; set; }
         public DbSet<Document> Documents { get; set; }
-        public DbSet<Bug> Bugs { get; set; }
+        public DbSet<Task> Tasks { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<History> Histories { get; set; }
+        public DbSet<WorkLog> WorkLogs { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
@@ -66,11 +67,12 @@ namespace Synapse
             });
 
              
-            modelBuilder.Entity<Bug>(entity => 
+            modelBuilder.Entity<Task>(entity => 
             {
-                entity.ToTable("bugs");
+                entity.ToTable("tasks");
                 entity.Property(e => e.ID).HasColumnName("id");
                 entity.Property(e => e.ProjectId).HasColumnName("project_id");
+                entity.Property(e => e.Category).HasColumnName("category");
                 entity.Property(e => e.Tracker).HasColumnName("tracker");
                 entity.Property(e => e.Title).HasColumnName("title");
                 entity.Property(e => e.Priority).HasColumnName("priority");
@@ -92,7 +94,7 @@ namespace Synapse
             {
                 entity.ToTable("attachments");
                 entity.Property(e => e.ID).HasColumnName("id");
-                entity.Property(e => e.BugId).HasColumnName("bug_id");
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
                 entity.Property(e => e.FileName).HasColumnName("file_name");
                 entity.Property(e => e.Type).HasColumnName("type");
                 entity.Property(e => e.Size).HasColumnName("size");
@@ -102,7 +104,7 @@ namespace Synapse
             {
                 entity.ToTable("comments");
                 entity.Property(e => e.ID).HasColumnName("id");
-                entity.Property(e => e.BugId).HasColumnName("bug_id");
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
                 entity.Property(e => e.CreatedDate).HasColumnName("created_date");
                 entity.Property(e => e.CommenterId).HasColumnName("commenter_id");
                 entity.Property(e => e.Message).HasColumnName("message");
@@ -112,7 +114,7 @@ namespace Synapse
             {
                 entity.ToTable("histories");
                 entity.Property(e => e.ID).HasColumnName("id");
-                entity.Property(e => e.BugId).HasColumnName("bug_id");
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
                 entity.Property(e => e.Date).HasColumnName("date");
                 entity.Property(e => e.ActivityLog).HasColumnName("activity_log");
             });

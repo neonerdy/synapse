@@ -60,7 +60,7 @@ export class Dashboard extends Component
                     Dashboard
                 </h1>
                 <ol class="breadcrumb">
-                    <button class="btn btn-primary" onClick={this.addBug}>Create New Bug</button>
+                    <button class="btn btn-primary" onClick={this.addBug}>Create New Task</button>
                 </ol>
                 </section>
                 <br></br>
@@ -71,7 +71,7 @@ export class Dashboard extends Component
                    <div class="col-md-12">
                        <div class="box box-default">
                        <div class="box-header with-border">
-                        <h3 class="box-title">Bug Status</h3>
+                        <h3 class="box-title"></h3>
                         <div class="box-tools pull-right">
                             <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                             </button>
@@ -84,8 +84,8 @@ export class Dashboard extends Component
                         <div class="col-lg-3 col-xs-6">
                             <div class="small-box bg-teal">
                             <div class="inner">
-                                <h3>12</h3>
-                                <p>New</p>
+                                <h3>5</h3>
+                                <p>Projects</p>
                             </div>
                            
                                     <a href="https://demo.snipeitapp.com/hardware" class="small-box-footer"></a>
@@ -96,7 +96,7 @@ export class Dashboard extends Component
                             <div class="small-box bg-maroon">
                             <div class="inner">
                                 <h3>72</h3>
-                                <p>On Progress</p>
+                                <p>Features</p>
                             </div>
                                          <a href="https://demo.snipeitapp.com/licenses" class="small-box-footer"></a>
                                     </div>
@@ -107,7 +107,7 @@ export class Dashboard extends Component
                             <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3> 6</h3>
-                                <p>Testing</p>
+                                <p>Bugs</p>
                             </div>
                           
                                         <a href="https://demo.snipeitapp.com/accessories" class="small-box-footer"></a>
@@ -118,7 +118,7 @@ export class Dashboard extends Component
                             <div class="small-box bg-purple">
                             <div class="inner">
                                 <h3> 6</h3>
-                                <p>Closed</p>
+                                <p>Others</p>
                             </div>
                            
                                     <a href="https://demo.snipeitapp.com/consumables" class="small-box-footer"></a>

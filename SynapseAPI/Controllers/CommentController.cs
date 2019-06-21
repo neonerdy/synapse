@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Synapse.Models;
+using TaskMaster.Models;
 
-namespace Synapse.Controllers
+namespace TaskMaster.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class CommentController : Controller
@@ -27,11 +27,11 @@ namespace Synapse.Controllers
 
 
         [HttpGet("{id}")]
-        public async Task<IActionResult> GetByBugId(Guid id)
+        public async Task<IActionResult> GetByTaskId(Guid id)
         {
             var comments = await context.Comments
                 .Include(c=>c.Commenter)
-                .Where(c=>c.BugId == id)
+                .Where(c=>c.TaskId == id)
                 .Select(c=>new {
                     c.ID,
                     Commenter = c.Commenter.FullName,

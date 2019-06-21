@@ -49,6 +49,7 @@ export class NavBar extends Component {
                   </Link>
                 </li>
 
+            {/*}
                 <li>
                   <Link to="/document">
                     <i class="fa fa-files-o"></i>
@@ -56,11 +57,12 @@ export class NavBar extends Component {
                    
                   </Link>
                 </li>
+              {*/}
 
                 <li>
-                  <Link to="/bug">
+                  <Link to="/task">
                     <i class="fa fa-clone"></i>
-                    <span>Bugs</span>
+                    <span>Tasks</span>
                    
                   </Link>
                 </li>

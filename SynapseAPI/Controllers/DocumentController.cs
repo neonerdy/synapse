@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Synapse.Models;
+using TaskMaster.Models;
 
-namespace Synapse.Models
+namespace TaskMaster.Models
 {
     [Route("api/[controller]/[action]")]
     public class DocumentController : Controller

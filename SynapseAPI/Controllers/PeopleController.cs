@@ -6,9 +6,9 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-using Synapse.Models;
+using TaskMaster.Models;
 
-namespace Synapse.Controllers
+namespace TaskMaster.Controllers
 {
     [Route("api/[controller]/[action]")]
     public class PeopleController : Controller
@@ -35,6 +35,20 @@ namespace Synapse.Controllers
             
             return Ok(people);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> Login([FromBody] People people)
+        {
+            var isAuthenticated = false;
+
+            var x = await context.People
+                .Where(p=>p.UserName == people.UserName && p.Password == people.Password)
+                .SingleOrDefaultAsync();
+
+           
+            return Ok(x);
+        }
+
 
 
         [HttpPost]
