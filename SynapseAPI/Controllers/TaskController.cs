@@ -103,12 +103,14 @@ namespace TaskMaster.Controllers
         {
             //need join to task, where task status = "closed"
 
+            /* 
             var histories = await context.Histories
                 .Where(h=>h.UserId == userId)
                 .OrderByDescending(h=>h.Date)
                 .ToListAsync();
-            
-            return Ok(histories);
+            */
+
+            return Ok();
         }
 
         
@@ -161,8 +163,8 @@ namespace TaskMaster.Controllers
         }
 
 
-        [HttpGet("{id}/{status}/{updater}")]
-        public async Task<IActionResult> UpdateStatus(Guid id, string status, string updater)
+        [HttpGet("{id}/{status}/{userId}")]
+        public async Task<IActionResult> UpdateStatus(Guid id, string status, Guid userId)
         {
             var task = await context.Tasks.FindAsync(id);
             task.Status = status;
@@ -181,7 +183,8 @@ namespace TaskMaster.Controllers
             history.ID = Guid.NewGuid();
             history.TaskId = task.ID;
             history.Date = DateTime.Now;
-            history.ActivityLog = updater + " Change to " + task.Status + " on " + DateTime.Now;
+            //history.UserId = userId;
+            history.ActivityLog = "Changed to " + task.Status + " on " + DateTime.Now;
 
             context.Add(history);
             
