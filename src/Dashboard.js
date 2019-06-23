@@ -10,15 +10,26 @@ export class Dashboard extends Component
     constructor(props) {
         super(props);
 
-    }
+        var userJson = localStorage.getItem("user");
+        var user = JSON.parse(userJson);
+       
+        this.state = {
+           user: user
+        }
 
+        console.log(user);
 
-    componentDidMount() {
        
     }
 
-    addBug =()=> {
-        this.props.history.push("/add-bug");
+    componentDidMount() {
+                 
+        
+    }
+
+   
+    addTask =()=> {
+        this.props.history.push("/add-task");
     }
 
 
@@ -49,7 +60,10 @@ export class Dashboard extends Component
 
             <div class="wrapper">
              
-             <Header/>
+             <Header 
+                history={this.props.history} 
+                user={this.state.user}
+             />
              <NavBar/>
 
             
@@ -60,7 +74,7 @@ export class Dashboard extends Component
                     Dashboard
                 </h1>
                 <ol class="breadcrumb">
-                    <button class="btn btn-primary" onClick={this.addBug}>Create New Task</button>
+                    <button class="btn btn-primary" onClick={this.addTask}>Create New Task</button>
                 </ol>
                 </section>
                 <br></br>

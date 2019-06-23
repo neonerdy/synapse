@@ -8,13 +8,17 @@ import axios from 'axios';
 import config from './Config';
 import CKEditor from 'ckeditor4-react';
 
-
 export class AddTask extends Component
 {
 
     constructor(props) {
         super(props);
+
+        var userJson = localStorage.getItem("user");
+        var user = JSON.parse(userJson);
+
         this.state = {
+            user: user, 
             error: {},
             projects: [],
             category: '',
@@ -154,12 +158,19 @@ export class AddTask extends Component
             color: 'darkred'
         }
 
+        let dateStyle = {
+            width: '250px'
+        }
+
 
         return(
 
             <div class="wrapper">
 
-                <Header/>
+               <Header 
+                    history={this.props.history} 
+                    user={this.state.user}
+                />
                 <NavBar/>
 
                  <div class="content-wrapper" style={heightStyle}>
@@ -173,12 +184,13 @@ export class AddTask extends Component
                 
                      <section class="content">
 
+                     
                          <div class="row">
                                   
                             <div class="col-md-12">
                                 <div class="box box-default">
                                     <div class="box-header with-border">
-                                       
+
                                     <div class="nav-tabs-custom">
                                         <ul class="nav nav-tabs">
                                         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Detail</a></li>
@@ -189,6 +201,24 @@ export class AddTask extends Component
                                                 
                                         <div class="form-horizontal">
 
+                     
+
+                                        {/*}
+                                        <div class="form-group">
+                                                    
+                                                    <label>Date</label>
+                                                    <span class="input-group-btn">
+                                                            <div class="input-group input-medium date date-picker">
+                                                            <input type="text" class="form-control" value="1//1/2016" readOnly name="date"/>
+                                                            <span class="input-group-button">
+                                                               <button class="btn default" type="button">
+                                                                    <i class="fa fa-calendar"></i>
+                                                                </button>
+                                                            </span>
+                                                        </div>
+                                                        </span>
+                                            </div>
+                                        {*/}
                                       
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Project</label>

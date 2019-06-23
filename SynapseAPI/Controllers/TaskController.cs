@@ -85,6 +85,32 @@ namespace TaskMaster.Controllers
             return Ok(tasks);
         }
 
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetMyTask(Guid userId)
+        {
+            var tasks = await context.Tasks
+                .Where(t=>t.AssigneeId == userId && t.Status != "Closed")
+                .OrderByDescending(t=>t.CreatedDate)
+                .ToListAsync();
+            
+            return Ok(tasks);
+        }
+
+       
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetMyNotification(Guid userId)
+        {
+            //need join to task, where task status = "closed"
+
+            var histories = await context.Histories
+                .Where(h=>h.UserId == userId)
+                .OrderByDescending(h=>h.Date)
+                .ToListAsync();
+            
+            return Ok(histories);
+        }
+
         
         
         [HttpPost]
@@ -135,8 +161,8 @@ namespace TaskMaster.Controllers
         }
 
 
-        [HttpGet("{id}/{status}")]
-        public async Task<IActionResult> UpdateStatus(Guid id, string status)
+        [HttpGet("{id}/{status}/{updater}")]
+        public async Task<IActionResult> UpdateStatus(Guid id, string status, string updater)
         {
             var task = await context.Tasks.FindAsync(id);
             task.Status = status;
@@ -150,20 +176,44 @@ namespace TaskMaster.Controllers
 
             context.Update(task);
 
-
-            //history
-
             var history = new History();
+
             history.ID = Guid.NewGuid();
             history.TaskId = task.ID;
             history.Date = DateTime.Now;
-            history.ActivityLog = "Change to " + task.Status + " on " + DateTime.Now;
+            history.ActivityLog = updater + " Change to " + task.Status + " on " + DateTime.Now;
 
             context.Add(history);
             
             var result = await context.SaveChangesAsync();
             return Ok(result);    
         }
+
+        
+
+        [HttpGet("{id}/{userId}")]
+        public async Task<IActionResult> AssignedTaskToMe(Guid id, Guid userId)
+        {
+            var task = await context.Tasks.FindAsync(id);
+            task.AssigneeId = userId;
+            context.Update(task);
+
+            var result = await context.SaveChangesAsync();
+            return Ok(result);  
+        }
+
+
+        [HttpGet("{id}/{userId}")]
+        public async Task<IActionResult> AssignedTesterToMe(Guid id, Guid userId)
+        {
+            var task = await context.Tasks.FindAsync(id);
+            task.TesterId = userId;
+            context.Update(task);
+
+            var result = await context.SaveChangesAsync();
+            return Ok(result);  
+        }
+
 
 
         [HttpDelete("{id}")]

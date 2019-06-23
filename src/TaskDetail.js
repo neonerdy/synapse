@@ -11,7 +11,12 @@ export class TaskDetail extends Component
 {
     constructor(props) {
         super(props);
+
+        var userJson = localStorage.getItem("user");
+        var user = JSON.parse(userJson);
+
         this.state = {
+            user: user,
             id: '',
             project: '',
             tracker: '',
@@ -94,11 +99,33 @@ export class TaskDetail extends Component
     updateStatus = (status) => {
 
         let id = this.props.match.params.id;
-        axios.get(config.serverUrl + "/api/task/updatestatus/" + id + "/" + status).then(response=> {
+        axios.get(config.serverUrl + "/api/task/updatestatus/" + id + "/" + status + "/" + this.state.user.fullName).then(response=> {
             this.getTaskById(id);
             this.getHistoriesByTaskId(id);
         })
     }
+
+    assignedTaskToMe = () => {
+
+        let id = this.props.match.params.id;
+        let userId = this.state.user.id;
+
+        axios.get(config.serverUrl + "/api/task/assignedtasktome/" + id + "/" + userId).then(response=> {
+            this.getTaskById(id);
+        })
+    }
+
+
+    assignedTesterToMe = () => {
+
+        let id = this.props.match.params.id;
+        let userId = this.state.user.id;
+
+        axios.get(config.serverUrl + "/api/task/assignedtestertome/" + id + "/" + userId).then(response=> {
+            this.getTaskById(id);
+        })
+    }
+
 
     addTask =()=> {
         this.props.history.push("/add-task");
@@ -113,7 +140,7 @@ export class TaskDetail extends Component
 
         var comment = {
             taskId : this.state.id,
-            commenterId: 'f3ffc7e7-38f3-4dde-ad4f-fad8ef6ed0c8',
+            commenterId: this.state.user.id,
             message: this.state.message
         }
 
@@ -133,7 +160,7 @@ export class TaskDetail extends Component
     updateComment = () => {
         var comment = {
             taskId : this.state.id,
-            commenterId: 'f3ffc7e7-38f3-4dde-ad4f-fad8ef6ed0c8',
+            commenterId: this.state.user.id,
             message: this.state.message,
             createdDate: this.state.createdDate
         }
@@ -224,12 +251,15 @@ export class TaskDetail extends Component
         }
 
         const barStyle = {
-            display:'none;margin-top:10px'
+            display:'none'
         }
 
         return(
             <div class="wrapper">
-               <Header/>
+                <Header 
+                    history={this.props.history} 
+                    user={this.state.user}
+                />
                <NavBar/>
 
                 <div class="content-wrapper" style={heightStyle}>
@@ -347,8 +377,13 @@ export class TaskDetail extends Component
                                         </button>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addComment">Comment</button>
+                                            
+                                            {/*}
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
+                                            {*/}
+
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
+                                            
                                         </div>
                                         <div class="btn-group">
                                             <button class="btn btn-default" style={buttonStyle} type="button"><i class="fa fa-refresh"></i></button>    
@@ -402,13 +437,13 @@ export class TaskDetail extends Component
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Assignee </label> </div>
                                             <div class="col-lg-6"><label style={fontStyle}>{this.state.assignee}</label>
-                                            <br/><a href="/workitem/assigntome/<%=id%>" >Assign to me</a> <br/></div>
+                                            <br/><a href="#!" onClick={this.assignedTaskToMe}>Assign to me</a> <br/></div>
                                         </div>
                                       
                                         <div class="row">
                                             <div class="col-lg-3"><label style={fontStyle}>Tester </label> </div>
                                             <div class="col-lg-6"><label style={fontStyle}>{this.state.tester}</label>
-                                            <br/><a href="/workitem/assigntestertome/<%=id%>">Assign to me</a> <br/></div>
+                                            <br/><a href="#!" onClick={this.assignedTesterToMe}>Assign to me</a> <br/></div>
                                     </div>
                                     
                                         <div class="row">
@@ -477,8 +512,9 @@ export class TaskDetail extends Component
                                 <br/><br/>
                               
 
+                                   {/*}                           
 
-                                 <div class="box-header with-border">
+                                   <div class="box-header with-border">
                                     <h3 class="box-title"><b>Attachments</b></h3>
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
@@ -486,8 +522,7 @@ export class TaskDetail extends Component
                                     </div>
                                     <br/><br/>
                                   
-
-                                  {/*}
+                                
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
@@ -545,10 +580,9 @@ export class TaskDetail extends Component
                                         </div>
                                     </div>    
 
-                                    {*/}
-
-
                                 </div>
+                                
+                                  {*/}
 
                                 <br/>
 

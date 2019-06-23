@@ -10,18 +10,18 @@ export class Header extends Component {
         super(props);
         this.state = {
             fullName: '',
-            role: ''
+            role: '',
+            email: ''
         }
     }
 
     componentDidMount() {
 
-
-        
     }
 
-    logout() {
-        //this.props.history.push("/");
+    logout=()=> {
+        localStorage.removeItem("user");
+        this.props.history.push("/");
     }
 
     render() {
@@ -99,34 +99,22 @@ export class Header extends Component {
 
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                            <span class="hidden-xs">Ariyanto</span>
+                            <span class="hidden-xs">{this.props.user.fullName}</span>
                             </a>
                             <ul class="dropdown-menu">
                             <li class="user-header">
                                 <p>
-                                Ariyanto - Developer
-                                <small>Member since Nov. 2012</small>
+                                {this.props.user.fullName} - {this.props.user.role}
+                                <small>{this.props.user.email}</small>
                                 </p>
                             </li>
-                            <li class="user-body">
-                                <div class="row">
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Followers</a>
-                                </div>
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Sales</a>
-                                </div>
-                                <div class="col-xs-4 text-center">
-                                    <a href="#">Friends</a>
-                                </div>
-                                </div>
-                            </li>
+                            
                             <li class="user-footer">
                                 <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                <a href="#" class="btn btn-default btn-flat">My Task</a>
                                 </div>
                                 <div class="pull-right">
-                                <a href="#" onClick= {this.logout.bind(this)} class="btn btn-default btn-flat">Sign out</a>
+                                <a href="#" onClick= {this.logout} class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                             </ul>

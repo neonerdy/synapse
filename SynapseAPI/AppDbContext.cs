@@ -17,7 +17,9 @@ namespace TaskMaster
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<History> Histories { get; set; }
+
         public DbSet<WorkLog> WorkLogs { get; set; }
+
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {

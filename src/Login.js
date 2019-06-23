@@ -28,22 +28,15 @@ export class Login extends Component
              UserName: this.state.username,
              Password: this.state.password
          }
-
+      
          console.log(people);
 
          axios.post(config.serverUrl + "/api/people/login",people).then(response=>{
             var result = response.data;
           
             if (result != "") {
-                this.props.history.push("/dashboard");
                 localStorage.setItem("user", JSON.stringify(result));
-
-                var userJson = localStorage.getItem("user");
-                var user = JSON.parse(userJson)
-                console.log(user.fullName);
-
-
-            
+                this.props.history.push("/dashboard");
             }
 
          })

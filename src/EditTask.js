@@ -13,7 +13,12 @@ export class EditTask extends Component
 
     constructor(props) {
         super(props);
+
+        var userJson = localStorage.getItem("user");
+        var user = JSON.parse(userJson);
+
         this.state = {
+            user: user,
             error: {},
             projects: [],
             peoples: [],
@@ -212,7 +217,10 @@ export class EditTask extends Component
 
             <div class="wrapper">
 
-                <Header/>
+                <Header 
+                    history={this.props.history} 
+                    user={this.state.user}
+                />
                 <NavBar/>
 
                  <div class="content-wrapper" style={heightStyle}>
