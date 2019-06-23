@@ -381,9 +381,9 @@ export class TaskDetail extends Component
                                             {/*}
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
                                             {*/}
-
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
                                             
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
+                                               
                                         </div>
                                         <div class="btn-group">
                                             <button class="btn btn-default" style={buttonStyle} type="button"><i class="fa fa-refresh"></i></button>    
