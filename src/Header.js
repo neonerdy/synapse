@@ -1,6 +1,8 @@
 
 import React, {Component} from 'react';
 import {Link} from 'react-router-dom';
+import axios from 'axios';
+import config from './Config';
 
 
 export class Header extends Component {
@@ -9,15 +11,27 @@ export class Header extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            fullName: '',
-            role: '',
-            email: ''
+            tasks: []
         }
     }
 
     componentDidMount() {
-
+        this.getMyTasks(this.props.user.id);
     }
+
+
+    getMyTasks = (id) => {
+        axios.get(config.serverUrl + "/api/task/getmytask/" + id).then(response=> {
+            this.setState({
+                tasks: response.data,
+            })
+        })
+    }
+
+    taskDetail = (id) => {
+        this.props.history.push("/task-detail/" + id);
+    }
+
 
     logout=()=> {
         localStorage.removeItem("user");
@@ -49,41 +63,24 @@ export class Header extends Component {
                         <li class="dropdown notifications-menu">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                             <i class="fa fa-bell-o"></i>
-                            <span class="label label-warning">10</span>
+                            <span class="label label-warning">{this.state.tasks.length}</span>
                         </a>
                         <ul class="dropdown-menu">
-                            <li class="header">You have 10 notifications</li>
+                            <li class="header"><b>You have {this.state.tasks.length} notifications</b></li>
                             <li>
                             <ul class="menu">
+
+                              {this.state.tasks.map(t=> 
                                 <li>
-                                <a href="#">
-                                    <i class="fa fa-users text-aqua"></i> 5 new members joined today
-                                </a>
+                                    <a href="#!" onClick={()=>this.taskDetail(t.id)}>{t.tracker}&nbsp;&nbsp;{t.title}</a>   
                                 </li>
-                                <li>
-                                <a href="#">
-                                    <i class="fa fa-warning text-yellow"></i> Very long description here that may not fit into the
-                                    page and may cause design problems
-                                </a>
-                                </li>
-                                <li>
-                                <a href="#">
-                                    <i class="fa fa-users text-red"></i> 5 new members joined
-                                </a>
-                                </li>
-                                <li>
-                                <a href="#">
-                                    <i class="fa fa-shopping-cart text-green"></i> 25 sales made
-                                </a>
-                                </li>
-                                <li>
-                                <a href="#">
-                                    <i class="fa fa-user text-red"></i> You changed your username
-                                </a>
-                                </li>
+                            )}
+                               
+
+                          
                             </ul>
                             </li>
-                            <li class="footer"><a href="#">View all</a></li>
+                           
                         </ul>
                         </li>
 

@@ -68,7 +68,7 @@ export class AddTask extends Component
     }
     
 
-    saveProject = () => {
+    saveTask = () => {
         
         let isValid = this.validate();
         if (isValid)
@@ -200,37 +200,7 @@ export class AddTask extends Component
                                         <div class="tab-pane active" id="tab_1">
                                                 
                                         <div class="form-horizontal">
-
-                     
-
-                                        <div class="form-group">
-                                            <label>Date:</label>
-
-                                            <div class="input-group date" data-provide="datepicker" data-date-autoclose="true">
-                                                <input type="text" class="form-control" readOnly/>
-                                                <div class="input-group-addon">
-                                                    <span class="fa fa-calendar"></span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        {/*}
-                                        <div class="form-group">
-                                                    
-                                                    <label>Date</label>
-                                                    <span class="input-group-btn">
-                                                            <div class="input-group input-medium date date-picker">
-                                                                <input type="text" class="form-control" value="1//1/2016" readOnly name="date"/>
-                                                                <span class="input-group-button">
-                                                                <button class="btn default" type="button">
-                                                                        <i class="fa fa-calendar"></i>
-                                                                    </button>
-                                                                </span>
-                                                        </div>
-                                                        </span>
-                                            </div>
-                                        {*/}
-                                        
+  
                                         <div class="form-group">
                                             <label class="col-md-3 control-label">Project</label>
                                             <div class="col-md-7 col-sm-12 required">
@@ -378,7 +348,7 @@ export class AddTask extends Component
 
                                     <div class="text-right">
                                         <a class="btn btn-link text-left" href="#" onClick={this.cancelAdd}>Cancel</a>
-                                        <button type="button" onClick={this.saveProject} class="btn btn-primary"><i class="fa fa-check icon-white"></i> Save</button>
+                                        <button type="button" onClick={this.saveTask} class="btn btn-primary"><i class="fa fa-check icon-white"></i> Save</button>
                                     </div>
 
 

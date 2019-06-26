@@ -15,8 +15,11 @@ export class TaskDetail extends Component
         var userJson = localStorage.getItem("user");
         var user = JSON.parse(userJson);
 
+        this.closeBtn = React.createRef();
+
         this.state = {
             user: user,
+            dateNow: '',
             id: '',
             project: '',
             tracker: '',
@@ -36,15 +39,25 @@ export class TaskDetail extends Component
             description: '',
             comments: [],
             histories: [],
-            comment: {}
+            commentId: '',
+            message: '',
+            workLogs: [],
+            date: '',
+            log: '',
+            unit: '',
         }
     }
 
     componentDidMount() {
+
         let id = this.props.match.params.id;
         this.getTaskById(id);
         this.getCommentByTaskId(id);
         this.getHistoriesByTaskId(id);
+
+        this.setState({
+            dateNow: Date.now()
+        })
     }
 
     onValueChange = (e) => {
@@ -95,6 +108,14 @@ export class TaskDetail extends Component
         })
     }
 
+    getWorkLogByTaskId = (id) => {
+        axios.get(config.serverUrl + "/api/worklog/getbytaskid/" + id).then(response=> {
+            this.setState({
+                workLogs: response.data
+            })
+        })
+    }
+
 
     updateStatus = (status) => {
 
@@ -135,6 +156,19 @@ export class TaskDetail extends Component
         this.props.history.push("/edit-task/" + id);
     }
 
+    refreshTask = (id) => {
+        this.getTaskById(id);
+        this.getCommentByTaskId(id);
+        this.getHistoriesByTaskId(id);
+    }
+
+    deleteTask = (id) => {
+        axios.delete(config.serverUrl + "/api/task/delete/" + id).then(response=> {
+            this.closeBtn.current.click();
+            this.props.history.push("/task");
+        })
+    }
+
 
     saveComment = () => {
 
@@ -150,16 +184,21 @@ export class TaskDetail extends Component
     }
 
     editComment = (id) => {
+                
         axios.get(config.serverUrl + "/api/comment/getbyid/" + id).then(response=> {
             this.setState({
-               comment: response.data
+                commentId: response.data.id,
+                message: response.data.message
             })
+
         })
+ 
     }
 
     updateComment = () => {
         var comment = {
-            taskId : this.state.id,
+            id: this.state.commentId,
+            taskId: this.state.id,
             commenterId: this.state.user.id,
             message: this.state.message,
             createdDate: this.state.createdDate
@@ -176,6 +215,27 @@ export class TaskDetail extends Component
             this.getCommentByTaskId(this.state.id);
         })
     }
+
+
+
+    saveWorkLog = () => {
+
+        var workLog = {
+            taskId: this.state.id,
+            date: this.state.date,
+            userId: this.state.user.id,
+            log: this.state.log,
+            unit: this.state.unit
+        }
+
+        console.log(workLog);
+
+        axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
+            this.getCommentByTaskId(this.state.id);
+        })
+    }
+
+
 
     renderTracker = (category, tracker) => {
         if (category == 'Feature') {
@@ -304,7 +364,7 @@ export class TaskDetail extends Component
                                     <h4 class="modal-title">Edit Comment</h4>
                                 </div>
                                 <div class="modal-body">
-                                    
+                                <input type="text" name="id" value={this.state.commentId} onChange={this.onValueChange}/>    
                                 <textarea class="form-control" rows="8" name="message" 
                                     onChange={this.onValueChange} value={this.state.message}></textarea>
                                 </div>
@@ -316,7 +376,7 @@ export class TaskDetail extends Component
                         </div>
                     </div>
 
-
+                        {/*}
                       <div id="addAttachment" class="modal fade" role="dialog">
                         <div class="modal-dialog" style={modalStyle}>
                             <div class="modal-content">
@@ -353,7 +413,90 @@ export class TaskDetail extends Component
                         </div>
                 </div>
 
+                {*/}
 
+
+                <div id="addWorkLog" class="modal fade" role="dialog">
+                        <div class="modal-dialog" style={{width: '350px'}}>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Add Work Log</h4>
+                                </div>
+                                <div class="addWorkLog-ui">
+
+                                        <div class="modal-body row">
+                                            <input type="hidden" name="id" value=""/>
+                                    
+                                            <div class="col-md-12">
+                                                    <div class="form-group">
+                                                            
+                                                        <label style={{fontWeight:'normal'}}>Date</label>
+                                                        <span class="input-group-btn">
+                                                            <div class="input-group date" data-provide="datepicker" data-date-autoclose="true" data-date-today-highlight="true">
+                                                                <input type="text" name="date" class="form-control" readOnly style={{width: '280px'}} 
+                                                                    value={moment(this.state.dateNow).format("MM/DD/YYYY")} onChange={this.onValueChange}/>
+                                                                <div class="input-group-addon">
+                                                                    <span class="fa fa-calendar"></span>
+                                                                </div>
+                                                            </div>
+                                            
+                                                        </span>
+                                                    </div>
+                                            </div>
+                                        
+                                            <div class="col-md-6">
+                                                    <div id="divAddTimeSpent" class="form-group">
+                                                        <label style={{fontWeight:'normal'}}>Time Spent</label> 
+                                                        <input type="text" class="form-control" name="log" onChange={this.onValueChange} value="1" style={{fontWeight:'normal'}}/>                                                                                                      
+                                                    </div>
+                                                </div>
+                                    
+                                            <div class="col-md-6">
+                                                <div id="divAddUnit" class="form-group">
+                                                    <label style={{fontWeight:'normal'}}>Unit</label> 
+                                                        <select class="form-control" name="unit" onChange={this.onValueChange} style={{fontWeight:'normal'}}>
+                                                            <option value="-1"></option>
+                                                            <option value="Hour">Hour</option>
+                                                            <option value="Day" selected>Day</option>
+                                                        </select>                                                                                                      
+                                                </div>
+                                            </div>                                    
+                                            <div id="errorAddWorkLog" class="form-group col-md-12"></div>                                   
+                                        </div>
+                                    
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onClick={this.saveWorkLog}>Save Work Log</button>
+                                        </div>
+                                        
+                             
+                                </div>
+                            </div>
+                        </div>
+                </div>
+                
+
+                <div id="deleteTask" class="modal fade">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Delete</h4>
+                                </div>
+                                <div class="modal-body">
+                                    Are you sure want to delete this task?
+                                </div>
+                                
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-default pull-left"  data-dismiss="modal" ref={this.closeBtn}>Close</button>
+                                    <button type="button" class="btn btn-danger" onClick={()=>this.deleteTask(this.state.id)}>Yes</button>
+                                </div>
+                                
+
+                            </div>
+                        </div>
+                </div>
 
 
 
@@ -386,8 +529,8 @@ export class TaskDetail extends Component
                                                
                                         </div>
                                         <div class="btn-group">
-                                            <button class="btn btn-default" style={buttonStyle} type="button"><i class="fa fa-refresh"></i></button>    
-                                            <button class="btn btn-default" style={buttonStyle} type="button" data-toggle="modal" data-target="#deleteWorkItem">
+                                            <button class="btn btn-default" style={buttonStyle} type="button" onClick={this.refreshTask}><i class="fa fa-refresh"></i></button>    
+                                            <button class="btn btn-default" style={buttonStyle} type="button" data-toggle="modal" data-target="#deleteTask">
                                                     <i class="fa fa-trash-o"></i>
                                             </button>
                                             
@@ -600,7 +743,9 @@ export class TaskDetail extends Component
                                   <div class="nav-tabs-custom">
                                         <ul class="nav nav-tabs">
                                             <li class="active"><a href="#tab_comment" data-toggle="tab" aria-expanded="true" style={fontStyle}>Comments</a></li>
-                                            <li class=""><a href="#tab_history" data-toggle="tab" aria-expanded="true" style={fontStyle}>History</a></li>
+                                            <li class=""><a href="#tab_history" data-toggle="tab" aria-expanded="true" style={fontStyle}>Histories</a></li>
+                                            <li class=""><a href="#tab_worklog" data-toggle="tab" aria-expanded="true" style={fontStyle}>Work Logs</a></li>
+                                            
                                         </ul>
                                         <div class="tab-content">
                         
@@ -615,7 +760,8 @@ export class TaskDetail extends Component
                                                         <br/>
                                                         <div>{c.message}</div> 
                                                         <br/>
-                                                        <div><a href="#!" data-toggle="modal" data-target="#editComment">Edit</a>&nbsp;|&nbsp;<a href="#!" onClick={()=>this.deleteComment(c.id)}>Delete</a></div>
+                                                        <div><a href="#!" onClick={()=>this.editComment(c.id)}  data-toggle="modal" data-target="#editComment">Edit</a>&nbsp;|&nbsp;
+                                                             <a href="#!" onClick={()=>this.deleteComment(c.id)}>Delete</a></div>
                                                             <br/>
                                                         </div>
                                                         )}
@@ -627,25 +773,28 @@ export class TaskDetail extends Component
 
                                             </div>
                                             <div class="tab-pane" id="tab_history">
-                                          
 
                                                  <div class="box-body">
                                                     <div class="row">
-                                                    <div class="col-md-12">
-                                                        {this.state.histories.map(h=> 
-                                                        <div> 
-                                                          <div>{h.activityLog}</div> 
-                                                        <br/>
-                                                        
-                                                          
+                                                        <div class="col-md-12">
+                                                            {this.state.histories.map(h=> 
+                                                            <div> 
+                                                            <div>{h.activityLog}</div> 
+                                                            <br/>
+                                                            </div>
+                                                            )}
                                                         </div>
-                                                        )}
-                                                    
-                                                    </div>
                                                     </div>
                                                 </div>
 
                                             </div>
+
+                                            <div class="tab-pane" id="tab_worklog">
+                                                    <div class="box-body">
+                                                        <div class="row"></div>
+                                                    </div>        
+                                            </div>
+
 
                                         </div>
                                 </div>

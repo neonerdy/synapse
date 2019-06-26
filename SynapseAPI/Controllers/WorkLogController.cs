@@ -40,10 +40,19 @@ namespace TaskMaster.Models
 
         
         [HttpPost]
-        public async Task<IActionResult> Save([FromBody] WorkLog worklog)
+        public async Task<IActionResult> Save([FromBody] WorkLog workLog)
         {
-            worklog.ID = Guid.NewGuid();
-            context.Add(worklog);
+            workLog.ID = Guid.NewGuid();
+
+            if (workLog.Unit == "Minute") {
+                workLog.LogInMinute = workLog.Log;
+            } else if (workLog.Unit == "Hour") {
+                workLog.LogInMinute = workLog.Log * 60;
+            } else if (workLog.Unit == "Day") {
+                workLog.LogInMinute = workLog.Log * 8*60;
+            }
+           
+            context.Add(workLog);
 
             var result = await context.SaveChangesAsync();
             return Ok(result);
