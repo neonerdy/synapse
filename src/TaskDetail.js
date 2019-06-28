@@ -16,10 +16,10 @@ export class TaskDetail extends Component
         var user = JSON.parse(userJson);
 
         this.closeBtn = React.createRef();
+        this.loggedDateText = React.createRef();
 
         this.state = {
             user: user,
-            dateNow: '',
             id: '',
             project: '',
             tracker: '',
@@ -42,8 +42,8 @@ export class TaskDetail extends Component
             commentId: '',
             message: '',
             workLogs: [],
-            date: '',
-            log: '',
+            loggedDate: moment(Date.now()).format("MM/DD/YYYY"),
+            timeSpent: '',
             unit: '',
         }
     }
@@ -55,14 +55,23 @@ export class TaskDetail extends Component
         this.getCommentByTaskId(id);
         this.getHistoriesByTaskId(id);
 
-        this.setState({
-            dateNow: Date.now()
-        })
     }
 
     onValueChange = (e) => {
         this.setState({
             [e.target.name]: e.target.value
+        })
+    }
+
+    onLoggedDateChange = (e) => {
+        this.setState({
+            loggedDate : e.target.value
+        })
+    }
+
+    onTimeSpentChange = (e) => {
+        this.setState({
+            timeSpent : e.target.value
         })
     }
 
@@ -220,14 +229,14 @@ export class TaskDetail extends Component
 
     saveWorkLog = () => {
 
-        var workLog = {
+        let workLog = {
             taskId: this.state.id,
-            date: this.state.date,
+            loggedDate: this.loggedDateText.current.value,
             userId: this.state.user.id,
-            log: this.state.log,
+            timeSpent: this.state.timeSpent,
             unit: this.state.unit
         }
-
+              
         console.log(workLog);
 
         axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
@@ -251,6 +260,7 @@ export class TaskDetail extends Component
                 <span class="label label-warning"><b>{tracker}</b></span>
             )
         }
+        
     }
 
 
@@ -434,8 +444,8 @@ export class TaskDetail extends Component
                                                         <label style={{fontWeight:'normal'}}>Date</label>
                                                         <span class="input-group-btn">
                                                             <div class="input-group date" data-provide="datepicker" data-date-autoclose="true" data-date-today-highlight="true">
-                                                                <input type="text" name="date" class="form-control" readOnly style={{width: '280px'}} 
-                                                                    value={moment(this.state.dateNow).format("MM/DD/YYYY")} onChange={this.onValueChange}/>
+                                                                <input type="text" name="loggedDate" class="form-control" style={{width: '280px'}} 
+                                                                    ref={this.loggedDateText}/>
                                                                 <div class="input-group-addon">
                                                                     <span class="fa fa-calendar"></span>
                                                                 </div>
@@ -448,17 +458,17 @@ export class TaskDetail extends Component
                                             <div class="col-md-6">
                                                     <div id="divAddTimeSpent" class="form-group">
                                                         <label style={{fontWeight:'normal'}}>Time Spent</label> 
-                                                        <input type="text" class="form-control" name="log" onChange={this.onValueChange} value="1" style={{fontWeight:'normal'}}/>                                                                                                      
+                                                        <input type="text" class="form-control" name="timeSpent" onChange={this.onTimeSpentChange} value={this.state.timeSpent} style={{fontWeight:'normal'}}/>                                                                                                      
                                                     </div>
                                                 </div>
                                     
                                             <div class="col-md-6">
                                                 <div id="divAddUnit" class="form-group">
                                                     <label style={{fontWeight:'normal'}}>Unit</label> 
-                                                        <select class="form-control" name="unit" onChange={this.onValueChange} style={{fontWeight:'normal'}}>
+                                                        <select class="form-control" name="unit" onChange={this.onValueChange} value={this.state.unit} style={{fontWeight:'normal'}}>
                                                             <option value="-1"></option>
                                                             <option value="Hour">Hour</option>
-                                                            <option value="Day" selected>Day</option>
+                                                            <option value="Day">Day</option>
                                                         </select>                                                                                                      
                                                 </div>
                                             </div>                                    

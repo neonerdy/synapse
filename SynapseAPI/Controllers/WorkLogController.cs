@@ -23,6 +23,7 @@ namespace TaskMaster.Models
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByTaskId(Guid id)
         {
+            /* 
              var workLogs = await context.WorkLogs
                 .Include(w=>w.User)
                 .Where(w=>w.TaskId == id)
@@ -30,12 +31,18 @@ namespace TaskMaster.Models
                     w.ID,
                     User = w.User.FullName,
                     Date = w.Date,
-                    Log = w.Log,
+                    TimeSpent = w.TimeSpent,
                     Unit = w.Unit,
-                    LogInMinute = w.LogInMinute
+                    TimeSpentInMinute = w.TimeSpentInMinute
                 }).ToListAsync();
-            
+            */
+         
+            WorkLog workLogs = null;
+
             return Ok(workLogs); 
+
+            
+
         }
 
         
@@ -45,17 +52,18 @@ namespace TaskMaster.Models
             workLog.ID = Guid.NewGuid();
 
             if (workLog.Unit == "Minute") {
-                workLog.LogInMinute = workLog.Log;
+                workLog.TimeSpentInMinute = workLog.TimeSpent;
             } else if (workLog.Unit == "Hour") {
-                workLog.LogInMinute = workLog.Log * 60;
+                workLog.TimeSpentInMinute = workLog.TimeSpent * 60;
             } else if (workLog.Unit == "Day") {
-                workLog.LogInMinute = workLog.Log * 8*60;
+                workLog.TimeSpentInMinute = workLog.TimeSpent * 8 * 60;
             }
            
             context.Add(workLog);
-
+                  
             var result = await context.SaveChangesAsync();
             return Ok(result);
+
         }
 
 

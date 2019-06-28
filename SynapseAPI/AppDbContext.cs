@@ -53,6 +53,8 @@ namespace TaskMaster
                 entity.Property(e => e.Status).HasColumnName("status");
              });
 
+
+            /*  
              modelBuilder.Entity<Document>(entity => 
             {
                 entity.ToTable("documents");
@@ -67,6 +69,7 @@ namespace TaskMaster
                 entity.Property(e => e.CreatedDate).HasColumnName("created_date");
                 
             });
+            */
 
              
             modelBuilder.Entity<Task>(entity => 
@@ -120,10 +123,23 @@ namespace TaskMaster
                 entity.Property(e => e.Date).HasColumnName("date");
                 entity.Property(e => e.ActivityLog).HasColumnName("activity_log");
             });
+
+
+            modelBuilder.Entity<WorkLog>(entity => 
+            {
+                entity.ToTable("worklogs");
+                entity.Property(e => e.ID).HasColumnName("id");
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.LoggedDate).HasColumnName("logged_date");
+                entity.Property(e => e.TimeSpent).HasColumnName("time_spent");
+                entity.Property(e => e.Unit).HasColumnName("unit");
+                entity.Property(e => e.TimeSpentInMinute).HasColumnName("time_spent_in_minute");
             
+            });
 
-
-
+      
         }
+
     }
 }
