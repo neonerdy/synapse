@@ -23,25 +23,21 @@ namespace TaskMaster.Models
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByTaskId(Guid id)
         {
-            /* 
              var workLogs = await context.WorkLogs
                 .Include(w=>w.User)
                 .Where(w=>w.TaskId == id)
                 .Select(w=>new {
                     w.ID,
                     User = w.User.FullName,
-                    Date = w.Date,
+                    LoggedDate = w.LoggedDate,
                     TimeSpent = w.TimeSpent,
                     Unit = w.Unit,
                     TimeSpentInMinute = w.TimeSpentInMinute
-                }).ToListAsync();
-            */
-         
-            WorkLog workLogs = null;
-
+                })
+                .OrderBy(t=>t.LoggedDate)
+                .ToListAsync();
+           
             return Ok(workLogs); 
-
-            
 
         }
 

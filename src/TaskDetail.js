@@ -54,6 +54,7 @@ export class TaskDetail extends Component
         this.getTaskById(id);
         this.getCommentByTaskId(id);
         this.getHistoriesByTaskId(id);
+        this.getWorkLogByTaskId(id);
 
     }
 
@@ -240,7 +241,7 @@ export class TaskDetail extends Component
         console.log(workLog);
 
         axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
-            this.getCommentByTaskId(this.state.id);
+            this.getWorkLogByTaskId(this.state.id);
         })
     }
 
@@ -800,9 +801,18 @@ export class TaskDetail extends Component
                                             </div>
 
                                             <div class="tab-pane" id="tab_worklog">
-                                                    <div class="box-body">
-                                                        <div class="row"></div>
-                                                    </div>        
+                                                <div class="box-body">
+                                                    <div class="row">
+                                                        <div class="col-md-12">
+                                                            {this.state.workLogs.map(w=> 
+                                                            <div> 
+                                                            <div>{w.user} logged {w.timeSpent} {w.unit} at {moment(w.loggedDate).format("MM/DD/YYYY")}</div> 
+                                                            <br/>
+                                                            </div>
+                                                            )}
+                                                        </div>
+                                                    </div>
+                                                </div>
                                             </div>
 
 
