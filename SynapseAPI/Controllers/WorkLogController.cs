@@ -32,7 +32,7 @@ namespace TaskMaster.Models
                     LoggedDate = w.LoggedDate,
                     TimeSpent = w.TimeSpent,
                     Unit = w.Unit,
-                    TimeSpentInMinute = w.TimeSpentInMinute
+                    TimeSpentInHour = w.TimeSpentInHour
                 })
                 .OrderBy(t=>t.LoggedDate)
                 .ToListAsync();
@@ -47,16 +47,18 @@ namespace TaskMaster.Models
         {
             workLog.ID = Guid.NewGuid();
 
-            if (workLog.Unit == "Minute") {
-                workLog.TimeSpentInMinute = workLog.TimeSpent;
-            } else if (workLog.Unit == "Hour") {
-                workLog.TimeSpentInMinute = workLog.TimeSpent * 60;
-            } else if (workLog.Unit == "Day") {
-                workLog.TimeSpentInMinute = workLog.TimeSpent * 8 * 60;
+            if (workLog.Unit == "h") {
+                workLog.TimeSpentInHour = workLog.TimeSpent;
+            } else if (workLog.Unit == "d") {
+                workLog.TimeSpentInHour = workLog.TimeSpent * 8;
             }
            
+            var task = await context.Tasks.FindAsync(workLog.TaskId);
+            task.TotalTimeSpentInHour = task.TotalTimeSpentInHour + workLog.TimeSpentInHour; 
+
             context.Add(workLog);
-                  
+            context.Update(task);
+
             var result = await context.SaveChangesAsync();
             return Ok(result);
 
@@ -69,7 +71,13 @@ namespace TaskMaster.Models
         {
             var workLog = await context.WorkLogs.FindAsync(id);
             context.Remove(workLog);
+            
+            var task = await context.Tasks.FindAsync(workLog.TaskId);
+            task.TotalTimeSpentInHour = task.TotalTimeSpentInHour - workLog.TimeSpentInHour; 
+            context.Update(task);
+
             var result = await context.SaveChangesAsync();
+
 
             return Ok(result);
         }

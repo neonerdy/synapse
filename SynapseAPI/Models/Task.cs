@@ -28,6 +28,8 @@ namespace TaskMaster.Models
         public DateTime? ClosedDate { get; set; }
         public string Description { get; set; }
 
+        public int TotalTimeSpentInHour { get; set; }
+
 
         public List<Attachment> Attachments { get; set; }
         public List<Comment> Comments { get; set; }

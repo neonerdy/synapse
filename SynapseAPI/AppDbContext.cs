@@ -92,6 +92,7 @@ namespace TaskMaster
                 entity.Property(e => e.ClosedDate).HasColumnName("closed_date");
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.TotalTimeSpentInHour).HasColumnName("total_time_spent_in_hour");
             });
             
 
@@ -134,7 +135,7 @@ namespace TaskMaster
                 entity.Property(e => e.LoggedDate).HasColumnName("logged_date");
                 entity.Property(e => e.TimeSpent).HasColumnName("time_spent");
                 entity.Property(e => e.Unit).HasColumnName("unit");
-                entity.Property(e => e.TimeSpentInMinute).HasColumnName("time_spent_in_minute");
+                entity.Property(e => e.TimeSpentInHour).HasColumnName("time_spent_in_hour");
             
             });
 

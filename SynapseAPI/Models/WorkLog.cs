@@ -12,7 +12,7 @@ namespace TaskMaster.Models
         public Guid UserId { get; set; }
         public int TimeSpent { get; set; }
         public string Unit  { get; set; }
-        public int TimeSpentInMinute { get; set; }
+        public int TimeSpentInHour { get; set; }
 
         
 

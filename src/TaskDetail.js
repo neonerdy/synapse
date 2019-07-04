@@ -37,6 +37,7 @@ export class TaskDetail extends Component
             closedDate: '',
             status: '',
             description: '',
+            totalTimeSpentInHour: 0,
             comments: [],
             histories: [],
             commentId: '',
@@ -45,6 +46,7 @@ export class TaskDetail extends Component
             loggedDate: moment(Date.now()).format("MM/DD/YYYY"),
             timeSpent: '',
             unit: '',
+
         }
     }
 
@@ -96,7 +98,8 @@ export class TaskDetail extends Component
                 modifiedDate: response.data.modifiedDate,
                 closedDate: response.data.closedDate,
                 status: response.data.status,
-                description: response.data.description
+                description: response.data.description,
+                totalTimeSpentInHour: response.data.totalTimeSpentInHour
             })
       })
         
@@ -242,9 +245,49 @@ export class TaskDetail extends Component
 
         axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
             this.getWorkLogByTaskId(this.state.id);
+            this.getTaskById(this.state.id);
         })
     }
 
+    deleteWorkLog = (id) => {
+
+        axios.delete(config.serverUrl + "/api/worklog/delete/" + id).then(response=> {
+            this.getWorkLogByTaskId(this.state.id);
+            this.getTaskById(this.state.id);
+        })
+    }
+
+
+
+    calculateTimeSpent = (totalTimeSpentInHour) => {
+
+        var day = 0;
+        var hour = 0;
+        
+        if (totalTimeSpentInHour > 0)
+        {
+            if (totalTimeSpentInHour >= 8){
+                day = parseInt(totalTimeSpentInHour / 8);
+                hour = parseInt(totalTimeSpentInHour % 8);
+
+                if (hour == 0) {
+                    return(
+                        <span>{day}d</span>
+                    )    
+                } else {
+                    return(
+                        <span>{day}d {hour}h</span>
+                    )
+                }
+            }else{
+                hour = parseInt(totalTimeSpentInHour);
+                return(
+                    <span>{hour}h</span>
+                )
+            }
+        }
+
+    }
 
 
     renderTracker = (category, tracker) => {
@@ -375,7 +418,7 @@ export class TaskDetail extends Component
                                     <h4 class="modal-title">Edit Comment</h4>
                                 </div>
                                 <div class="modal-body">
-                                <input type="text" name="id" value={this.state.commentId} onChange={this.onValueChange}/>    
+                                <input type="hidden" name="id" value={this.state.commentId} onChange={this.onValueChange}/>    
                                 <textarea class="form-control" rows="8" name="message" 
                                     onChange={this.onValueChange} value={this.state.message}></textarea>
                                 </div>
@@ -468,8 +511,8 @@ export class TaskDetail extends Component
                                                     <label style={{fontWeight:'normal'}}>Unit</label> 
                                                         <select class="form-control" name="unit" onChange={this.onValueChange} value={this.state.unit} style={{fontWeight:'normal'}}>
                                                             <option value="-1"></option>
-                                                            <option value="Hour">Hour</option>
-                                                            <option value="Day">Day</option>
+                                                            <option value="h">Hour</option>
+                                                            <option value="d">Day</option>
                                                         </select>                                                                                                      
                                                 </div>
                                             </div>                                    
@@ -637,6 +680,10 @@ export class TaskDetail extends Component
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Status</label> </div>
                                                 <div class="col-lg-6"><label style={fontStyle}>{this.renderStatus(this.state.status)}&nbsp;{this.state.status}</label></div>
+                                        </div>
+                                        <div class="row">
+                                                <div class="col-lg-3"><label style={fontStyle}>Time Spent </label> </div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.calculateTimeSpent(this.state.totalTimeSpentInHour)}</label></div>
                                         </div>
                                         
                                     </div>
@@ -806,7 +853,8 @@ export class TaskDetail extends Component
                                                         <div class="col-md-12">
                                                             {this.state.workLogs.map(w=> 
                                                             <div> 
-                                                            <div>{w.user} logged {w.timeSpent} {w.unit} at {moment(w.loggedDate).format("MM/DD/YYYY")}</div> 
+                                                            <div>{w.user} logged {w.timeSpent}{w.unit} at {moment(w.loggedDate).format("MM/DD/YYYY")}</div> 
+                                                            <div><a href="#!" onClick={()=>this.deleteWorkLog(w.id)}>Delete</a></div>
                                                             <br/>
                                                             </div>
                                                             )}
