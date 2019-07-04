@@ -52,6 +52,17 @@ namespace TaskMaster.Models
         }
 
 
+        [HttpGet]
+        public async Task<IActionResult> GetProjectCount()
+        {
+            var projects = await context.Projects
+                .ToListAsync();
+            
+            return Ok(projects.Count);
+        }
+
+
+
         [HttpPost]
         public async Task<IActionResult> Save([FromBody]Project project)
         {

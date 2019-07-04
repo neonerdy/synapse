@@ -114,7 +114,18 @@ namespace TaskMaster.Controllers
         }
 
         
-        
+        [HttpGet("{category}")]
+        public async Task<IActionResult> GetTaskCount(string category)
+        {
+            var tasks = await context.Tasks
+                .Where(t=>t.Category.ToLower() == category.ToLower())
+                .ToListAsync();
+                
+            
+            return Ok(tasks.Count);
+        }
+
+
         [HttpPost]
         public async Task<IActionResult> Save([FromBody] TaskMaster.Models.Task task)
         {

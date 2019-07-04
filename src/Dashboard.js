@@ -4,6 +4,7 @@ import { Footer } from './Footer';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import axios from 'axios';
+import config from './Config'
 
 export class Dashboard extends Component
 {
@@ -14,18 +15,62 @@ export class Dashboard extends Component
         var user = JSON.parse(userJson);
        
         this.state = {
-           user: user
+           user: user,
+           projects: 0,
+           bugs: 0,
+           features: 0,
+           others: 0
         }
-
-        console.log(user);
-
-       
     }
+
 
     componentDidMount() {
                  
-        
+        this.getProjectCount();
+        this.getBugsCount();
+        this.getFeaturesCount();
+        this.getOthersCount();
     }
+
+
+    getProjectCount = () => {
+       
+        axios.get(config.serverUrl + "/api/project/getprojectcount").then(response=> {
+            this.setState({
+                projects: response.data
+            })
+        });
+    }
+
+    getBugsCount = () => {
+
+        axios.get(config.serverUrl + "/api/task/gettaskcount/bug").then(response=> {
+            this.setState({
+                bugs: response.data
+            })
+        });
+    }
+
+    getFeaturesCount = () => {
+
+        axios.get(config.serverUrl + "/api/task/gettaskcount/feature").then(response=> {
+            this.setState({
+                features: response.data
+            })
+            console.log("features : " + response.data);
+        });
+    } 
+
+    getOthersCount = () => {
+
+        axios.get(config.serverUrl + "/api/task/gettaskcount/other").then(response=> {
+            this.setState({
+                others: response.data
+            })
+        });
+    }
+
+
 
    
     addTask =()=> {
@@ -98,45 +143,44 @@ export class Dashboard extends Component
                         <div class="col-lg-3 col-xs-6">
                             <div class="small-box bg-teal">
                             <div class="inner">
-                                <h3>5</h3>
+                                <h3>{this.state.projects}</h3>
                                 <p>Projects</p>
                             </div>
-                           
-                                    <a href="https://demo.snipeitapp.com/hardware" class="small-box-footer"></a>
+                                <div class="small-box-footer"/>
+                                  
                                 </div>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
                             <div class="small-box bg-maroon">
                             <div class="inner">
-                                <h3>72</h3>
+                                <h3>{this.state.features}</h3>
                                 <p>Features</p>
                             </div>
-                                         <a href="https://demo.snipeitapp.com/licenses" class="small-box-footer"></a>
-                                    </div>
+                                <div class="small-box-footer"/>
+                            </div>
                         </div>
 
 
                         <div class="col-lg-3 col-xs-6">
                             <div class="small-box bg-orange">
                             <div class="inner">
-                                <h3> 6</h3>
+                                <h3>{this.state.bugs}</h3>
                                 <p>Bugs</p>
                             </div>
                           
-                                        <a href="https://demo.snipeitapp.com/accessories" class="small-box-footer"></a>
-                                </div>
+                                <div class="small-box-footer"/>
+                            </div>
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
                             <div class="small-box bg-purple">
                             <div class="inner">
-                                <h3> 6</h3>
+                                <h3>{this.state.others}</h3>
                                 <p>Others</p>
                             </div>
-                           
-                                    <a href="https://demo.snipeitapp.com/consumables" class="small-box-footer"></a>
-                                </div>
+                                <div class="small-box-footer"/>
+                            </div>
                         </div>
                         </div>
 
