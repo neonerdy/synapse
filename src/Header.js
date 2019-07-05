@@ -41,7 +41,13 @@ export class Header extends Component {
     render() {
 
         return(
+
+              
+          
+
                   <header class="main-header">
+                    
+                  
                    
                     <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
@@ -94,6 +100,12 @@ export class Header extends Component {
                         </li>
 
 
+                        
+
+                    
+
+
+
                         <li class="dropdown user user-menu">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">
                             <span class="hidden-xs">{this.props.user.fullName}</span>
@@ -107,11 +119,13 @@ export class Header extends Component {
                             </li>
                             
                             <li class="user-footer">
+                              
                                 <div class="pull-left">
-                                <a href="#" class="btn btn-default btn-flat">My Task</a>
+                                    <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#updateSetting">Settings</a>
                                 </div>
+                              
                                 <div class="pull-right">
-                                <a href="#" onClick= {this.logout} class="btn btn-default btn-flat">Sign out</a>
+                                    <a href="#" onClick= {this.logout} class="btn btn-default btn-flat">Sign out</a>
                                 </div>
                             </li>
                             </ul>
@@ -124,7 +138,15 @@ export class Header extends Component {
                         </ul>
                     </div>
                     </nav>
+
+
+       
+
+
                 </header>
+
+         
+
       
         )
     }

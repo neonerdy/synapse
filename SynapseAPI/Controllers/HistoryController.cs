@@ -24,9 +24,15 @@ namespace TaskMaster.Models
         public async Task<IActionResult> GetByTaskId(Guid id)
         {
             var histories = await context.Histories
-                .Where(h=>h.TaskId == id)
-                .ToListAsync();
-            
+             .Include(h=>h.User)
+             .Where(h=>h.TaskId == id)
+             .Select(h=>new {
+                    h.ID,
+                    User = h.User.FullName,
+                    Date = h.Date,
+                    ActivityLog = h.ActivityLog
+                }).ToListAsync();
+              
             return Ok(histories); 
         }
 

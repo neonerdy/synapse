@@ -17,8 +17,8 @@ namespace TaskMaster
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
         public DbSet<History> Histories { get; set; }
-
         public DbSet<WorkLog> WorkLogs { get; set; }
+        public DbSet<Setting> Settings { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
@@ -121,6 +121,7 @@ namespace TaskMaster
                 entity.ToTable("histories");
                 entity.Property(e => e.ID).HasColumnName("id");
                 entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
                 entity.Property(e => e.Date).HasColumnName("date");
                 entity.Property(e => e.ActivityLog).HasColumnName("activity_log");
             });
@@ -136,7 +137,18 @@ namespace TaskMaster
                 entity.Property(e => e.TimeSpent).HasColumnName("time_spent");
                 entity.Property(e => e.Unit).HasColumnName("unit");
                 entity.Property(e => e.TimeSpentInHour).HasColumnName("time_spent_in_hour");
-            
+            });
+
+
+            modelBuilder.Entity<Setting>(entity => 
+            {
+                entity.ToTable("settings");
+                entity.Property(e => e.ID).HasColumnName("id");
+                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.ActiveProjectId).HasColumnName("active_project_id");
+                entity.Property(e => e.IsHideClosedTask).HasColumnName("Is_hide_closed_task");
+                entity.Property(e => e.IsShowAssignedToMe).HasColumnName("is_show_assigned_to_me");
+                entity.Property(e => e.LastUpdatedDate).HasColumnName("last_updated_date");
             });
 
       

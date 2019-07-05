@@ -133,7 +133,7 @@ export class TaskDetail extends Component
     updateStatus = (status) => {
 
         let id = this.props.match.params.id;
-        axios.get(config.serverUrl + "/api/task/updatestatus/" + id + "/" + status + "/" + this.state.user.fullName).then(response=> {
+        axios.get(config.serverUrl + "/api/task/updatestatus/" + id + "/" + status + "/" + this.state.user.id).then(response=> {
             this.getTaskById(id);
             this.getHistoriesByTaskId(id);
         })
@@ -579,6 +579,7 @@ export class TaskDetail extends Component
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
                                             {*/}
                                             
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addEstimation">Estimation</button>
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
                                                
                                         </div>
@@ -596,12 +597,12 @@ export class TaskDetail extends Component
                                                 
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
-                                                    <li><a href="#" onClick={()=>this.updateStatus("New")}>New</a></li>
-                                                    <li><a href="#" onClick={()=>this.updateStatus("Coding")}>Coding</a></li>
-                                                    <li><a href="#" onClick={()=>this.updateStatus("Resolved")}>Resolved</a></li>
-                                                    <li><a href="#" onClick={()=>this.updateStatus("Testing")}>Testing</a></li>
-                                                    <li><a href="#" onClick={()=>this.updateStatus("Rework")}>Rework</a></li>
-                                                    <li><a href="#" onClick={()=>this.updateStatus("Closed")}>Closed</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("New")}>New</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("Coding")}>Coding</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("Resolved")}>Resolved</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("Testing")}>Testing</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("Rework")}>Rework</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("Closed")}>Closed</a></li>
                                                     
                                                 </ul>
                                         </div>
@@ -837,7 +838,7 @@ export class TaskDetail extends Component
                                                         <div class="col-md-12">
                                                             {this.state.histories.map(h=> 
                                                             <div> 
-                                                            <div>{h.activityLog}</div> 
+                                                            <div>{h.user} {h.activityLog}</div> 
                                                             <br/>
                                                             </div>
                                                             )}

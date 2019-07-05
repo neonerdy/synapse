@@ -193,8 +193,8 @@ namespace TaskMaster.Controllers
 
             history.ID = Guid.NewGuid();
             history.TaskId = task.ID;
+            history.UserId = userId;
             history.Date = DateTime.Now;
-            //history.UserId = userId;
             history.ActivityLog = "Changed to " + task.Status + " on " + DateTime.Now;
 
             context.Add(history);
