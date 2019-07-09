@@ -40,20 +40,75 @@ namespace TaskMaster.Controllers
             return Ok(tasks);
         }
 
-
-
-        [HttpGet("{projectId}")]
-        public async Task<IActionResult> GetByProject(Guid projectId)
+        
+        [HttpGet]
+        public async Task<IActionResult> GetAllAndOpenTask()
         {
             var tasks = await context.Tasks
-                .Include(t=>t.Project)
                 .Include(t=>t.Assignee)
-                .Where(t=>t.ProjectId == projectId)
+                .Where(t=>t.Status != "Closed")
+                .Select(t=>new {
+                    t.ID,
+                    t.Category,
+                    t.Tracker,
+                    t.Title,
+                    t.Priority,
+                    Assignee = t.Assignee.FullName,
+                    t.Status,
+                    t.CreatedDate
+                })
                 .OrderByDescending(t=>t.CreatedDate)
                 .ToListAsync();
             
             return Ok(tasks);
         }
+
+
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> GetByProject(Guid projectId)
+        {
+             var tasks = await context.Tasks
+                .Include(t=>t.Assignee)
+                .Where(t=>t.ProjectId == projectId)
+                .Select(t=>new {
+                    t.ID,
+                    t.Category,
+                    t.Tracker,
+                    t.Title,
+                    t.Priority,
+                    Assignee = t.Assignee.FullName,
+                    t.Status,
+                    t.CreatedDate
+                })
+                .OrderByDescending(t=>t.CreatedDate)
+                .ToListAsync();
+            
+            return Ok(tasks);
+        }
+
+
+        [HttpGet("{projectId}")]
+        public async Task<IActionResult> GetByProjectAndOpenTask(Guid projectId)
+        {
+             var tasks = await context.Tasks
+                .Include(t=>t.Assignee)
+                .Where(t=>t.ProjectId == projectId && t.Status != "Closed")
+                .Select(t=>new {
+                    t.ID,
+                    t.Category,
+                    t.Tracker,
+                    t.Title,
+                    t.Priority,
+                    Assignee = t.Assignee.FullName,
+                    t.Status,
+                    t.CreatedDate
+                })
+                .OrderByDescending(t=>t.CreatedDate)
+                .ToListAsync();
+            
+            return Ok(tasks);
+        }
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
@@ -121,6 +176,17 @@ namespace TaskMaster.Controllers
                 .Where(t=>t.Category.ToLower() == category.ToLower())
                 .ToListAsync();
                 
+            
+            return Ok(tasks.Count);
+        }
+
+
+        [HttpGet("{category}/{projectId}")]
+        public async Task<IActionResult> GetTaskCountByProject(string category, Guid projectId)
+        {
+            var tasks = await context.Tasks
+                .Where(t=>t.Category.ToLower() == category.ToLower() && t.ProjectId == projectId)
+                .ToListAsync();
             
             return Ok(tasks.Count);
         }

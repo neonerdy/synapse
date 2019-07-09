@@ -33,6 +33,8 @@ export class Login extends Component
 
          axios.post(config.serverUrl + "/api/people/login",people).then(response=>{
             var result = response.data;
+
+            console.log(JSON.stringify(result));
           
             if (result != "") {
                 localStorage.setItem("user", JSON.stringify(result));

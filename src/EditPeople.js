@@ -24,7 +24,10 @@ export class EditPeople extends Component
             role: '',
             address: '',
             phone: '',
-            email: ''
+            email: '',
+            activeProjectId : '00000000-0000-0000-0000-000000000000',
+            isHideClosedTask : false,
+            isShowAssignedToMe : false
         }
     }
 
@@ -44,7 +47,10 @@ export class EditPeople extends Component
                 role: response.data.role,
                 address: response.data.address,
                 phone: response.data.phone,
-                email: response.data.email
+                email: response.data.email,
+                activeProjectId : response.data.activeProjectId,
+                isHideClosedTask : response.data.isHideClosedTask,
+                isShowAssignedToMe : response.data.isShowAssignedToMe
             })
         })
     }
@@ -111,7 +117,11 @@ export class EditPeople extends Component
                 role: this.state.role,
                 address: this.state.address,
                 email: this.state.email,
-                phone: this.state.phone
+                phone: this.state.phone,
+                activeProjectId : this.state.activeProjectId,
+                isHideClosedTask : this.state.isHideClosedTask,
+                isShowAssignedToMe : this.state.isShowAssignedToMe
+
             }
 
             axios.put(config.serverUrl + "/api/people/update",people).then(response=> {

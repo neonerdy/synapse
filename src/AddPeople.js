@@ -23,7 +23,10 @@ export class AddPeople extends Component
             role: '',
             address: '',
             phone: '',
-            email: ''
+            email: '',
+            activeProjectId : '00000000-0000-0000-0000-000000000000',
+            isHideClosedTask : false,
+            isShowAssignedToMe : false
         }
     }
 
@@ -89,7 +92,7 @@ export class AddPeople extends Component
                 role: this.state.role,
                 address: this.state.address,
                 email: this.state.email,
-                phone: this.state.phone
+                phone: this.state.phone,
             }
 
             axios.post(config.serverUrl + "/api/people/save",people).then(response=> {

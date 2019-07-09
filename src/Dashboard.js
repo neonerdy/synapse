@@ -20,55 +20,105 @@ export class Dashboard extends Component
            projects: 0,
            bugs: 0,
            features: 0,
-           others: 0
+           others: 0,
+           activeProjectId: '',
+           isHideClosedTask: false,
+           isShowAssignedToMe: false
         }
     }
 
 
     componentDidMount() {
                  
-        this.getProjectCount();
-        this.getBugsCount();
-        this.getFeaturesCount();
-        this.getOthersCount();
+        this.getUserTaskCount(this.state.user.id);
     }
 
 
-    getProjectCount = () => {
+    getUserTaskCount = (id) => {
+        
+        axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+                isHideClosedTask: response.data.isHideClosedTask,
+                isShowAssignedToMe: response.data.isShowAssignedToMe
+            })
+
+            this.getProjectCount(this.state.activeProjectId);
+            this.getBugsCount(this.state.activeProjectId);
+            this.getFeaturesCount(this.state.activeProjectId);
+            this.getOthersCount(this.state.activeProjectId);
+
+        });
+    }
+
+
+
+    getProjectCount = (projectId) => {
        
-        axios.get(config.serverUrl + "/api/project/getprojectcount").then(response=> {
+        if (projectId == '00000000-0000-0000-0000-000000000000') {
+            axios.get(config.serverUrl + "/api/project/getprojectcount").then(response=> {
+                this.setState({
+                    projects: response.data
+                })
+            });
+        } else {
             this.setState({
-                projects: response.data
+                projects: 1
             })
-        });
+        }
+
     }
 
-    getBugsCount = () => {
+    getBugsCount = (projectId) => {
 
-        axios.get(config.serverUrl + "/api/task/gettaskcount/bug").then(response=> {
-            this.setState({
-                bugs: response.data
-            })
-        });
+        if (projectId == '00000000-0000-0000-0000-000000000000') {
+            axios.get(config.serverUrl + "/api/task/gettaskcount/bug").then(response=> {
+                this.setState({
+                    bugs: response.data
+                })
+            });
+        } else {
+            axios.get(config.serverUrl + "/api/task/gettaskcountbyproject/bug/" + projectId).then(response=> {
+                this.setState({
+                    bugs: response.data
+                })
+            });
+        }
     }
 
-    getFeaturesCount = () => {
 
-        axios.get(config.serverUrl + "/api/task/gettaskcount/feature").then(response=> {
-            this.setState({
-                features: response.data
-            })
-            console.log("features : " + response.data);
-        });
+    getFeaturesCount = (projectId) => {
+
+        if (projectId == '00000000-0000-0000-0000-000000000000') {
+            axios.get(config.serverUrl + "/api/task/gettaskcount/feature").then(response=> {
+                this.setState({
+                    features: response.data
+                })
+            });
+        } else {
+            axios.get(config.serverUrl + "/api/task/gettaskcountbyproject/feature/" + projectId).then(response=> {
+                this.setState({
+                    features: response.data
+                })
+            });
+        }
     } 
 
-    getOthersCount = () => {
+    getOthersCount = (projectId) => {
 
-        axios.get(config.serverUrl + "/api/task/gettaskcount/other").then(response=> {
-            this.setState({
-                others: response.data
-            })
-        });
+        if (projectId == '00000000-0000-0000-0000-000000000000') {
+            axios.get(config.serverUrl + "/api/task/gettaskcount/other").then(response=> {
+                this.setState({
+                    others: response.data
+                })
+            });
+        } else {
+            axios.get(config.serverUrl + "/api/task/gettaskcountbyproject/other/" + projectId).then(response=> {
+                this.setState({
+                    others: response.data
+                })
+            });
+        }
     }
 
 

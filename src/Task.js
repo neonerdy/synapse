@@ -19,19 +19,50 @@ export class Task extends Component {
             user: user, 
             tasks: [],
             initialTasks: [],
-            title: 'All Tasks'
+            title: 'All Tasks',
+            activeProjectId: '',
+            isHideClosedTask: false,
+            isShowAssignedToMe: false
         }
     }
 
     componentDidMount() {
         
-        let status = this.props.match.params.status;
-        this.getAllTasks();
+        this.getPeopleById(this.state.user.id);
       
     }
 
 
-    getAllTasks = () => {
+    getPeopleById =(id)=> {
+        axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+                isHideClosedTask: response.data.isHideClosedTask,
+                isShowAssignedToMe: response.data.isShowAssignedToMe
+            })
+
+            if (this.state.isHideClosedTask) {
+                if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
+                    this.getAllAndOpenTask();
+                } else {
+                    this.getByProjectAndOpenTask(this.state.activeProjectId);
+                }
+            }
+            else {
+
+                if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
+                    this.getAllTask();
+                } else {
+                    this.getTaskByProject(this.state.activeProjectId);
+                }
+            }    
+                
+            
+        });
+    }
+
+
+    getAllTask = () => {
         axios.get(config.serverUrl + "/api/task/getall").then(response=> {
             this.setState({
                 tasks: response.data,
@@ -40,6 +71,38 @@ export class Task extends Component {
         })
     }
 
+    getAllAndOpenTask = () => {
+        axios.get(config.serverUrl + "/api/task/getallandopentask").then(response=> {
+            this.setState({
+                tasks: response.data,
+                initialTasks: response.data
+            })
+        })
+    }
+
+
+    getTaskByProject = (projectId) => {
+        axios.get(config.serverUrl + "/api/task/getbyproject/" + projectId).then(response=> {
+            this.setState({
+                tasks: response.data,
+                initialTasks: response.data
+            })
+        })
+    }
+
+
+
+    getByProjectAndOpenTask = (projectId) => {
+        axios.get(config.serverUrl + "/api/task/getbyprojectandopentask/" + projectId).then(response=> {
+            this.setState({
+                tasks: response.data,
+                initialTasks: response.data
+            })
+        })
+    }
+
+
+    /*
     getTaskByStatus = (status) => {
         axios.get(config.serverUrl + "/api/task/getbystatus/" + status).then(response=> {
             this.setState({
@@ -47,6 +110,7 @@ export class Task extends Component {
             })
         })
     }
+    */
 
 
     addTask =()=> {

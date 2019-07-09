@@ -39,14 +39,12 @@ namespace TaskMaster.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] People people)
         {
-            var isAuthenticated = false;
-
-            var x = await context.People
+            var user = await context.People
                 .Where(p=>p.UserName == people.UserName && p.Password == people.Password)
                 .SingleOrDefaultAsync();
 
            
-            return Ok(x);
+            return Ok(user);
         }
 
 
@@ -70,6 +68,21 @@ namespace TaskMaster.Controllers
 
             return Ok(result);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdateSetting([FromBody] UserSetting userSetting)
+        {
+            var user = await context.People.FindAsync(userSetting.UserId);
+            user.ActiveProjectId = userSetting.ActiveProjectId;
+            user.IsHideClosedTask = userSetting.IsHideClosedTask;
+            user.IsShowAssignedToMe = userSetting.IsShowAssignedToMe;
+            
+            context.Update(user);
+
+            var result = await context.SaveChangesAsync();
+            return Ok(result);
+        }
+
 
 
         [HttpDelete("{id}")]
