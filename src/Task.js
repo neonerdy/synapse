@@ -111,6 +111,15 @@ export class Task extends Component {
         this.props.history.push("/task-detail/" + id);
     }
 
+
+    refreshTask = () => {
+        this.getAllTask();
+        this.setState({
+            title: "All Tasks"
+        })        
+    }
+
+
     onCategoryFilter = (category) => {
 
         let filteredTasks = this.state.initialTasks.filter(t => t.category.toLowerCase()
@@ -152,7 +161,34 @@ export class Task extends Component {
         }
     }
 
+
+    onAssignedToMeFilter = () => {
+
+        let filteredTasks = this.state.initialTasks.filter(t => t.assignee.toLowerCase()
+            .includes(this.state.user.fullName.toLowerCase()));
+        
+        this.setState({
+            tasks: filteredTasks,
+            title: this.state.user.fullName + " Tasks"
+        })
+    }
+
+
+
+    onPriorityFilter = (priority) => {
+
+        let filteredTasks = this.state.initialTasks.filter(t => t.priority.toLowerCase()
+            .includes(priority.toLowerCase()));
+        
+        this.setState({
+            tasks: filteredTasks,
+            title: priority + " Priority Tasks"
+        })
+
+    }
+
     
+
     onSearchChange = (e) => {
 
         let filteredTasks = this.state.initialTasks.filter(t => t.tracker.toLowerCase()
@@ -177,6 +213,23 @@ export class Task extends Component {
         
     }
 
+
+    dynamicSort = (property) => {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+
+    sortTask = (columnName) => {
+        this.state.initialTasks.sort(this.dynamicSort(columnName));
+    }
 
 
     renderTracker = (category, tracker) => {
@@ -279,10 +332,46 @@ export class Task extends Component {
                             </div>
                               
                                <div class="pull-right">
-                                    <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh"><i class="fa fa-refresh"></i></button>
-                                    <button class="btn btn-default" type="button" name="advancedSearch" aria-label="advanced search" title="Advanced search"><i class="fa fa fa-search-plus"></i></button>
-                                  
+                                    <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshTask}>
+                                        <i class="fa fa-refresh"></i>
+                                    </button>
                                    
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" type="button">
+                                             <i class="fa fa-filter"></i>&nbsp;Filter
+                                        </button>
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
+                                        <span class="caret"></span>
+                                        
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#" onClick={this.onAssignedToMeFilter}>Assigned To Me</a></li>
+                                            <li><a href="#" onClick={()=>this.onPriorityFilter("High")}>High Priority</a></li>
+                                            <li><a href="#" onClick={()=>this.onPriorityFilter("Normal")}>Normal Priority</a></li>
+                                            <li><a href="#" onClick={()=>this.onPriorityFilter("Low")}>Low Priority</a></li>
+                                            
+                                        </ul>
+                                    </div>
+
+                                    <div class="btn-group">
+                                        <button class="btn btn-default" type="button">
+                                            <i class="fa  fa-sort-alpha-asc"></i>&nbsp;Sort 
+                                        </button>
+                                        <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
+                                        <span class="caret"></span>
+                                        
+                                        </button>
+                                        <ul class="dropdown-menu" role="menu">
+                                            <li><a href="#" onClick={()=>this.sortTask("tracker")}>Tracker</a></li>
+                                            <li><a href="#" onClick={()=>this.sortTask("title")}>Title</a></li>
+                                            <li><a href="#" onClick={()=>this.sortTask("priority")}>Priority</a></li>
+                                            <li><a href="#" onClick={()=>this.sortTask("assignee")}>Assignee</a></li>
+                                            <li><a href="#" onClick={()=>this.sortTask("status")}>Status</a></li>
+                                            <li><a href="#" onClick={()=>this.sortTask("createdDate")}>Created Date</a></li>
+                                        </ul>
+                                    </div>
+
+
                                     <div class="export btn-group">
                                        <button class="btn btn-default" data-toggle="dropdown" type="button">
                                            <i class="fa fa-download"></i> 

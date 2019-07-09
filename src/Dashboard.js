@@ -163,8 +163,6 @@ export class Dashboard extends Component
              <NavBar/>
 
              <Setting/>   
-
-
             
             <div class="content-wrapper" style={heightStyle}>
             

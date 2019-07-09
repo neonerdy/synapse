@@ -54,11 +54,18 @@ export class People extends Component
         this.props.history.push("/edit-people/" + id)
     }
     
+
     onSearchChange = (e) => {
 
         let filteredPeople = this.state.initialPeople.filter(p => p.fullName.toLowerCase()
-            .includes(e.target.value.toLowerCase()));
-        
+            .includes(e.target.value.toLowerCase()) ||
+            p.role.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.address.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.phone.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.email.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+
+            
         if (e.target.value == '')
         {
             this.setState( {
@@ -75,12 +82,43 @@ export class People extends Component
     }
 
 
+    refreshPeople = () => {
+        this.getAllPeople();
+    }
+
+
+    dynamicSort = (property) => {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+
+    sortTask = (columnName) => {
+        this.state.initialPeople.sort(this.dynamicSort(columnName));
+    }
+
+    refreshPeople = () => {
+        this.getAllPeople();
+    }
+
+
    
     render() {
 
         const heightStyle = {
             minHeight: '959.8px'
         }
+        const buttonStyle = {
+            height: '34px'
+        }
+
 
         return(
    
@@ -112,9 +150,28 @@ export class People extends Component
                     <div class="box-body">
                         
                         <div class="pull-right">
-                            <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh"><i class="fa fa-refresh"></i></button>
-                            <button type="button" aria-label="columns" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-columns"></i> <span class="caret"></span></button>
-                             <div class="export btn-group">
+                            <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshPeople}>
+                                <i class="fa fa-refresh"></i>
+                            </button>
+                            
+                            <div class="btn-group">
+                                <button class="btn btn-default" type="button">
+                                    <i class="fa  fa-sort-alpha-asc"></i>&nbsp;Sort 
+                                </button>
+                                <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
+                                <span class="caret"></span>
+                                
+                                </button>
+                                <ul class="dropdown-menu" role="menu">
+                                    <li><a href="#" onClick={()=>this.sortTask("fullName")}>Full Name</a></li>
+                                    <li><a href="#" onClick={()=>this.sortTask("role")}>Role</a></li>
+                                    <li><a href="#" onClick={()=>this.sortTask("address")}>Address</a></li>
+                                    <li><a href="#" onClick={()=>this.sortTask("phone")}>Phone</a></li>
+                                    <li><a href="#" onClick={()=>this.sortTask("email")}>E-Mail</a></li>
+                                </ul>
+                            </div>
+
+                            <div class="export btn-group">
                                 <button class="btn btn-default" data-toggle="dropdown" type="button">
                                     <i class="fa fa-download"></i> 
                                 </button>

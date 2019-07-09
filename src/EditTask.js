@@ -301,7 +301,7 @@ export class EditTask extends Component
                                                     onChange={this.onValueChange} value={this.state.priority}>
                                                     <option>Select Priority</option>
                                                     <option value="High">High</option>
-                                                    <option value="Medium">Medium</option>
+                                                    <option value="Normal">Normal</option>
                                                     <option value="Low">Low</option>
                                                </select>
                                             </div>

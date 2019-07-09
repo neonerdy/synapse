@@ -20,7 +20,8 @@ export class Project extends Component
 
         this.state = {
             user: user,
-            projects: []
+            projects: [],
+            initialProjects: []
         }
     }
 
@@ -31,7 +32,8 @@ export class Project extends Component
     getAllProjects =() => {
         axios.get(config.serverUrl + "/api/project/getall").then(response=> {
             this.setState({
-                projects: response.data
+                projects: response.data,
+                initialProjects: response.data
             })
         });
     }
@@ -53,11 +55,64 @@ export class Project extends Component
     }
 
 
+    onSearchChange = (e) => {
+
+        let filteredProjects = this.state.initialProjects.filter(p => p.projectName.toLowerCase()
+            .includes(e.target.value.toLowerCase()) ||
+            p.initial.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.projectManager.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.description.toLowerCase().includes(e.target.value.toLowerCase()) ||
+            p.status.toLowerCase().includes(e.target.value.toLowerCase())
+        );
+        
+        if (e.target.value == '')
+        {
+            this.setState( {
+                projects: this.state.initialProjects
+            })
+        }
+        else {
+            this.setState( {
+                projects: filteredProjects
+            })
+    
+        }
+        
+    }
+
+
+    refreshProject = () => {
+        this.getAllProjects();
+    }
+
+
+    dynamicSort = (property) => {
+        var sortOrder = 1;
+        if(property[0] === "-") {
+            sortOrder = -1;
+            property = property.substr(1);
+        }
+        return function (a,b) {
+            var result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
+            return result * sortOrder;
+        }
+    }
+
+
+    sortTask = (columnName) => {
+        this.state.projects.sort(this.dynamicSort(columnName));
+    }
+
+
     render() {
 
         const heightStyle = {
             minHeight: '959.8px'
         }
+        const buttonStyle = {
+            height: '34px'
+        }
+
 
         return(
         
@@ -91,8 +146,29 @@ export class Project extends Component
                                 
                                 <div class="box-body">
                                     <div class="pull-right">
-                                        <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh"><i class="fa fa-refresh"></i></button>
-                                        <button type="button" aria-label="columns" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false"><i class="fa fa-columns"></i> <span class="caret"></span></button>
+                                        <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshProject}>
+                                            <i class="fa fa-refresh"></i>
+                                        </button>
+                                        
+                                        <div class="btn-group">
+                                            <button class="btn btn-default" type="button">
+                                                <i class="fa  fa-sort-alpha-asc"></i>&nbsp;Sort 
+                                            </button>
+                                            <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
+                                            <span class="caret"></span>
+                                            
+                                            </button>
+                                            <ul class="dropdown-menu" role="menu">
+                                                <li><a href="#" onClick={()=>this.sortTask("projectName")}>Project Name</a></li>
+                                                <li><a href="#" onClick={()=>this.sortTask("initial")}>Initial</a></li>
+                                                <li><a href="#" onClick={()=>this.sortTask("projectManager")}>Project Manager</a></li>
+                                                <li><a href="#" onClick={()=>this.sortTask("createdDate")}>Created Date</a></li>
+                                                <li><a href="#" onClick={()=>this.sortTask("description")}>Description</a></li>
+                                                <li><a href="#" onClick={()=>this.sortTask("status")}>Status</a></li>
+                                            </ul>
+                                        </div>
+
+                                        
                                         <div class="export btn-group">
                                             <button class="btn btn-default" type="button">
                                                 <i class="fa fa-download"></i>
@@ -100,10 +176,8 @@ export class Project extends Component
                                         </div>
                                     </div>
                                     <div class="pull-right search">
-                                        <input class="form-control" type="text" placeholder="Search"/>
+                                        <input class="form-control" type="text" placeholder="Search" onChange={this.onSearchChange}/>
                                     </div>
-                                    
-
 
                                     <br/><br/><br/>
                                 
