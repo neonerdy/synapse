@@ -4,6 +4,8 @@ import './App.css';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
+import { Setting } from './Setting';
+
 import axios from 'axios';
 import config from './Config';
 
@@ -124,6 +126,7 @@ export class AddProject extends Component
                 user={this.state.user}
              />
             <NavBar/>
+            <Setting/>
                  <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">
                         <h1>

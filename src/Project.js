@@ -4,6 +4,7 @@ import React, {Component} from 'react';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
+import { Setting } from './Setting';
 import moment from 'moment';
 import axios from 'axios';
 import config from './Config';
@@ -68,6 +69,7 @@ export class Project extends Component
              />
 
              <NavBar/>
+             <Setting/>   
 
             <div class="content-wrapper" style={heightStyle}>
                 <section class="content-header">

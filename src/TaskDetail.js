@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
+import { Setting } from './Setting';
 
 import axios from 'axios';
 import config from './Config';
@@ -375,6 +376,7 @@ export class TaskDetail extends Component
                     user={this.state.user}
                 />
                <NavBar/>
+               <Setting/>
 
                 <div class="content-wrapper" style={heightStyle}>
                 

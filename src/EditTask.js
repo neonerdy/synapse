@@ -4,6 +4,8 @@ import './App.css';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
+import { Setting } from './Setting';
+
 import axios from 'axios';
 import config from './Config';
 import CKEditor from 'ckeditor4-react';
@@ -222,6 +224,7 @@ export class EditTask extends Component
                     user={this.state.user}
                 />
                 <NavBar/>
+                <Setting/>
 
                  <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">

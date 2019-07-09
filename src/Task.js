@@ -2,7 +2,7 @@ import React, {Component} from 'react';
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
-import { Link } from 'react-router-dom';
+import { Setting } from './Setting';
 import moment from 'moment';
 import axios from 'axios';
 import config from './Config';
@@ -100,17 +100,6 @@ export class Task extends Component {
             })
         })
     }
-
-
-    /*
-    getTaskByStatus = (status) => {
-        axios.get(config.serverUrl + "/api/task/getbystatus/" + status).then(response=> {
-            this.setState({
-                tasks: response.data
-            })
-        })
-    }
-    */
 
 
     addTask =()=> {
@@ -230,6 +219,7 @@ export class Task extends Component {
                     user={this.state.user}
                 />
                 <NavBar/>
+                <Setting/>
 
             <div class="content-wrapper" style={heightStyle}>
             
