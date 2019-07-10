@@ -40,7 +40,6 @@ namespace TaskMaster
                 entity.Property(e => e.Email).HasColumnName("email");
                 entity.Property(e => e.ActiveProjectId).HasColumnName("active_project_id");
                 entity.Property(e => e.IsHideClosedTask).HasColumnName("Is_hide_closed_task");
-                entity.Property(e => e.IsShowAssignedToMe).HasColumnName("is_show_assigned_to_me");
              });
 
             modelBuilder.Entity<Project>(entity => 
@@ -106,6 +105,7 @@ namespace TaskMaster
                 entity.Property(e => e.FileName).HasColumnName("file_name");
                 entity.Property(e => e.Type).HasColumnName("type");
                 entity.Property(e => e.Size).HasColumnName("size");
+                entity.Property(e => e.UploadedDate).HasColumnName("uploaded_date");
             });
 
             modelBuilder.Entity<Comment>(entity => 

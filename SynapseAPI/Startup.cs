@@ -9,6 +9,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.StaticFiles;
+using Microsoft.Extensions.FileProviders;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 namespace SynapseAPI
 {
@@ -39,7 +42,13 @@ namespace SynapseAPI
 
             app.UseDefaultFiles();
             app.UseStaticFiles();
-            
+
+            app.UseStaticFiles(new StaticFileOptions()
+            {
+                FileProvider = new PhysicalFileProvider(Path.Combine(Directory.GetCurrentDirectory(), @"Resources")),
+                RequestPath = new PathString("/Resources")
+            });
+                    
             app.UseCors(builder => builder
                 .AllowAnyOrigin()
                 .AllowAnyMethod()

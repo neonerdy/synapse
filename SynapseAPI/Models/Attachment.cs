@@ -10,6 +10,6 @@ namespace TaskMaster.Models
         public string FileName { get; set; }
         public string Type { get; set; }
         public double Size { get; set; }
-        
+        public DateTime UploadedDate { get; set; }
     }
 }

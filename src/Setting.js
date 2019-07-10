@@ -20,8 +20,7 @@ export class Setting extends Component {
             user: user,
             projects: [],
             activeProjectId: user.activeProjectId,
-            isHideClosedTask: false,
-            isShowAssignedToMe: false
+            isHideClosedTask: false
         }
     }
 
@@ -41,17 +40,12 @@ export class Setting extends Component {
         this.setState({isHideClosedTask: !this.state.isHideClosedTask});
     }
 
-    onShowAssignedToMeChecked =()=> {
-        this.setState({isShowAssignedToMe: !this.state.isShowAssignedToMe});
-    }
-
 
     getPeopleById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
             this.setState({
                 activeProjectId: response.data.activeProjectId,
-                isHideClosedTask: response.data.isHideClosedTask,
-                isShowAssignedToMe: response.data.isShowAssignedToMe
+                isHideClosedTask: response.data.isHideClosedTask
             })
           });
     }
@@ -72,12 +66,8 @@ export class Setting extends Component {
         var userSetting = {
             userId: this.state.user.id,
             activeProjectId: this.state.activeProjectId,
-            isHideClosedTask: this.state.isHideClosedTask,
-            isShowAssignedToMe: this.state.isShowAssignedToMe
+            isHideClosedTask: this.state.isHideClosedTask
         }
-
-
-        console.log(userSetting);
 
         axios.post(config.serverUrl + "/api/people/updatesetting", userSetting).then(response=> {
             
@@ -123,16 +113,7 @@ export class Setting extends Component {
                                         } Hide Closed Task
                                         </label>
                                 </div>
-                                <div class="checkbox">
-                                    <label>
-                                        
-                                        {this.state.isShowAssignedToMe? 
-                                            <input type="checkbox" checked value={this.state.isShowAssignedToMe} onChange={this.onShowAssignedToMeChecked}/> 
-                                            : <input type="checkbox" name="isShowAssignedToMe" onChange={this.onShowAssignedToMeChecked}/>
-                                        } Show Only Assigned To Me
-                                    </label>
-                                </div>
-                            </div>
+                                                          </div>
                             
                             <div class="col-md-6">
 

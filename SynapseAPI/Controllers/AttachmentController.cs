@@ -1,7 +1,10 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Net.Http.Headers;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -19,6 +22,26 @@ namespace TaskMaster.Controllers
         {
             context = new AppDbContext();
         }
+    
+
+
+        [HttpPost,DisableRequestSizeLimit]  
+        public async Task<IActionResult> UploadFile(IFormFile file)  
+        {  
+            var pathToSave = Path.Combine(Directory.GetCurrentDirectory(),"Resources");
+
+            var fileName = ContentDispositionHeaderValue.Parse(file.ContentDisposition).FileName.Trim('"');
+            var fullPath = Path.Combine(pathToSave, fileName);
+        
+            using (var stream = new FileStream(fullPath, FileMode.Create))  
+            {  
+                await file.CopyToAsync(stream);  
+            }  
+
+        
+            return Ok(new { fullPath });;  
+        }  
+
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetByTaskId(Guid id)
@@ -27,6 +50,18 @@ namespace TaskMaster.Controllers
                 .Where(a=>a.TaskId == id).ToListAsync();
 
             return Ok(attachments);
+        }
+
+
+        [HttpPost]
+        public async Task<IActionResult> Save([FromBody] Attachment attachment)
+        {
+            attachment.ID = Guid.NewGuid();
+            attachment.UploadedDate = DateTime.Now;
+            context.Add(attachment);    
+
+            var result = await context.SaveChangesAsync();
+            return Ok(result);          
         }
 
 

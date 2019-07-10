@@ -17,6 +17,5 @@ namespace TaskMaster.Models
         public string Email { get; set; }
         public Guid ActiveProjectId { get; set; }
         public bool IsHideClosedTask { get; set; }
-        public bool IsShowAssignedToMe { get; set; }
       }
 }

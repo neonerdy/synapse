@@ -47,8 +47,7 @@ export class Header extends Component {
 
                   <header class="main-header">
                     
-                  
-                   
+                                     
                     <nav class="navbar navbar-static-top">
                     <a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
                         <span class="sr-only">Toggle navigation</span>
@@ -131,9 +130,7 @@ export class Header extends Component {
                             </ul>
                         </li>
 
-                        <li>
-                            <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
-                        </li>
+                      
 
                         </ul>
                     </div>

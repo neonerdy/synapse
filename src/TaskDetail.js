@@ -47,6 +47,8 @@ export class TaskDetail extends Component
             loggedDate: moment(Date.now()).format("MM/DD/YYYY"),
             timeSpent: '',
             unit: '',
+            files: '',
+            uploadPercentage: ''
 
         }
     }
@@ -65,6 +67,12 @@ export class TaskDetail extends Component
         this.setState({
             [e.target.name]: e.target.value
         })
+    }
+
+    onFileChange = (e) => {
+        this.setState({
+            files: e.target.files
+        });
     }
 
     onLoggedDateChange = (e) => {
@@ -291,6 +299,66 @@ export class TaskDetail extends Component
     }
 
 
+    getFileExt = (fileName) =>
+    {
+        var ext = fileName.split('.').pop();
+        if(ext == fileName) return "";
+        return ext;
+    }
+    
+    saveAttachment = () => {
+
+        let attachment = {
+            taskId: this.state.id,
+            fileName: this.state.files[0].name,
+            type: this.getFileExt(this.state.files[0].name),
+            size: this.state.files[0].size
+        }
+
+        console.log(attachment);
+              
+        axios.post(config.serverUrl + "/api/attachment/save", attachment).then(response=> {
+      
+        })
+    }
+
+
+    uploadAttachment = () => {
+
+      
+        let formData = new FormData();
+        
+        formData.append('file', this.state.files[0]);
+
+        axios.post(config.serverUrl + "/api/attachment/uploadfile",
+            formData,
+            {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+            },
+            onUploadProgress: function( progressEvent ) {
+                var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                this.setState({
+                    uploadPercentage: percentDone + "%"
+                })
+            }.bind(this)
+            }
+      ).then(()=> {
+            console.log('SUCCESS!!');
+         
+            this.saveAttachment();
+
+      })
+      .catch(function(){
+        console.log('UPLOAD FAILURE!!');
+      });
+      
+   
+
+
+    }
+
+
     renderTracker = (category, tracker) => {
         if (category == 'Feature') {
             return(
@@ -369,6 +437,9 @@ export class TaskDetail extends Component
             display:'none'
         }
 
+        let percentage = this.state.uploadPercentage;
+        console.log(percentage);
+
         return(
             <div class="wrapper">
                 <Header 
@@ -432,45 +503,49 @@ export class TaskDetail extends Component
                         </div>
                     </div>
 
-                        {/*}
-                      <div id="addAttachment" class="modal fade" role="dialog">
+                       <div id="addAttachment" class="modal fade" role="dialog">
                         <div class="modal-dialog" style={modalStyle}>
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
                                     <h4 class="modal-title">Attachment</h4>
                                 </div>
+                                
                                 <div class="addAttachment-ui">
                                     
-                                    <form action="/workitem/upload" name="fileUpload" method="post" enctype="multipart/form-data">
-                                        <div class="modal-body row">
+                                    <div class="modal-body row">
+                                    <div class="col-md-12">
+                                            <div id="divFile" class="form-group">
+                                                    {/*}
+                                                    <input type="file" class="btn btn-default" name="uploadFile" id="uploadFile" onChange={this.onValueChange} style={attachmentStyle}/>
+                                                    {*/}
+                                                  <input type="file" name="file" onChange={this.onFileChange} class="btn btn-default" style={attachmentStyle}/>  
+                                            </div>
+                                        </div>
+                                        
                                         <div class="col-md-12">
-                                                <div id="divFile" class="form-group">
-                                                        <input type="file" class="btn btn-default" name="uploadfile" id="myFile" style={attachmentStyle}/>
-                                                </div>
+                                            <div class="progress">
+                                                <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={{width: percentage}}></div>
                                             </div>
-                                            
-                                            <div class="col-md-12">
-                                                <div class="progress" style={barStyle}>
-                                                    <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100">0%</div>
-                                                </div>
-                                            </div>
-                                            <div id="errorAddAttachment" class="form-group col-md-12"></div>     
+                                            {this.state.uploadPercentage}
                                         </div>
-                                        <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" id="btnUpload">Upload</button>
-                                        </div>
-                                    </form>
-                                
-
+                                        <div id="errorAddAttachment" class="form-group col-md-12"></div>     
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-primary" id="btnUpload" onClick={this.uploadAttachment}>Upload</button>
+                                    </div>
+                            
                                 </div>
+                                
                             </div>
+                         
+
                         </div>
+                        
                 </div>
 
-                {*/}
-
+              
 
                 <div id="addWorkLog" class="modal fade" role="dialog">
                         <div class="modal-dialog" style={{width: '350px'}}>
@@ -576,15 +651,12 @@ export class TaskDetail extends Component
                                         </button>
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addComment">Comment</button>
-                                            
-                                            {/*}
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
-                                            {*/}
-                                            
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addEstimation">Estimation</button>
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
                                                
                                         </div>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div class="btn-group">
                                             <button class="btn btn-default" style={buttonStyle} type="button" onClick={this.refreshTask}><i class="fa fa-refresh"></i></button>    
                                             <button class="btn btn-default" style={buttonStyle} type="button" data-toggle="modal" data-target="#deleteTask">
@@ -716,7 +788,7 @@ export class TaskDetail extends Component
                                 <br/><br/>
                               
 
-                                   {/*}                           
+                                {/* Attachment */}
 
                                    <div class="box-header with-border">
                                     <h3 class="box-title"><b>Attachments</b></h3>
@@ -733,7 +805,7 @@ export class TaskDetail extends Component
                                                 <ul class="mailbox-attachments clearfix">
 
                                                     <li>
-                                                        <span class="mailbox-attachment-icon has-img"><img src="lib/dist/img/photo1.png" alt="Attachment"/></span>
+                                                        <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo1.png"/></span>
                                                         <div class="mailbox-attachment-info">
                                                             <a href="#" class="mailbox-attachment-name"><i class="fa fa-camera"></i> photo1.png</a>
                                                                 <span class="mailbox-attachment-size">
@@ -743,7 +815,7 @@ export class TaskDetail extends Component
                                                         </div>
                                                     </li>
                                                     <li>
-                                                        <span class="mailbox-attachment-icon has-img"><img src="lib/dist/img/photo2.png" alt="Attachment"/></span>
+                                                        <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo2.png" /></span>
 
                                                         <div class="mailbox-attachment-info">
                                                             <a href="#" class="mailbox-attachment-name"><i class="fa fa-camera"></i> photo2.png</a>
@@ -786,7 +858,8 @@ export class TaskDetail extends Component
 
                                 </div>
                                 
-                                  {*/}
+
+
 
                                 <br/>
 

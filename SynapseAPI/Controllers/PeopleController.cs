@@ -75,7 +75,6 @@ namespace TaskMaster.Controllers
             var user = await context.People.FindAsync(userSetting.UserId);
             user.ActiveProjectId = userSetting.ActiveProjectId;
             user.IsHideClosedTask = userSetting.IsHideClosedTask;
-            user.IsShowAssignedToMe = userSetting.IsShowAssignedToMe;
             
             context.Update(user);
 

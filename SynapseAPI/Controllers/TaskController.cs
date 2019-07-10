@@ -151,23 +151,7 @@ namespace TaskMaster.Controllers
             
             return Ok(tasks);
         }
-
-       
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetMyNotification(Guid userId)
-        {
-            //need join to task, where task status = "closed"
-
-            /* 
-            var histories = await context.Histories
-                .Where(h=>h.UserId == userId)
-                .OrderByDescending(h=>h.Date)
-                .ToListAsync();
-            */
-
-            return Ok();
-        }
-
+      
         
         [HttpGet("{category}")]
         public async Task<IActionResult> GetTaskCount(string category)
