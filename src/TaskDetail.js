@@ -39,6 +39,7 @@ export class TaskDetail extends Component
             status: '',
             description: '',
             totalTimeSpentInHour: 0,
+            attachments: [],
             comments: [],
             histories: [],
             commentId: '',
@@ -57,6 +58,7 @@ export class TaskDetail extends Component
 
         let id = this.props.match.params.id;
         this.getTaskById(id);
+        this.getAttachmentByTaskId(id);
         this.getCommentByTaskId(id);
         this.getHistoriesByTaskId(id);
         this.getWorkLogByTaskId(id);
@@ -299,12 +301,24 @@ export class TaskDetail extends Component
     }
 
 
-    getFileExt = (fileName) =>
-    {
+    getFileExt = (fileName) => {
         var ext = fileName.split('.').pop();
         if(ext == fileName) return "";
         return ext;
     }
+
+    
+    getAttachmentByTaskId = (taskId) => {
+
+        axios.get(config.serverUrl + "/api/attachment/getbytaskid/" + taskId).then(response=> {
+            this.setState({
+                attachments: response.data
+            })
+        })
+
+    }
+
+
     
     saveAttachment = () => {
 
@@ -802,9 +816,12 @@ export class TaskDetail extends Component
                                     <div class="box-body">
                                         <div class="row">
                                             <div class="col-md-12">
+                                                
+                                                                                                
                                                 <ul class="mailbox-attachments clearfix">
 
-                                                    <li>
+                                                    
+                                                     <li>
                                                         <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo1.png"/></span>
                                                         <div class="mailbox-attachment-info">
                                                             <a href="#" class="mailbox-attachment-name"><i class="fa fa-camera"></i> photo1.png</a>
@@ -814,6 +831,8 @@ export class TaskDetail extends Component
                                                                 </span>
                                                         </div>
                                                     </li>
+                                                
+
                                                     <li>
                                                         <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo2.png" /></span>
 

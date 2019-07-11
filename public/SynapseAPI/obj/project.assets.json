@@ -12720,11 +12720,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\ARI\\Project\\synapse\\SynapseAPI\\SynapseAPI.csproj",
+      "projectUniqueName": "C:\\ARI\\Project\\synapse\\public\\SynapseAPI\\SynapseAPI.csproj",
       "projectName": "SynapseAPI",
-      "projectPath": "C:\\ARI\\Project\\synapse\\SynapseAPI\\SynapseAPI.csproj",
+      "projectPath": "C:\\ARI\\Project\\synapse\\public\\SynapseAPI\\SynapseAPI.csproj",
       "packagesPath": "C:\\Users\\lhara_prj\\.nuget\\packages\\",
-      "outputPath": "C:\\ARI\\Project\\synapse\\SynapseAPI\\obj\\",
+      "outputPath": "C:\\ARI\\Project\\synapse\\public\\SynapseAPI\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
