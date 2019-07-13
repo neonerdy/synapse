@@ -1,3 +1,4 @@
+
 import React, {Component} from 'react';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
@@ -182,8 +183,10 @@ export class TaskDetail extends Component
 
     refreshTask = (id) => {
         this.getTaskById(id);
+        this.getAttachmentByTaskId(id);
         this.getCommentByTaskId(id);
         this.getHistoriesByTaskId(id);
+        this.getWorkLogByTaskId(id);
     }
 
     deleteTask = (id) => {
@@ -328,18 +331,28 @@ export class TaskDetail extends Component
             type: this.getFileExt(this.state.files[0].name),
             size: this.state.files[0].size
         }
-
-        console.log(attachment);
-              
+     
         axios.post(config.serverUrl + "/api/attachment/save", attachment).then(response=> {
       
         })
     }
 
 
+    deleteAttachment = (attachmentId) => {
+        axios.delete(config.serverUrl + "/api/attachment/delete/" + attachmentId).then(response=> {
+            this.getAttachmentByTaskId(this.state.id)
+        })
+    }
+
+
+
+    doneUpload =()=> {
+        this.getAttachmentByTaskId(this.state.id);
+    }
+
     uploadAttachment = () => {
 
-      
+     
         let formData = new FormData();
         
         formData.append('file', this.state.files[0]);
@@ -350,24 +363,26 @@ export class TaskDetail extends Component
                 headers: {
                     'Content-Type': 'multipart/form-data'
             },
-            onUploadProgress: function( progressEvent ) {
+            onUploadProgress: (progressEvent)=> {
                 var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
                 this.setState({
                     uploadPercentage: percentDone + "%"
                 })
-            }.bind(this)
+                
             }
+        }
       ).then(()=> {
             console.log('SUCCESS!!');
          
             this.saveAttachment();
-
+            this.getAttachmentByTaskId(this.state.id);
+                      
+     
       })
-      .catch(function(){
+      .catch(()=> {
         console.log('UPLOAD FAILURE!!');
       });
-      
-   
+         
 
 
     }
@@ -419,6 +434,81 @@ export class TaskDetail extends Component
             )
         }
     }
+
+
+    renderAttachment = (attachment) => {
+
+        console.log(attachment.type);
+
+
+        if (attachment.type.toLowerCase() == 'jpg' || attachment.type.toLowerCase() == "jpeg" || attachment.type.toLowerCase() == 'png') {
+            
+            let fileName = '/SynapseAPI/Resources/' + attachment.fileName;
+            let size = attachment.size;
+
+            return(
+                <li>
+                    <span class="mailbox-attachment-icon has-img"><img src={fileName}/></span>
+                    <div class="mailbox-attachment-info">
+                        <a href="#" class="mailbox-attachment-name">{attachment.fileName}</a>
+                            <span class="mailbox-attachment-size">
+                            {Math.ceil(size/1024)} KB<br/>{moment(this.state.uploadedDate).format("MM/DD/YYYY hh:mm")}
+                            <a href="#!" class="btn btn-default btn-xs pull-right" onClick={()=>this.deleteAttachment(attachment.id)}>
+                                <i class="fa fa-trash-o"></i></a>
+                            </span>
+                    </div>
+                </li>
+            )
+        }
+        else {
+
+            let size = attachment.size;
+            let fileIcon = '';
+
+            if (attachment.type.toLowerCase() == 'pdf') {
+                fileIcon = 'fa fa-file-pdf-o';
+            }
+            else if (attachment.type.toLowerCase() == 'doc' || attachment.type.toLowerCase() == 'docx') {
+                fileIcon = 'fa fa-file-word-o';
+            }
+            else if (attachment.type.toLowerCase() == 'xls' || attachment.type.toLowerCase() == 'xlsx') {
+                fileIcon = 'fa fa-file-excel-o';
+            }
+            else if (attachment.type.toLowerCase() == 'rar' || attachment.type.toLowerCase() == 'zip') {
+                fileIcon = 'fa fa-file-archive-o';
+            }
+            else if (attachment.type.toLowerCase() == 'txt') {
+                fileIcon = 'fa fa-file-text-o';
+            }
+            else if (attachment.type.toLowerCase() == 'ppt' || attachment.type.toLowerCase() == 'pptx') {
+                fileIcon = 'fa fa-file-powerpoint-o';
+            }
+            else if (attachment.type.toLowerCase() == 'html' || attachment.type.toLowerCase() == 'xml'
+                || attachment.type.toLowerCase() == 'css' || attachment.type.toLowerCase() == 'js'
+                || attachment.type.toLowerCase() == 'json') {
+                
+                fileIcon = 'fa fa-file-code-o';
+            }
+            
+                                    
+            return(
+                <li>
+                    <span class="mailbox-attachment-icon"><i class={fileIcon}></i></span>
+                    <div class="mailbox-attachment-info">
+                        <a href="#" class="mailbox-attachment-name">{attachment.fileName}</a>
+                            <span class="mailbox-attachment-size">
+                            {Math.ceil(size/1024)} KB {attachment.uploadedDate}
+                            <a href="#!" class="btn btn-default btn-xs pull-right" onClick={this.deleteAttachment(attachment.id)}>
+                                <i class="fa fa-trash-o"></i></a>
+                            </span>
+                    </div>
+                </li>
+            )
+            
+        }
+
+    }
+
 
 
     render() {
@@ -546,7 +636,7 @@ export class TaskDetail extends Component
                                         <div id="errorAddAttachment" class="form-group col-md-12"></div>     
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-default pull-left" onClick={this.doneUpload} data-dismiss="modal">Close</button>
                                         <button type="button" class="btn btn-primary" id="btnUpload" onClick={this.uploadAttachment}>Upload</button>
                                     </div>
                             
@@ -627,7 +717,7 @@ export class TaskDetail extends Component
                             <div class="modal-content">
                                 <div class="modal-header">
                                     <button type="button" class="close" data-dismiss="modal">&times;</button>
-                                    <h4 class="modal-title">Delete</h4>
+                                    <h4 class="modal-title">Delete Task</h4>
                                 </div>
                                 <div class="modal-body">
                                     Are you sure want to delete this task?
@@ -643,9 +733,8 @@ export class TaskDetail extends Component
                         </div>
                 </div>
 
-
-
                 
+
                         <div class="row">
                         
                             <div class="col-md-12">
@@ -819,58 +908,11 @@ export class TaskDetail extends Component
                                                 
                                                                                                 
                                                 <ul class="mailbox-attachments clearfix">
-
-                                                    
-                                                     <li>
-                                                        <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo1.png"/></span>
-                                                        <div class="mailbox-attachment-info">
-                                                            <a href="#" class="mailbox-attachment-name"><i class="fa fa-camera"></i> photo1.png</a>
-                                                                <span class="mailbox-attachment-size">
-                                                                2.67 MB
-                                                                <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                                                                </span>
-                                                        </div>
-                                                    </li>
-                                                
-
-                                                    <li>
-                                                        <span class="mailbox-attachment-icon has-img"><img src="/lib/dist/img/photo2.png" /></span>
-
-                                                        <div class="mailbox-attachment-info">
-                                                            <a href="#" class="mailbox-attachment-name"><i class="fa fa-camera"></i> photo2.png</a>
-                                                                <span class="mailbox-attachment-size">
-                                                                1.9 MB
-                                                                <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                                                                </span>
-                                                        </div>
-                                                    </li>
-
-                                                    <li>
-                                                        <span class="mailbox-attachment-icon"><i class="fa fa-file-word-o"></i></span>
-
-                                                        <div class="mailbox-attachment-info">
-                                                            <a href="#" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> App Description.docx</a>
-                                                                <span class="mailbox-attachment-size">
-                                                                1,245 KB
-                                                                <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                                                                </span>
-                                                        </div>
-                                                    </li>
-                                                    <li>
-                                                        <span class="mailbox-attachment-icon"><i class="fa fa-file-pdf-o"></i></span>
-
-                                                        <div class="mailbox-attachment-info">
-                                                            <a href="#" class="mailbox-attachment-name"><i class="fa fa-paperclip"></i> Sep2014-report.pdf</a>
-                                                                <span class="mailbox-attachment-size">
-                                                                1,245 KB
-                                                                <a href="#" class="btn btn-default btn-xs pull-right"><i class="fa fa-cloud-download"></i></a>
-                                                                </span>
-                                                        </div>
-                                                        </li>
-
-
-
+                                                   {this.state.attachments.map(a=>          
+                                                      <div>{this.renderAttachment(a)}</div>
+                                                    )}      
                                                 </ul>
+
                                             </div>    
                                         </div>
                                     </div>    

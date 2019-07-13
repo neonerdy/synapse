@@ -15,8 +15,7 @@ namespace TaskMaster.Controllers
     [Route("api/[controller]/[action]")]
     public class AttachmentController : Controller
     {
-
-        private AppDbContext context;
+       private AppDbContext context;
 
         public AttachmentController() 
         {
@@ -65,7 +64,7 @@ namespace TaskMaster.Controllers
         }
 
 
-        [HttpGet("{id}")]
+        [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var attachment = await context.Attachments.FindAsync(id);
