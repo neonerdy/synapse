@@ -18,6 +18,7 @@ export class TaskDetail extends Component
         var user = JSON.parse(userJson);
 
         this.closeBtn = React.createRef();
+        this.fileTxt = React.createRef();
         this.loggedDateText = React.createRef();
 
         this.state = {
@@ -50,6 +51,8 @@ export class TaskDetail extends Component
             timeSpent: '',
             unit: '',
             files: '',
+            displayProgress: '',
+            barPercentage: '',
             uploadPercentage: ''
 
         }
@@ -58,6 +61,13 @@ export class TaskDetail extends Component
     componentDidMount() {
 
         let id = this.props.match.params.id;
+
+        if (this.props.history.action === "POP") {
+            this.props.history.push("/task-detail/" + id);
+        }
+
+
+      
         this.getTaskById(id);
         this.getAttachmentByTaskId(id);
         this.getCommentByTaskId(id);
@@ -348,6 +358,12 @@ export class TaskDetail extends Component
 
     doneUpload =()=> {
         this.getAttachmentByTaskId(this.state.id);
+        this.fileTxt.current.value = '';
+        this.setState({
+            uploadPercentage: '',
+            barPercentage: '0%',
+            files: ''
+        })
     }
 
     uploadAttachment = () => {
@@ -366,18 +382,16 @@ export class TaskDetail extends Component
             onUploadProgress: (progressEvent)=> {
                 var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
                 this.setState({
-                    uploadPercentage: percentDone + "%"
+                    displayProgress: 'true',
+                    uploadPercentage: percentDone + "%",
+                    barPercentage: percentDone + "%"
                 })
                 
             }
         }
       ).then(()=> {
             console.log('SUCCESS!!');
-         
             this.saveAttachment();
-            this.getAttachmentByTaskId(this.state.id);
-                      
-     
       })
       .catch(()=> {
         console.log('UPLOAD FAILURE!!');
@@ -436,12 +450,14 @@ export class TaskDetail extends Component
     }
 
 
+    openNewTab = (fileName)=> {
+        window.open(fileName, '_blank');
+    }
+
+
     renderAttachment = (attachment) => {
 
-        console.log(attachment.type);
-
-
-        if (attachment.type.toLowerCase() == 'jpg' || attachment.type.toLowerCase() == "jpeg" || attachment.type.toLowerCase() == 'png') {
+           if (attachment.type.toLowerCase() == 'jpg' || attachment.type.toLowerCase() == "jpeg" || attachment.type.toLowerCase() == 'png') {
             
             let fileName = '/SynapseAPI/Resources/' + attachment.fileName;
             let size = attachment.size;
@@ -450,7 +466,7 @@ export class TaskDetail extends Component
                 <li>
                     <span class="mailbox-attachment-icon has-img"><img src={fileName}/></span>
                     <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name">{attachment.fileName}</a>
+                        <a href="#!" onClick={()=>this.openNewTab(fileName)} class="mailbox-attachment-name">{attachment.fileName}</a>
                             <span class="mailbox-attachment-size">
                             {Math.ceil(size/1024)} KB<br/>{moment(this.state.uploadedDate).format("MM/DD/YYYY hh:mm")}
                             <a href="#!" class="btn btn-default btn-xs pull-right" onClick={()=>this.deleteAttachment(attachment.id)}>
@@ -462,6 +478,7 @@ export class TaskDetail extends Component
         }
         else {
 
+            let fileName = '/SynapseAPI/Resources/' + attachment.fileName;
             let size = attachment.size;
             let fileIcon = '';
 
@@ -489,18 +506,37 @@ export class TaskDetail extends Component
                 
                 fileIcon = 'fa fa-file-code-o';
             }
+            else if (attachment.type.toLowerCase() == 'mp4' || attachment.type.toLowerCase() == 'mov'
+                || attachment.type.toLowerCase() == 'wmv' || attachment.type.toLowerCase() == 'flv'
+                || attachment.type.toLowerCase() == 'wma' || attachment.type.toLowerCase() == '3gp'
+                || attachment.type.toLowerCase() == '3gpp' || attachment.type.toLowerCase() == 'avi') {
+                
+               fileIcon = 'fa fa-file-video-o';
+            }
+            else if (attachment.type.toLowerCase() == 'wav' || attachment.type.toLowerCase() == 'mp3'
+                || attachment.type.toLowerCase() == 'aac' || attachment.type.toLowerCase() == 'wma') {
+            
+                fileIcon = 'fa fa-file-audio-o';
+            }
+            else {
+                fileIcon = 'fa fa-file-o';
+            }
             
                                     
             return(
                 <li>
                     <span class="mailbox-attachment-icon"><i class={fileIcon}></i></span>
                     <div class="mailbox-attachment-info">
-                        <a href="#" class="mailbox-attachment-name">{attachment.fileName}</a>
-                            <span class="mailbox-attachment-size">
-                            {Math.ceil(size/1024)} KB {attachment.uploadedDate}
-                            <a href="#!" class="btn btn-default btn-xs pull-right" onClick={this.deleteAttachment(attachment.id)}>
-                                <i class="fa fa-trash-o"></i></a>
-                            </span>
+                        
+                        {attachment.type.toLowerCase() == 'pdf'?
+                            <a href="#!" onClick={()=>this.openNewTab(fileName)} class="mailbox-attachment-name">{attachment.fileName}</a>
+                            : <a href={fileName} class="mailbox-attachment-name">{attachment.fileName}</a>
+                        }
+                        <span class="mailbox-attachment-size">
+                        {Math.ceil(size/1024)} KB {attachment.uploadedDate}
+                        <a href="#!" class="btn btn-default btn-xs pull-right" onClick={()=>this.deleteAttachment(attachment.id)}>
+                            <i class="fa fa-trash-o"></i></a>
+                        </span>
                     </div>
                 </li>
             )
@@ -538,11 +574,9 @@ export class TaskDetail extends Component
         }
 
         const barStyle = {
-            display:'none'
+            display: 'none',
         }
 
-        let percentage = this.state.uploadPercentage;
-        console.log(percentage);
 
         return(
             <div class="wrapper">
@@ -620,19 +654,25 @@ export class TaskDetail extends Component
                                     <div class="modal-body row">
                                     <div class="col-md-12">
                                             <div id="divFile" class="form-group">
-                                                    {/*}
-                                                    <input type="file" class="btn btn-default" name="uploadFile" id="uploadFile" onChange={this.onValueChange} style={attachmentStyle}/>
-                                                    {*/}
-                                                  <input type="file" name="file" onChange={this.onFileChange} class="btn btn-default" style={attachmentStyle}/>  
+                                                  <input type="file" name="file" onChange={this.onFileChange} class="btn btn-default" style={attachmentStyle} ref={this.fileTxt}/>  
+                                                  <div class="progress">
+                                                <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={{width: this.state.barPercentage}}></div>
                                             </div>
+                                            {this.state.uploadPercentage}
+                                          
+                                            </div>
+                                          
                                         </div>
                                         
+                                        {/*}
                                         <div class="col-md-12">
                                             <div class="progress">
-                                                <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={{width: percentage}}></div>
+                                                <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={barStyle}></div>
                                             </div>
                                             {this.state.uploadPercentage}
                                         </div>
+                                        {*/}
+
                                         <div id="errorAddAttachment" class="form-group col-md-12"></div>     
                                     </div>
                                     <div class="modal-footer">
