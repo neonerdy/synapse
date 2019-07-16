@@ -15,6 +15,7 @@ namespace TaskMaster.Models
         public string Address { get; set; }
         public string Phone { get; set; }
         public string Email { get; set; }
+        public string Photo { get; set; }
         public Guid ActiveProjectId { get; set; }
         public bool IsHideClosedTask { get; set; }
       }

@@ -53,8 +53,10 @@ export class TaskDetail extends Component
             files: '',
             displayProgress: '',
             barPercentage: '',
-            uploadPercentage: ''
-
+            uploadPercentage: '',
+            estimation: '',
+            estimationUnit: '',
+            estimationInHour: ''
         }
     }
 
@@ -121,7 +123,10 @@ export class TaskDetail extends Component
                 closedDate: response.data.closedDate,
                 status: response.data.status,
                 description: response.data.description,
-                totalTimeSpentInHour: response.data.totalTimeSpentInHour
+                totalTimeSpentInHour: response.data.totalTimeSpentInHour,
+                estimation: response.data.estimation,
+                estimationUnit: response.data.estimationUnit,
+                estimationInHour: response.data.estimationInHour
             })
       })
         
@@ -168,6 +173,7 @@ export class TaskDetail extends Component
 
         axios.get(config.serverUrl + "/api/task/assignedtasktome/" + id + "/" + userId).then(response=> {
             this.getTaskById(id);
+            this.getHistoriesByTaskId(id);
         })
     }
 
@@ -179,6 +185,7 @@ export class TaskDetail extends Component
 
         axios.get(config.serverUrl + "/api/task/assignedtestertome/" + id + "/" + userId).then(response=> {
             this.getTaskById(id);
+            this.getHistoriesByTaskId(id);
         })
     }
 
@@ -207,6 +214,19 @@ export class TaskDetail extends Component
     }
 
 
+    updateEstimation = () => {
+
+        let taskEstimation = {
+            taskId: this.state.id,
+            estimation: this.state.estimation,
+            estimationUnit: this.state.estimationUnit
+        }
+
+        axios.put(config.serverUrl + "/api/task/updateestimation",  taskEstimation).then(response=> {
+            this.getTaskById(this.state.id);
+        })
+    }
+
     saveComment = () => {
 
         var comment = {
@@ -217,6 +237,7 @@ export class TaskDetail extends Component
 
         axios.post(config.serverUrl + "/api/comment/save", comment).then(response=> {
             this.getCommentByTaskId(this.state.id);
+            this.getHistoriesByTaskId(this.state.id);
         })
     }
 
@@ -750,6 +771,51 @@ export class TaskDetail extends Component
                             </div>
                         </div>
                 </div>
+
+
+
+                <div id="updateEstimation" class="modal fade" role="dialog">
+                        <div class="modal-dialog" style={{width: '350px'}}>
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <h4 class="modal-title">Estimation</h4>
+                                </div>
+                                <div class="addWorkLog-ui">
+
+                                        <div class="modal-body row">
+                                   
+                                            <div class="col-md-6">
+                                                    <div class="form-group">
+                                                        <label style={{fontWeight:'normal'}}>Estimation</label> 
+                                                        <input type="text" class="form-control" name="estimation" onChange={this.onValueChange} value={this.state.estimation} style={{fontWeight:'normal'}}/>                                                                                                      
+                                                    </div>
+                                                </div>
+                                    
+                                            <div class="col-md-6">
+                                                <div class="form-group">
+                                                    <label style={{fontWeight:'normal'}}>Unit</label> 
+                                                        <select class="form-control" name="estimationUnit" onChange={this.onValueChange} value={this.state.estimationUnit} style={{fontWeight:'normal'}}>
+                                                            <option value="-1"></option>
+                                                            <option value="h">Hour</option>
+                                                            <option value="d">Day</option>
+                                                        </select>                                                                                                      
+                                                </div>
+                                            </div>                                    
+                                            <div id="errorAddWorkLog" class="form-group col-md-12"></div>                                   
+                                        </div>
+                                    
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onClick={this.updateEstimation}>Update Estimation</button>
+                                        </div>
+                                        
+                             
+                                </div>
+                            </div>
+                        </div>
+                </div>
+
                 
 
                 <div id="deleteTask" class="modal fade">
@@ -795,7 +861,7 @@ export class TaskDetail extends Component
                                         <div class="btn-group">
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addComment">Comment</button>
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addAttachment">Attachment</button>
-                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addEstimation">Estimation</button>
+                                            <button type="button" class="btn btn-default" data-toggle="modal" data-target="#updateEstimation">Estimation</button>
                                             <button type="button" class="btn btn-default" data-toggle="modal" data-target="#addWorkLog">Work Log</button>
                                                
                                         </div>
@@ -899,10 +965,29 @@ export class TaskDetail extends Component
                                                 <div class="col-lg-3"><label style={fontStyle}>Status</label> </div>
                                                 <div class="col-lg-6"><label style={fontStyle}>{this.renderStatus(this.state.status)}&nbsp;{this.state.status}</label></div>
                                         </div>
+                                    
+                                        <div class="row">
+                                                <div class="col-lg-3"><label style={fontStyle}>Estimation </label> </div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.calculateTimeSpent(this.state.estimationInHour)}</label></div>
+                                        </div>
+
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Time Spent </label> </div>
                                                 <div class="col-lg-6"><label style={fontStyle}>{this.calculateTimeSpent(this.state.totalTimeSpentInHour)}</label></div>
                                         </div>
+
+                                        
+                                        <div class="row">
+                                                <div class="col-lg-3"><label style={fontStyle}>Time Left </label> </div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{this.calculateTimeSpent(this.state.estimationInHour - this.state.totalTimeSpentInHour)}</label></div>
+                                        </div>
+
+                                        <div class="row">
+                                                <div class="col-lg-3"><label style={fontStyle}>Progress </label> </div>
+                                                <div class="col-lg-6"><label style={fontStyle}>{Math.ceil((this.state.totalTimeSpentInHour/this.state.estimationInHour) * 100)}%</label></div>
+                                        </div>
+
+
                                         
                                     </div>
                                   
@@ -1014,7 +1099,7 @@ export class TaskDetail extends Component
                                                         <div class="col-md-12">
                                                             {this.state.histories.map(h=> 
                                                             <div> 
-                                                            <div>{h.user} {h.activityLog}</div> 
+                                                            <div>{h.user} {h.activityLog} at {moment(h.date).format('MM/DD/YYYY hh:mm')}</div> 
                                                             <br/>
                                                             </div>
                                                             )}

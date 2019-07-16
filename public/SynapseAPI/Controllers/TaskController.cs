@@ -110,6 +110,53 @@ namespace TaskMaster.Controllers
         }
 
 
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetMyTask(Guid userId)
+        {
+            var tasks = await context.Tasks
+                .Include(t=>t.Assignee)
+                .Where(t=>t.AssigneeId == userId && (t.Status == "New" || t.Status == "Coding" || t.Status == "Rework"))
+                .Select(t=>new {
+                    t.ID,
+                    t.Tracker,
+                    t.Category,
+                    t.Title,
+                    t.EstimationInHour,
+                    t.TotalTimeSpentInHour,
+                    t.ModifiedDate
+                })
+                .OrderByDescending(t=>t.ModifiedDate)
+                .ToListAsync();
+            
+            return Ok(tasks);
+        }
+
+
+
+        [HttpGet("{userId}/{projectId}")]
+        public async Task<IActionResult> GetMyTaskByProject(Guid userId, Guid projectId)
+        {
+            var tasks = await context.Tasks
+                .Include(t=>t.Assignee)
+                .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && (t.Status == "New" || t.Status == "Coding" || t.Status == "Rework"))
+                .Select(t=>new {
+                    t.ID,
+                    t.Tracker,
+                    t.Category,
+                    t.Title,
+                    t.EstimationInHour,
+                    t.TotalTimeSpentInHour,
+                    t.ModifiedDate
+                })
+                .OrderByDescending(t=>t.ModifiedDate)
+                .ToListAsync();
+            
+            return Ok(tasks);
+        }
+
+
+
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(Guid id)
         {
@@ -140,17 +187,6 @@ namespace TaskMaster.Controllers
             return Ok(tasks);
         }
 
-
-        [HttpGet("{userId}")]
-        public async Task<IActionResult> GetMyTask(Guid userId)
-        {
-            var tasks = await context.Tasks
-                .Where(t=>t.AssigneeId == userId && t.Status != "Closed")
-                .OrderByDescending(t=>t.CreatedDate)
-                .ToListAsync();
-            
-            return Ok(tasks);
-        }
       
         
         [HttpGet("{category}")]
@@ -205,6 +241,9 @@ namespace TaskMaster.Controllers
             task.Tracker = newTracker;
             task.CreatedDate = DateTime.Now;
             task.Status = "New";
+            task.Estimation = 1;
+            task.EstimationUnit = "d";
+            task.EstimationInHour = 8;
 
             context.Add(task);
             var result = await context.SaveChangesAsync();
@@ -245,13 +284,35 @@ namespace TaskMaster.Controllers
             history.TaskId = task.ID;
             history.UserId = userId;
             history.Date = DateTime.Now;
-            history.ActivityLog = "Changed to " + task.Status + " on " + DateTime.Now;
-
+            history.ActivityLog = "Changed to " + task.Status;
+          
             context.Add(history);
             
             var result = await context.SaveChangesAsync();
             return Ok(result);    
         }
+
+
+
+        [HttpPut]
+        public async Task<IActionResult> UpdateEstimation([FromBody] TaskEstimation taskEstimation) 
+        {
+            var task = await context.Tasks.FindAsync(taskEstimation.TaskId);
+            task.Estimation = taskEstimation.Estimation;
+            task.EstimationUnit = taskEstimation.EstimationUnit;
+            
+            if (taskEstimation.EstimationUnit == "h") {
+                  task.EstimationInHour = taskEstimation.Estimation;
+            } else if (taskEstimation.EstimationUnit == "d") {
+                task.EstimationInHour = taskEstimation.Estimation * 8;
+            }
+
+            context.Update(task);
+            var result = await context.SaveChangesAsync();
+
+            return Ok(result);
+        }
+
 
         
 
@@ -262,9 +323,23 @@ namespace TaskMaster.Controllers
             task.AssigneeId = userId;
             context.Update(task);
 
+            //update history
+
+            var history = new History();
+
+            history.ID = Guid.NewGuid();
+            history.TaskId = task.ID;
+            history.UserId = userId;
+            history.Date = DateTime.Now;
+            history.ActivityLog = "Assigned to this task";
+          
+            context.Add(history);
+
+
             var result = await context.SaveChangesAsync();
             return Ok(result);  
         }
+
 
 
         [HttpGet("{id}/{userId}")]
@@ -273,6 +348,19 @@ namespace TaskMaster.Controllers
             var task = await context.Tasks.FindAsync(id);
             task.TesterId = userId;
             context.Update(task);
+
+            //update history
+
+            var history = new History();
+
+            history.ID = Guid.NewGuid();
+            history.TaskId = task.ID;
+            history.UserId = userId;
+            history.Date = DateTime.Now;
+            history.ActivityLog = "Assigned to Tester";
+          
+            context.Add(history);
+
 
             var result = await context.SaveChangesAsync();
             return Ok(result);  

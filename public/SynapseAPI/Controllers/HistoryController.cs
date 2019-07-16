@@ -26,6 +26,7 @@ namespace TaskMaster.Models
             var histories = await context.Histories
              .Include(h=>h.User)
              .Where(h=>h.TaskId == id)
+             .OrderBy(h=>h.Date)
              .Select(h=>new {
                     h.ID,
                     User = h.User.FullName,
@@ -34,6 +35,27 @@ namespace TaskMaster.Models
                 }).ToListAsync();
               
             return Ok(histories); 
+        }
+
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetByUserId(Guid userId)
+        {
+            var histories = await context.Histories
+             .Include(h=>h.User)
+             .Include(h=>h.Task)
+             .Where(h=>h.Task.AssigneeId == userId && h.Task.Status != "Closed" && h.UserId != userId)
+             .OrderByDescending(h=>h.Date)
+             .Select(h=>new {
+                    h.ID,
+                    User = h.User.FullName,
+                    UserPhoto = h.User.Photo,
+                    Tracker = h.Task.Tracker,
+                    Date = h.Date,
+                    ActivityLog = h.ActivityLog
+                }).ToListAsync();
+              
+            return Ok(histories);
         }
 
 

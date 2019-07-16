@@ -11,6 +11,7 @@ namespace TaskMaster.Models
         public People User { get; set; }
         public DateTime Date { get; set; }
         public string ActivityLog { get; set; }
+        public Task Task { get; set; }
         
     }
 }

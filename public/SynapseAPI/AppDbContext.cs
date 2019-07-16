@@ -38,6 +38,7 @@ namespace TaskMaster
                 entity.Property(e => e.Address).HasColumnName("address");
                 entity.Property(e => e.Phone).HasColumnName("phone");
                 entity.Property(e => e.Email).HasColumnName("email");
+                entity.Property(e => e.Photo).HasColumnName("photo");
                 entity.Property(e => e.ActiveProjectId).HasColumnName("active_project_id");
                 entity.Property(e => e.IsHideClosedTask).HasColumnName("Is_hide_closed_task");
              });
@@ -93,6 +94,9 @@ namespace TaskMaster
                 entity.Property(e => e.ClosedDate).HasColumnName("closed_date");
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.Estimation).HasColumnName("estimation");
+                entity.Property(e => e.EstimationUnit).HasColumnName("estimation_unit");
+                entity.Property(e => e.EstimationInHour).HasColumnName("estimation_in_hour");
                 entity.Property(e => e.TotalTimeSpentInHour).HasColumnName("total_time_spent_in_hour");
             });
             

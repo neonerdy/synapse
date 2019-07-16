@@ -50,6 +50,19 @@ namespace TaskMaster.Controllers
             comment.CreatedDate = DateTime.Now;
             context.Add(comment);
 
+            //update history
+
+            var history = new History();
+
+            history.ID = Guid.NewGuid();
+            history.TaskId = comment.TaskId;
+            history.UserId = comment.CommenterId;
+            history.Date = DateTime.Now;
+            history.ActivityLog = "Add new comment";
+          
+            context.Add(history);
+
+
             var result = await context.SaveChangesAsync();
             return Ok(result);
         }
