@@ -138,7 +138,7 @@ export class AddPeople extends Component
 
                 <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">
-                        <h1>Create People</h1>
+                        <h1>Create Team Member</h1>
                     </section>
                  
                     <section class="content">

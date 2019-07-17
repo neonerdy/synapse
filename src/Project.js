@@ -101,7 +101,7 @@ export class Project extends Component
 
 
     sortTask = (columnName) => {
-        this.state.projects.sort(this.dynamicSort(columnName));
+        this.state.initialProjects.sort(this.dynamicSort(columnName));
     }
 
 

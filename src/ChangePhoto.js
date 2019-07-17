@@ -68,11 +68,11 @@ export class ChangePhoto extends Component {
             }
         }
       ).then(()=> {
-            console.log('SUCCESS!!');
+            console.log('SUCCESS UPLOAD PHOTO !!');
             this.updatePhoto();
       })
       .catch(()=> {
-        console.log('UPLOAD FAILURE!!');
+        console.log('UPLOAD PHOTO FAILURE!!');
       });
          
     }

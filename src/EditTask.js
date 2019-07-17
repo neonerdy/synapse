@@ -39,8 +39,12 @@ export class EditTask extends Component
             createdDate: null,
             modifiedDate: null,
             closedDate: null,
+            status: '',
             description: '',
-            status: ''
+            totalTimeSpentInHour: '',
+            estimation: '',
+            estimationUnit: '',
+            estimationInHour: ''
         }
     }
 
@@ -106,17 +110,19 @@ export class EditTask extends Component
                 modifiedDate: response.data.modifiedDate,
                 closedDate: response.data.closedDate,
                 description: response.data.description,
-                status: response.data.status
+                status: response.data.status,
+                totalTimeSpentInHour: response.data.totalTimeSpentInHour,
+                estimation: response.data.estimation,
+                estimationUnit: response.data.estimationUnit,
+                estimationInHour: response.data.estimationInHour
             })
-
-         
            
         })
     }
 
     
 
-    updateProject = () => {
+    updateTask = () => {
         
         let isValid = this.validate();
         if (isValid)
@@ -137,8 +143,12 @@ export class EditTask extends Component
                 createdDate: this.state.createdDate,
                 modifiedDate: this.state.modifiedDate,
                 closedDate: this.state.closedDate,
+                status: this.state.status,
                 description: this.state.description,
-                status: this.state.status
+                totalTimeSpentInHour: this.state.totalTimeSpentInHour,
+                estimation: this.state.estimation,
+                estimationUnit: this.state.estimationUnit,
+                estimationInHour: this.state.estimationInHour
             }
 
             axios.put(config.serverUrl + "/api/task/update", task).then(response=> {
@@ -415,14 +425,13 @@ export class EditTask extends Component
                                                 <div id="title" class="form-group">
                                                 <label class="col-md-3 control-label">Describe Issue</label>
                                                 <div class="col-md-7 col-sm-12">
-
-                                                    <CKEditor data={this.state.description} onChange={this.onEditorChange}/> 
-                                                  
-                                                    {/*            
-                                                    <textarea id="editor1" class="form-control" name="description" 
+                                                    {/*}            
+                                                    <CKEditor name="description" data={this.state.description} onChange={this.onEditorChange}/> 
+                                                    {*/}
+                                                   
+                                                    <textarea id="editor1" class="form-control" name="description" rows="15"
                                                         onChange={this.onValueChange} value={this.state.description}></textarea>
-                                                    */}
-
+                                                   
                                                 </div>
                                                 </div>
                                             </div>         
@@ -433,7 +442,7 @@ export class EditTask extends Component
 
                                     <div class="text-right">
                                         <a class="btn btn-link text-left" href="#" onClick={this.cancelUpdate}>Cancel</a>
-                                        <button type="button" onClick={this.updateProject} class="btn btn-primary"><i class="fa fa-check icon-white"></i> Update</button>
+                                        <button type="button" onClick={this.updateTask} class="btn btn-primary"><i class="fa fa-check icon-white"></i> Update</button>
                                     </div>
 
 

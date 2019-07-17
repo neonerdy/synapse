@@ -44,20 +44,19 @@ export class NavBar extends Component {
                 <li>
                   <Link to="/people">
                     <i class="fa fa-user"></i>
-                    <span>People</span>
+                    <span>Teams</span>
                    
                   </Link>
                 </li>
 
-            {/*}
                 <li>
-                  <Link to="/document">
+                  <Link to="/file">
                     <i class="fa fa-files-o"></i>
-                    <span>Documents</span>
+                    <span>Files</span>
                    
                   </Link>
                 </li>
-              {*/}
+           
 
                 <li>
                   <Link to="/task">

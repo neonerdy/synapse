@@ -29,12 +29,12 @@ export class Task extends Component {
 
     componentDidMount() {
         
-        this.getPeopleById(this.state.user.id);
+        this.getUserById(this.state.user.id);
       
     }
 
 
-    getPeopleById =(id)=> {
+    getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
             this.setState({
                 activeProjectId: response.data.activeProjectId,

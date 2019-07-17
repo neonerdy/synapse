@@ -11,7 +11,7 @@ import { Route } from 'react-router-dom';
 import { TaskDetail } from './TaskDetail';
 import { People } from './People';
 import { AddPeople } from './AddPeople';
-import { Document } from './Document';
+import { File } from './File';
 import { AddDocument } from './AddDocument';
 import { EditPeople } from './EditPeople';
 import { EditProject } from './EditProject';
@@ -30,7 +30,7 @@ class App extends Component {
           <Route path="/dashboard" component={Dashboard}/> 
           <Route path="/project" component={Project}/> 
           <Route path="/people" component={People}/> 
-          <Route path="/document" component={Document}/> 
+          <Route path="/file" component={File}/> 
           <Route path="/task" component={Task}/> 
           <Route path="/task-detail/:id" component={TaskDetail}/> 
           <Route path="/add-project" component={AddProject}/>

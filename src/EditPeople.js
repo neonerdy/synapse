@@ -165,7 +165,7 @@ export class EditPeople extends Component
 
                 <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">
-                        <h1>Edit People</h1>
+                        <h1>Edit Team Member</h1>
                     </section>
                  
                     <section class="content">

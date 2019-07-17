@@ -412,11 +412,11 @@ export class TaskDetail extends Component
             }
         }
       ).then(()=> {
-            console.log('SUCCESS!!');
+            console.log('SUCCESS UPLOAD ATTACHMENT !!');
             this.saveAttachment();
       })
       .catch(()=> {
-        console.log('UPLOAD FAILURE!!');
+        console.log('UPLOAD ATTACHMENT FAILURE !!');
       });
          
 

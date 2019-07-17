@@ -13,6 +13,7 @@ namespace TaskMaster.Models
         public string ActivityLog { get; set; }
         public Task Task { get; set; }
         
+        
     }
 }
 

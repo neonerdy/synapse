@@ -341,7 +341,8 @@ export class AddTask extends Component
                                                 <label class="col-md-3 control-label">Describe Issue</label>
                                                 <div class="col-md-7 col-sm-12">
                                                     
-                                                     <CKEditor data=""/>       
+                                                <textarea id="editor1" class="form-control" name="description" rows="15"
+                                                        onChange={this.onValueChange} value={this.state.description}></textarea>
 
                                                 </div>
                                                 </div>

@@ -13,19 +13,35 @@ export class Header extends Component {
         super(props);
         this.state = {
             tasks: [],
-            histories: []
+            histories: [],
+            activeProjectId: ''
         }
     }
 
     componentDidMount() {
-        this.getMyTasks(this.props.user.id);
+        this.getUserById(this.props.user.id);
         this.getHistoryByUserId(this.props.user.id);
-
         this.getHistoryByUserId(this.props.user.id);
     }
 
 
-    getMyTasks = (userId) => {
+    getUserById =(id)=> {
+        axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
+            this.setState({
+                activeProjectId: response.data.activeProjectId
+            })
+
+            if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
+                this.getMyTask();
+            } else {
+                this.getMyTaskByProject(id, this.state.activeProjectId);
+            }
+        });
+    }
+
+
+
+    getMyTask = (userId) => {
         axios.get(config.serverUrl + "/api/task/getmytask/" + userId).then(response=> {
             this.setState({
                 tasks: response.data,
@@ -121,11 +137,11 @@ export class Header extends Component {
 
         if (task.category == 'Feature') {
             return(
-                <div class="progress-bar progress-bar-red" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
+                <div class="progress-bar progress-bar-green" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
             )
         } else if (task.category == 'Bug') {
             return(
-                <div class="progress-bar progress-bar-green" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
+                <div class="progress-bar progress-bar-red" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
             )
         } else if (task.category == 'Other') {
             return(

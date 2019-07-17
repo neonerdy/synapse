@@ -12,7 +12,7 @@ namespace TaskMaster
 
         public DbSet<People> People { get; set; }
         public DbSet<Project> Projects { get; set; }
-        public DbSet<Document> Documents { get; set; }
+        public DbSet<File> Files { get; set; }
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Attachment> Attachments { get; set; }
         public DbSet<Comment> Comments { get; set; }
@@ -56,23 +56,18 @@ namespace TaskMaster
              });
 
 
-            /*  
-             modelBuilder.Entity<Document>(entity => 
+            modelBuilder.Entity<File>(entity => 
             {
-                entity.ToTable("documents");
+                entity.ToTable("files");
                 entity.Property(e => e.ID).HasColumnName("id");
                 entity.Property(e => e.ProjectId).HasColumnName("project_id");
-                entity.Property(e => e.Title).HasColumnName("title");
-                entity.Property(e => e.AuthorId).HasColumnName("author_id");
-                entity.Property(e => e.Version).HasColumnName("version");
                 entity.Property(e => e.FileName).HasColumnName("file_name");
                 entity.Property(e => e.Type).HasColumnName("type");
                 entity.Property(e => e.Size).HasColumnName("size");
-                entity.Property(e => e.CreatedDate).HasColumnName("created_date");
-                
+                entity.Property(e => e.UploaderId).HasColumnName("uploader_id");
+                entity.Property(e => e.UploadedDate).HasColumnName("uploaded_date");
             });
-            */
-
+           
              
             modelBuilder.Entity<Task>(entity => 
             {

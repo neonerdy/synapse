@@ -137,10 +137,10 @@ export class People extends Component
                 <div class="content-wrapper" style={heightStyle}>
                 <section class="content-header">
                 <h1>
-                    People ({this.state.people.length})
+                    Teams ({this.state.people.length})
                 </h1>
                 <ol class="breadcrumb">
-                    <button class="btn btn-primary" onClick={this.addPeople}>Create New People</button>
+                    <button class="btn btn-primary" onClick={this.addPeople}>Create New Team Member</button>
                 </ol>
                 </section>
                 <br></br>
@@ -179,6 +179,7 @@ export class People extends Component
                                 </button>
                             </div>     
                         </div>
+                        
                         <div class="pull-right search">
                             <input class="form-control" type="text" placeholder="Search" onChange={this.onSearchChange}/>
                         </div>
