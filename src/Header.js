@@ -245,7 +245,7 @@ export class Header extends Component {
                             <li class="user-footer">
                               
                                 <div class="pull-left">
-                                    <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#updateSetting">Settings</a>
+                                    <a href="#" class="btn btn-default btn-flat" data-toggle="modal" data-target="#editPhoto">Change Photo</a>
                                 </div>
                               
                                 <div class="pull-right">
@@ -256,7 +256,7 @@ export class Header extends Component {
                         </li>
 
                         <li>
-                        <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
+                        <a href="#" data-toggle="modal" data-target="#updateSetting"><i class="fa fa-gears"></i></a>
                     </li>
 
                       

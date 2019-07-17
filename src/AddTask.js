@@ -9,6 +9,7 @@ import { Setting } from './Setting';
 import axios from 'axios';
 import config from './Config';
 import CKEditor from 'ckeditor4-react';
+import { ChangePhoto } from './ChangePhoto';
 
 export class AddTask extends Component
 {
@@ -175,6 +176,7 @@ export class AddTask extends Component
                 />
                 <NavBar/>
                 <Setting/>
+                <ChangePhoto/>
 
                  <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">

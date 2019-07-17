@@ -6,6 +6,7 @@ import { Footer } from './Footer';
 import { Setting } from './Setting';
 import axios from 'axios';
 import config from './Config';
+import { ChangePhoto } from './ChangePhoto';
 
 
 export class People extends Component
@@ -130,7 +131,8 @@ export class People extends Component
              />
 
                 <NavBar/>
-                <Setting/>                
+                <Setting/>    
+                <ChangePhoto/>            
 
                 <div class="content-wrapper" style={heightStyle}>
                 <section class="content-header">

@@ -6,6 +6,7 @@ import { NavBar } from './NavBar';
 import { Setting } from './Setting';
 import axios from 'axios';
 import config from './Config'
+import { ChangePhoto } from './ChangePhoto';
 
 export class Dashboard extends Component
 {
@@ -163,6 +164,7 @@ export class Dashboard extends Component
              <NavBar/>
 
              <Setting/>   
+             <ChangePhoto/>
             
             <div class="content-wrapper" style={heightStyle}>
             

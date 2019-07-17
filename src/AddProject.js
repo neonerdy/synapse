@@ -8,6 +8,7 @@ import { Setting } from './Setting';
 
 import axios from 'axios';
 import config from './Config';
+import { ChangePhoto } from './ChangePhoto';
 
 export class AddProject extends Component
 {
@@ -127,6 +128,8 @@ export class AddProject extends Component
              />
             <NavBar/>
             <Setting/>
+            <ChangePhoto/>
+
                  <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">
                         <h1>

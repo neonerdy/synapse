@@ -7,6 +7,7 @@ import { Setting } from './Setting';
 
 import axios from 'axios';
 import config from './Config';
+import { ChangePhoto } from './ChangePhoto';
 
 export class AddPeople extends Component
 {
@@ -133,6 +134,8 @@ export class AddPeople extends Component
 
                 <NavBar/>
                 <Setting/>
+                <ChangePhoto/>
+
                 <div class="content-wrapper" style={heightStyle}>
                     <section class="content-header">
                         <h1>Create People</h1>

@@ -83,6 +83,18 @@ namespace TaskMaster.Controllers
         }
 
 
+        [HttpPut]
+        public async Task<IActionResult> UpdatePhoto([FromBody] UserPhoto userPhoto)
+        {
+            var user = await context.People.FindAsync(userPhoto.UserId);
+            user.Photo = userPhoto.Photo;
+            context.Update(user);
+
+            var result = await context.SaveChangesAsync();
+            return Ok(result);
+        }
+
+
 
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(Guid id)

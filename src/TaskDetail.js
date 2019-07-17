@@ -8,6 +8,7 @@ import { Setting } from './Setting';
 import axios from 'axios';
 import config from './Config';
 import moment from 'moment';
+import { ChangePhoto } from './ChangePhoto';
 
 export class TaskDetail extends Component
 {
@@ -607,6 +608,7 @@ export class TaskDetail extends Component
                 />
                <NavBar/>
                <Setting/>
+               <ChangePhoto/>
 
                 <div class="content-wrapper" style={heightStyle}>
                 
