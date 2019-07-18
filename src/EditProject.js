@@ -45,6 +45,8 @@ export class EditProject extends Component
         })
     }
 
+
+
     validate = () => {
 
         let isValid = true;
@@ -87,6 +89,7 @@ export class EditProject extends Component
                 initial: response.data.initial,
                 projectManagerId: response.data.projectManagerId,
                 description: response.data.description,
+                createdDate: response.data.createdDate,
                 status: response.data.status
             })
         })
@@ -179,7 +182,7 @@ export class EditProject extends Component
                                                 <input class="form-control" type="text" name="projectName" 
                                                     onChange={this.onValueChange} value={this.state.projectName}/>
                                             </div>
-                                            &nbsp;&nbsp;<span style={errStyle}>{this.state.error.projectName}</span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.projectName}</span>
                                       </div>
                                       <div id="initial" class="form-group">
                                             <label class="col-md-3 control-label">Initial</label>
@@ -187,7 +190,7 @@ export class EditProject extends Component
                                                 <input class="form-control" type="text" name="initial" 
                                                     onChange={this.onValueChange} value={this.state.initial}/>
                                             </div>
-                                            &nbsp;&nbsp;<span style={errStyle}>{this.state.error.initial}</span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.initial}</span>
                                       </div>
                                       
                                       <div id="manager" class="form-group">
@@ -201,10 +204,11 @@ export class EditProject extends Component
                                                     )}
                                                 </select>
                                             </div>
-                                            <div class="col-md-1 col-sm-1 text-left">
-                                                <a href="#" onClick={this.newProjectManager} class="btn btn-sm btn-default">New</a>
+                                            <div class="col-md-2 col-sm-1">
+                                                <span style={errStyle}>{this.state.error.projectManagerId}</span>
+                                                &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default" onClick={this.addPeople}>New</a>
                                             </div>
-                                            &nbsp;&nbsp;<span style={errStyle}>{this.state.error.projectManagerId}</span>
+
                                       </div>
 
                                       <div id="description" class="form-group">
@@ -213,7 +217,7 @@ export class EditProject extends Component
                                                 <input class="form-control" type="text" name="description" 
                                                     onChange={this.onValueChange} value={this.state.description}/>
                                             </div>
-                                            &nbsp;&nbsp;<span style={errStyle}>{this.state.error.description}</span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.description}</span>
                                       </div>
 
                                       <div id="manager" class="form-group">
@@ -227,7 +231,7 @@ export class EditProject extends Component
                                                     <option key="Closed" value="Closed">Closed</option>
                                                 </select>
                                             </div>
-                                            &nbsp;&nbsp;<span style={errStyle}>{this.state.error.status}</span>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.status}</span>
                                       </div>
 
 

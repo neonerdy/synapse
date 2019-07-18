@@ -22,6 +22,7 @@ export class AddTask extends Component
 
         this.state = {
             user: user, 
+            activeProjectId: '',
             error: {},
             projects: [],
             category: '',
@@ -40,6 +41,7 @@ export class AddTask extends Component
     }
 
     componentDidMount() {
+        this.getUserById(this.state.user.id);
         this.getAllProjects();
         this.getAllPeople();
     }
@@ -49,6 +51,16 @@ export class AddTask extends Component
             [e.target.name]: e.target.value
         })
     }
+
+    
+    getUserById =(id)=> {
+        axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
+            this.setState({
+                activeProjectId: response.data.activeProjectId
+            })
+        });
+    }
+
 
     getAllProjects = () => {
         axios.get(config.serverUrl + "/api/project/getall").then(response=> {
@@ -77,7 +89,7 @@ export class AddTask extends Component
         if (isValid)
         {
             let task = {
-                projectId: this.state.projectId,
+                projectId: this.state.activeProjectId,
                 category: this.state.category,
                 title: this.state.title,
                 priority: this.state.priority,
@@ -102,7 +114,7 @@ export class AddTask extends Component
         let isValid = true;
         let error = {};
 
-        if (this.state.projectId == '') {
+        if (this.state.activeProjectId == '') {
             error.projectId = 'is required';
             isValid = false;
         }
@@ -144,6 +156,14 @@ export class AddTask extends Component
 
     cancelAdd = () => {
         this.props.history.push("/task");
+    }
+
+    addProject = () => {
+        this.props.history.push("/add-project");
+    }
+
+    addPeople = () => {
+        this.props.history.push("/add-people");
     }
 
 
@@ -210,8 +230,8 @@ export class AddTask extends Component
                                             <label class="col-md-3 control-label">Project</label>
                                             <div class="col-md-7 col-sm-12 required">
                                                 
-                                                <select class="form-control" name="projectId" onChange={this.onValueChange} >
-                                                    <option value="">Select Project</option>
+                                                <select class="form-control" name="activeProjectId" onChange={this.onValueChange} value={this.state.activeProjectId} >
+                                                    <option value="00000000-0000-0000-0000-000000000000">Select Project</option>
                                                     {this.state.projects.map(p=> 
                                                         <option key={p.id} value={p.id}>{p.projectName}</option>
                                                     )}
@@ -221,7 +241,7 @@ export class AddTask extends Component
                                        
                                             <div class="col-md-2 col-sm-1">
                                             <span style={errStyle}>{this.state.error.projectId}</span>
-                                                &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default">New</a>
+                                                &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default" onClick={this.addProject}>New</a>
                                             </div>
                                         </div>
 
@@ -273,7 +293,7 @@ export class AddTask extends Component
                                             </div>
                                             <div class="col-md-2 col-sm-1">
                                                 <span style={errStyle}>{this.state.error.reporterId}</span>
-                                                    &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default">New</a>
+                                                    &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default" onClick={this.addPeople}>New</a>
                                             </div>
                                       </div>
 
@@ -290,7 +310,7 @@ export class AddTask extends Component
                                             </div>
                                             <div class="col-md-2 col-sm-1">
                                                 <span style={errStyle}>{this.state.error.assigneeId}</span>
-                                                &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default">New</a>
+                                                &nbsp;&nbsp; <a href="#" class="btn btn-sm btn-default" onClick={this.addPeople}>New</a>
                                             </div>
                                       </div>
 
@@ -327,7 +347,7 @@ export class AddTask extends Component
                                              </div>
                                             <div class="col-md-2 col-sm-1">
                                             <span style={errStyle}>{this.state.error.testerId}</span>
-                                                &nbsp;&nbsp;<a href="#" class="btn btn-sm btn-default">New</a>
+                                                &nbsp;&nbsp;<a href="#" class="btn btn-sm btn-default" onClick={this.addPeople}>New</a>
                                             </div>
                                         </div>
                                       

@@ -132,9 +132,6 @@ export class Header extends Component {
 
         let progress = Math.ceil((task.totalTimeSpentInHour/task.estimationInHour) * 100) + '%';
 
-        console.log("p=" + progress);
-        console.log(task.category);
-
         if (task.category == 'Feature') {
             return(
                 <div class="progress-bar progress-bar-green" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
@@ -148,9 +145,9 @@ export class Header extends Component {
                 <div class="progress-bar progress-bar-yellow" style={{width: progress}} role="progressbar" aria-valuemin="0" aria-valuemax="100"/>
             )        
         }
-       
     }
 
+    
 
     render() {
 

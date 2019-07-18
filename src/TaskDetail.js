@@ -19,11 +19,15 @@ export class TaskDetail extends Component
         var user = JSON.parse(userJson);
 
         this.closeBtn = React.createRef();
+        this.workLogCloseBtn = React.createRef();
+        this.estimationCloseBtn = React.createRef();
+        
         this.fileTxt = React.createRef();
         this.loggedDateText = React.createRef();
 
         this.state = {
             user: user,
+            error: {},
             id: '',
             project: '',
             tracker: '',
@@ -65,12 +69,7 @@ export class TaskDetail extends Component
 
         let id = this.props.match.params.id;
 
-        if (this.props.history.action === "POP") {
-            this.props.history.push("/task-detail/" + id);
-        }
-
-
-      
+     
         this.getTaskById(id);
         this.getAttachmentByTaskId(id);
         this.getCommentByTaskId(id);
@@ -215,17 +214,53 @@ export class TaskDetail extends Component
     }
 
 
-    updateEstimation = () => {
+    validateEstimation = () => {
 
-        let taskEstimation = {
-            taskId: this.state.id,
-            estimation: this.state.estimation,
-            estimationUnit: this.state.estimationUnit
+        let isValid = true;
+        let error = {};
+             
+        if (this.state.estimation == '') {
+            error.estimation = 'is required';
+            isValid = false;
+        }
+           if (this.state.estimationUnit == '') {
+            error.estimationUnit = 'is required';
+            isValid = false;
         }
 
-        axios.put(config.serverUrl + "/api/task/updateestimation",  taskEstimation).then(response=> {
-            this.getTaskById(this.state.id);
+        this.setState({
+            error: error
         })
+
+        return isValid;
+    }
+
+    closeEstimation = () => {
+        this.setState({
+            error: {},
+            estimation: this.state.estimation,
+            estimationUnit: this.state.estimationUnit
+        })
+    }
+
+
+    updateEstimation = () => {
+
+        let isValid = this.validateEstimation();
+
+        if (isValid)
+        {
+            let taskEstimation = {
+                taskId: this.state.id,
+                estimation: this.state.estimation,
+                estimationUnit: this.state.estimationUnit
+            }
+
+            axios.put(config.serverUrl + "/api/task/updateestimation",  taskEstimation).then(response=> {
+                this.estimationCloseBtn.current.click();
+                this.getTaskById(this.state.id);
+            })
+        }
     }
 
     saveComment = () => {
@@ -277,23 +312,76 @@ export class TaskDetail extends Component
 
 
 
-    saveWorkLog = () => {
+    validateWorkLog = () => {
 
-        let workLog = {
-            taskId: this.state.id,
-            loggedDate: this.loggedDateText.current.value,
-            userId: this.state.user.id,
-            timeSpent: this.state.timeSpent,
-            unit: this.state.unit
+        let isValid = true;
+        let error = {};
+      
+       
+        if (this.loggedDateText.current.value == '') 
+        {
+            error.loggedDate = 'is required';
+            isValid = false;
         }
-              
-        console.log(workLog);
+        if (this.state.timeSpent == '') {
+            error.timeSpent = 'is required';
+            isValid = false;
+        }
 
-        axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
-            this.getWorkLogByTaskId(this.state.id);
-            this.getTaskById(this.state.id);
+        if (this.state.unit == '') {
+            error.unit = 'is required';
+            isValid = false;
+        }
+
+        this.setState({
+            error: error
+        })
+
+        return isValid;
+    }
+
+    
+    closeWorkLog = () => {
+      
+        this.loggedDateText.current.value = '';
+      
+        this.setState({
+            error: {},
+            timeSpent: '',
+            unit: ''
         })
     }
+
+
+    saveWorkLog = () => {
+
+
+        let isValid = this.validateWorkLog();
+        
+        if (isValid)
+        {
+
+            let workLog = {
+                taskId: this.state.id,
+                loggedDate: this.loggedDateText.current.value,
+                userId: this.state.user.id,
+                timeSpent: this.state.timeSpent,
+                unit: this.state.unit
+            }
+        
+            axios.post(config.serverUrl + "/api/worklog/save", workLog).then(response=> {
+                this.workLogCloseBtn.current.click();
+                                
+                this.getWorkLogByTaskId(this.state.id);
+                this.getTaskById(this.state.id);
+                
+            })
+        }
+
+    }
+
+ 
+
 
     deleteWorkLog = (id) => {
 
@@ -365,7 +453,7 @@ export class TaskDetail extends Component
         }
      
         axios.post(config.serverUrl + "/api/attachment/save", attachment).then(response=> {
-      
+            this.getAttachmentByTaskId(this.state.id);
         })
     }
 
@@ -379,7 +467,9 @@ export class TaskDetail extends Component
 
 
     doneUpload =()=> {
-        this.getAttachmentByTaskId(this.state.id);
+        
+        //this.getAttachmentByTaskId(this.state.id);
+        
         this.fileTxt.current.value = '';
         this.setState({
             uploadPercentage: '',
@@ -599,6 +689,9 @@ export class TaskDetail extends Component
             display: 'none',
         }
 
+        let errStyle = {
+            color: 'darkred'
+        }
 
         return(
             <div class="wrapper">
@@ -718,7 +811,7 @@ export class TaskDetail extends Component
                         <div class="modal-dialog" style={{width: '350px'}}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.closeWorkLog}>&times;</button>
                                     <h4 class="modal-title">Add Work Log</h4>
                                 </div>
                                 <div class="addWorkLog-ui">
@@ -741,13 +834,15 @@ export class TaskDetail extends Component
                                             
                                                         </span>
                                                     </div>
+                                                    <span style={errStyle}>{this.state.error.loggedDate}</span>
                                             </div>
-                                        
+                                            <div class="col-md-12">&nbsp;</div>
                                             <div class="col-md-6">
                                                     <div id="divAddTimeSpent" class="form-group">
                                                         <label style={{fontWeight:'normal'}}>Time Spent</label> 
-                                                        <input type="text" class="form-control" name="timeSpent" onChange={this.onTimeSpentChange} value={this.state.timeSpent} style={{fontWeight:'normal'}}/>                                                                                                      
+                                                        <input type="text" class="form-control" name="timeSpent" onChange={this.onTimeSpentChange} value={this.state.timeSpent} style={{fontWeight:'normal'}}/>   
                                                     </div>
+                                                    <span style={errStyle}>{this.state.error.timeSpent}</span>
                                                 </div>
                                     
                                             <div class="col-md-6">
@@ -759,13 +854,13 @@ export class TaskDetail extends Component
                                                             <option value="d">Day</option>
                                                         </select>                                                                                                      
                                                 </div>
+                                                <span style={errStyle}>{this.state.error.unit}</span> 
                                             </div>                                    
-                                            <div id="errorAddWorkLog" class="form-group col-md-12"></div>                                   
                                         </div>
                                     
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onClick={this.saveWorkLog}>Save Work Log</button>
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeWorkLog} ref={this.workLogCloseBtn}>Close</button>
+                                            <button type="button" class="btn btn-primary" onClick={this.saveWorkLog}>Save Work Log</button>
                                         </div>
                                         
                              
@@ -780,7 +875,7 @@ export class TaskDetail extends Component
                         <div class="modal-dialog" style={{width: '350px'}}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.closeEstimation}>&times;</button>
                                     <h4 class="modal-title">Estimation</h4>
                                 </div>
                                 <div class="addWorkLog-ui">
@@ -788,28 +883,29 @@ export class TaskDetail extends Component
                                         <div class="modal-body row">
                                    
                                             <div class="col-md-6">
-                                                    <div class="form-group">
-                                                        <label style={{fontWeight:'normal'}}>Estimation</label> 
-                                                        <input type="text" class="form-control" name="estimation" onChange={this.onValueChange} value={this.state.estimation} style={{fontWeight:'normal'}}/>                                                                                                      
-                                                    </div>
+                                                <div class="form-group">
+                                                    <label style={{fontWeight:'normal'}}>Estimation</label> 
+                                                    <input type="text" class="form-control" name="estimation" onChange={this.onValueChange} value={this.state.estimation} style={{fontWeight:'normal'}}/>                                                                                                      
                                                 </div>
+                                                <span style={errStyle}>{this.state.error.estimation}</span>
+                                            </div>
                                     
                                             <div class="col-md-6">
                                                 <div class="form-group">
                                                     <label style={{fontWeight:'normal'}}>Unit</label> 
                                                         <select class="form-control" name="estimationUnit" onChange={this.onValueChange} value={this.state.estimationUnit} style={{fontWeight:'normal'}}>
-                                                            <option value="-1"></option>
+                                                            <option value=""></option>
                                                             <option value="h">Hour</option>
                                                             <option value="d">Day</option>
                                                         </select>                                                                                                      
                                                 </div>
+                                                <span style={errStyle}>{this.state.error.estimationUnit}</span>
                                             </div>                                    
-                                            <div id="errorAddWorkLog" class="form-group col-md-12"></div>                                   
                                         </div>
                                     
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                            <button type="button" class="btn btn-primary" data-dismiss="modal" onClick={this.updateEstimation}>Update Estimation</button>
+                                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeEstimation} ref={this.estimationCloseBtn}>Close</button>
+                                            <button type="button" class="btn btn-primary" onClick={this.updateEstimation}>Update Estimation</button>
                                         </div>
                                         
                              

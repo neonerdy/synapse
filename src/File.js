@@ -18,7 +18,7 @@ export class File extends Component
         super(props);
 
         this.fileTxt = React.createRef();
-
+    
         var userJson = localStorage.getItem("user");
         var user = JSON.parse(userJson)
 
@@ -54,6 +54,11 @@ export class File extends Component
         })
     }
 
+    onSelectedChange = (e) => {
+        this.setState({
+            projectId : e.target.options[e.target.selectedIndex].text
+        })
+    }
 
     getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
@@ -66,11 +71,17 @@ export class File extends Component
             } else {
                 this.getFilesByProject(this.state.activeProjectId);
             }
-                
-            
         });
     }
 
+    getFiles = () => {
+
+        if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
+            this.getAllFiles();
+        } else {
+            this.getFilesByProject(this.state.activeProjectId);
+        }
+    }
 
 
     getAllProjects =() => {
@@ -115,22 +126,23 @@ export class File extends Component
         let fileInKb = Math.ceil(this.state.files[0].size/1024);
 
         let file = {
-            projectId: this.state.projectId,
+            projectId: this.state.activeProjectId,
             fileName: this.state.files[0].name,
             type: this.getFileExt(this.state.files[0].name).toLowerCase(),
             size: fileInKb + ' KB',
             uploaderId: this.state.user.id
         }
+
         
         axios.post(config.serverUrl + "/api/file/save", file).then(response=> {
-            this.getAllFiles();
+            this.getFiles(); 
         })
     }
  
 
     deleteFile = (id) => {
         axios.delete(config.serverUrl + "/api/file/delete/" + id).then(response=> {
-            this.getAllFiles();
+            this.getFiles();
         })
     }
 
@@ -138,6 +150,7 @@ export class File extends Component
 
     uploadAttachment = () => {
      
+       
         let formData = new FormData();
         
         formData.append('file', this.state.files[0]);
@@ -166,7 +179,6 @@ export class File extends Component
       });
          
     }
-
 
 
     doneUpload =()=> {
@@ -238,7 +250,7 @@ export class File extends Component
 
 
     refresFile = () => {
-        this.getAllFiles();
+        this.getFiles();
     }
 
 
@@ -292,8 +304,6 @@ export class File extends Component
 
 
     render() {
-
-      
 
         const style1 = {
             width:'50%'
@@ -358,12 +368,12 @@ export class File extends Component
                                     <div class="col-md-12">
                                         <div class="form-group">
                                             <label style={{fontWeight:'normal'}}>Project</label>
-                                            <select class="form-control" name="projectId" onChange={this.onValueChange} value={this.state.projectId} style={{fontWeight:'normal'}}>
-                                            <option value="00000000-0000-0000-0000-000000000000">All Project</option>
-                                            {this.state.projects.map(p=> 
-                                                <option key={p.id} value={p.id}>{p.projectName}</option>
-                                            )}
-                                    </select>       
+                                            <select class="form-control" name="activeProjectId" onChange={this.onValueChange} value={this.state.activeProjectId} style={{fontWeight:'normal'}}>
+                                                <option value="00000000-0000-0000-0000-000000000000">All Project</option>
+                                                {this.state.projects.map(p=> 
+                                                    <option key={p.id} value={p.id}>{p.projectName}</option>
+                                                )}
+                                            </select>
                                          </div>
                                     </div>
 
@@ -380,7 +390,7 @@ export class File extends Component
                                         
                                     </div>
                                     <div class="modal-footer">
-                                        <button type="button" class="btn btn-default pull-left" onClick={this.doneUpload} data-dismiss="modal">Close</button>
+                                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.doneUpload}>Close</button>
                                         <button type="button" class="btn btn-primary" id="btnUpload" onClick={this.uploadAttachment}>Upload</button>
                                     </div>
                             
