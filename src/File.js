@@ -32,7 +32,9 @@ export class File extends Component
             files: '',
             uploadPercentage: '',
             barPercentage: '',
-            isLoading: true
+            isLoading: true,
+            fileId: '',
+            fileName: ''
         }
     }
 
@@ -141,6 +143,13 @@ export class File extends Component
     deleteFile = (id) => {
         axios.delete(config.serverUrl + "/api/file/delete/" + id).then(response=> {
             this.getFiles();
+        })
+    }
+
+    getFileId = (id, fileName) => {
+        this.setState({
+            fileId: id,
+            fileName: fileName
         })
     }
 
@@ -402,6 +411,25 @@ export class File extends Component
                 </div>
 
 
+                <div id="deleteFile" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Delete</h4>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {this.state.fileName} ?
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-left"  data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger" onClick={()=>this.deleteFile(this.state.fileId)} data-dismiss="modal">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 
                     <section class="content-header">
                         <h1>
@@ -483,7 +511,7 @@ export class File extends Component
                                 <td>{f.uploader}</td>
                                 <td>{moment(f.uploadedDate).format('MM/DD/YYYY hh:mm:ss')}</td>
                                 <td>
-                                <a href="#" onClick={()=>this.deleteFile(f.id)}>Delete</a>
+                                <a href="#" data-toggle="modal" data-target="#deleteFile" onClick={()=>this.getFileId(f.id, f.fileName)}>Delete</a>
                                 </td>
                             </tr>
                             )}

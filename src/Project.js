@@ -23,7 +23,9 @@ export class Project extends Component
             user: user,
             projects: [],
             initialProjects: [],
-            isLoading: true
+            isLoading: true,
+            projectId: '',
+            projectName: '',
         }
     }
 
@@ -55,6 +57,13 @@ export class Project extends Component
     deleteProject = (id) => {
         axios.delete(config.serverUrl + "/api/project/delete/" + id).then(response=> {
             this.getAllProjects();
+        })
+    }
+
+    getProjectId = (id, projectName) => {
+        this.setState({
+            projectId: id,
+            projectName: projectName
         })
     }
 
@@ -142,6 +151,27 @@ export class Project extends Component
                 </section>
                 <br></br>
             
+            
+                <div id="deleteProject" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Delete</h4>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {this.state.projectName} ?
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-left"  data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger" onClick={()=>this.deleteProject(this.state.projectId)} data-dismiss="modal">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
                 <section class="content">
                     <div class="row">
                     
@@ -210,7 +240,8 @@ export class Project extends Component
                                             <td>{p.description}</td>
                                             <td>{p.status}</td>
                                             <td>
-                                                <a href="#" onClick={()=>this.editProject(p.id)}>Edit</a> &nbsp;|&nbsp; <a href="#" onClick={()=>this.deleteProject(p.id)}>Delete</a>
+                                                <a href="#" onClick={()=>this.editProject(p.id)}>Edit</a> &nbsp;|&nbsp; 
+                                                <a href="#" data-toggle="modal" data-target="#deleteProject" onClick={()=>this.getProjectId(p.id, p.projectName)}>Delete</a>
                                             </td>
                                         </tr>
                                         )}

@@ -27,6 +27,7 @@ export class EditPeople extends Component
             address: '',
             phone: '',
             email: '',
+            photo: '',
             activeProjectId : '00000000-0000-0000-0000-000000000000',
             isHideClosedTask : false,
             isShowAssignedToMe : false,
@@ -57,6 +58,7 @@ export class EditPeople extends Component
                 address: response.data.address,
                 phone: response.data.phone,
                 email: response.data.email,
+                photo: response.data.photo,
                 activeProjectId : response.data.activeProjectId,
                 isHideClosedTask : response.data.isHideClosedTask,
                 isShowAssignedToMe : response.data.isShowAssignedToMe,
@@ -128,6 +130,7 @@ export class EditPeople extends Component
                 address: this.state.address,
                 email: this.state.email,
                 phone: this.state.phone,
+                photo: this.state.photo,
                 activeProjectId : this.state.activeProjectId,
                 isHideClosedTask : this.state.isHideClosedTask,
                 isShowAssignedToMe : this.state.isShowAssignedToMe

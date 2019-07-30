@@ -126,6 +126,7 @@ export class EditProject extends Component
                 projectName: this.state.projectName,
                 initial: this.state.initial,
                 projectManagerId: this.state.projectManagerId,
+                createdDate: this.state.createdDate,
                 description: this.state.description,
                 status: this.state.status,
             }

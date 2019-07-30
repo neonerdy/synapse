@@ -23,7 +23,9 @@ export class People extends Component
             user: user,
             initialPeople: [],
             people : [],
-            isLoading: true
+            isLoading: true,
+            peopleId: '',
+            fullName: ''
         }
     }
 
@@ -45,6 +47,14 @@ export class People extends Component
     deletePeople = (id) => {
         axios.delete(config.serverUrl + "/api/people/delete/" + id).then(response=> {
             this.getAllPeople();
+        })
+    }
+
+    getPeopleId = (id, fullName) => {
+        
+        this.setState({
+            peopleId: id,
+            fullName:fullName
         })
     }
 
@@ -147,6 +157,25 @@ export class People extends Component
                 </section>
                 <br></br>
 
+                <div id="deletePeople" class="modal fade">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                <h4 class="modal-title">Delete</h4>
+                            </div>
+                            <div class="modal-body">
+                                Are you sure want to delete {this.state.fullName} ?
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-default pull-left"  data-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-danger" onClick={()=>this.deletePeople(this.state.peopleId)} data-dismiss="modal">Yes</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <section class="content">
                 
                     <div class="box box-default">
@@ -211,7 +240,8 @@ export class People extends Component
                                             <td>{p.phone}</td>
                                             <td>{p.email}</td>
                                             <td>
-                                            <a href="#" onClick={()=>this.editPeople(p.id)}>Edit</a> &nbsp;|&nbsp; <a href="#" onClick={()=>this.deletePeople(p.id)}>Delete</a>                                            </td>
+                                            <a href="#" onClick={()=>this.editPeople(p.id)}>Edit</a> &nbsp;|&nbsp; 
+                                            <a href="#"  data-toggle="modal" data-target="#deletePeople" onClick={()=>this.getPeopleId(p.id, p.fullName)}>Delete</a>                                            </td>
                                        
                                         </tr>
                                         )}

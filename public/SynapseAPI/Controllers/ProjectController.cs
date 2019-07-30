@@ -68,6 +68,7 @@ namespace TaskMaster.Models
         {
             project.ID = Guid.NewGuid();
             project.Status = "New";
+            project.CreatedDate = DateTime.Now;
             context.Add(project);    
 
             var result = await context.SaveChangesAsync();
