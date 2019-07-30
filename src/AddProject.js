@@ -27,6 +27,7 @@ export class AddProject extends Component
             projectManagerId: '',
             projectManagers: [],
             description: '',
+            isSaving: false
         }
     }
 
@@ -95,7 +96,14 @@ export class AddProject extends Component
                 description: this.state.description
             }
 
+            this.setState({
+                isSaving: true
+            })
+
             axios.post(config.serverUrl + "/api/project/save", project).then(response=> {
+                this.setState({
+                    isSaving: false
+                })
                 this.props.history.push("/project");
             })
         
@@ -146,7 +154,10 @@ export class AddProject extends Component
                                     <div class="box-header with-border">
                                         <h3 class="box-title"></h3>
                                         <div class="box-tools pull-right">
-                                           
+                                             {this.state.isSaving ? 
+                                            <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Saving ...</span>
+                                            : null
+                                            }
                                         </div>
 
                                       <form class="form-horizontal">

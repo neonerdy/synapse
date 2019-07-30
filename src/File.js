@@ -31,7 +31,8 @@ export class File extends Component
             uploadedFiles: [],
             files: '',
             uploadPercentage: '',
-            barPercentage: ''
+            barPercentage: '',
+            isLoading: true
         }
     }
 
@@ -54,23 +55,20 @@ export class File extends Component
         })
     }
 
-    onSelectedChange = (e) => {
-        this.setState({
-            projectId : e.target.options[e.target.selectedIndex].text
-        })
-    }
-
     getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
-            this.setState({
-                activeProjectId: response.data.activeProjectId
-            })
-
+            
             if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                 this.getAllFiles();
             } else {
-                this.getFilesByProject(this.state.activeProjectId);
+                this.getFilesByProject(response.data.activeProjectId);
             }
+
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+                isLoading: false
+            })
+            
         });
     }
 
@@ -417,9 +415,15 @@ export class File extends Component
 
                     <section class="content">
                         
+                       
                 
                        <div class="box box-default">
                            <div class="box-body">
+
+                           {this.state.isLoading ? 
+                            <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
+                            : null
+                            }
                     
                            <div class="pull-right">
                             <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refresFile}>

@@ -22,7 +22,8 @@ export class People extends Component
         this.state = {
             user: user,
             initialPeople: [],
-            people : []
+            people : [],
+            isLoading: true
         }
     }
 
@@ -35,7 +36,8 @@ export class People extends Component
         axios.get(config.serverUrl + "/api/people/getall").then(response=> {
             this.setState({
                 initialPeople: response.data,
-                people: response.data
+                people: response.data,
+                isLoading: false
             })
         });
     }
@@ -151,6 +153,11 @@ export class People extends Component
                 
                     <div class="box-body">
                         
+                        {this.state.isLoading ? 
+                            <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
+                            : null
+                        }
+
                         <div class="pull-right">
                             <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshPeople}>
                                 <i class="fa fa-refresh"></i>

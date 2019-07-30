@@ -36,7 +36,8 @@ export class AddTask extends Component
             platform: '',
             version: '',
             testerId: '',
-            description: ''
+            description: '',
+            isSaving: false
         }
     }
 
@@ -102,7 +103,14 @@ export class AddTask extends Component
                 description: this.state.description
             }
 
+            this.setState({
+                isSaving: true
+            })
+
             axios.post(config.serverUrl + "/api/task/save", task).then(response=> {
+                this.setState({
+                    isSaving: false
+                })
                 this.props.history.push("/task");
             })
         }
@@ -215,6 +223,12 @@ export class AddTask extends Component
                             <div class="col-md-12">
                                 <div class="box box-default">
                                     <div class="box-header with-border">
+                                    <div class="box-tools pull-right">
+                                        {this.state.isSaving ? 
+                                        <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Saving ...</span>
+                                        : null
+                                        }
+                                    </div>
 
                                     <div class="nav-tabs-custom">
                                         <ul class="nav nav-tabs">

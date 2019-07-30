@@ -44,7 +44,10 @@ export class EditTask extends Component
             totalTimeSpentInHour: '',
             estimation: '',
             estimationUnit: '',
-            estimationInHour: ''
+            estimationInHour: '',
+            isLoading: true,
+            isUpdating: false,
+            waitStatus: ''
         }
     }
 
@@ -92,6 +95,11 @@ export class EditTask extends Component
     }
 
     getTaskById = (id) => {
+
+        this.setState({
+            waitStatus: 'Loading ...'
+        })
+
         axios.get(config.serverUrl + "/api/task/getbyid/" + id).then(response=> {
             this.setState({
                 id: response.data.id,
@@ -114,7 +122,8 @@ export class EditTask extends Component
                 totalTimeSpentInHour: response.data.totalTimeSpentInHour,
                 estimation: response.data.estimation,
                 estimationUnit: response.data.estimationUnit,
-                estimationInHour: response.data.estimationInHour
+                estimationInHour: response.data.estimationInHour,
+                isLoading: false
             })
            
         })
@@ -151,7 +160,15 @@ export class EditTask extends Component
                 estimationInHour: this.state.estimationInHour
             }
 
+            this.setState({
+                isUpdating: true,
+                waitStatus: 'Updating ...'
+            })
+
             axios.put(config.serverUrl + "/api/task/update", task).then(response=> {
+                this.setState({
+                    isUpdating: false
+                })
                 this.props.history.push("/task-detail/" + this.state.id);
             })
         }
@@ -257,6 +274,14 @@ export class EditTask extends Component
                                        
                                     <div class="nav-tabs-custom">
                                         <ul class="nav nav-tabs">
+                                        
+                                        <div class="pull-right">
+                                            {this.state.isLoading || this.state.isUpdating ? 
+                                                <span><i className="fa fa-spinner fa-spin"></i> {this.state.waitStatus}</span>
+                                                : null
+                                            }       
+                                        </div>
+
                                         <li class="active"><a href="#tab_1" data-toggle="tab" aria-expanded="true">Detail</a></li>
                                         <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Description</a></li>
                                         </ul>

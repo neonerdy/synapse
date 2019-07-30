@@ -27,7 +27,10 @@ export class EditProject extends Component
             projectManagerId: '',
             projectManagers: [],
             description: '',
-            status: ''
+            status: '',
+            isLoading: true,
+            isUpdating: false,
+            waitStatus: ''
         }
     }
 
@@ -82,6 +85,11 @@ export class EditProject extends Component
     }
 
     getProjectById = (id) => {
+        
+        this.setState({
+            waitStatus: 'Loading ...'
+        })
+
         axios.get(config.serverUrl + "/api/project/getbyid/" + id).then(response=> {
             this.setState({
                 id: response.data.id,
@@ -90,7 +98,8 @@ export class EditProject extends Component
                 projectManagerId: response.data.projectManagerId,
                 description: response.data.description,
                 createdDate: response.data.createdDate,
-                status: response.data.status
+                status: response.data.status,
+                isLoading: false,
             })
         })
     }
@@ -118,10 +127,18 @@ export class EditProject extends Component
                 initial: this.state.initial,
                 projectManagerId: this.state.projectManagerId,
                 description: this.state.description,
-                status: this.state.status
+                status: this.state.status,
             }
 
+            this.setState({
+                isUpdating: true,
+                waitStatus: 'Updating ...'
+            })
+
             axios.put(config.serverUrl + "/api/project/update", project).then(response=> {
+                this.setState({
+                    isUpdating: false
+                })
                 this.props.history.push("/project");
             })
         
@@ -172,7 +189,11 @@ export class EditProject extends Component
                                     <div class="box-header with-border">
                                         <h3 class="box-title"></h3>
                                         <div class="box-tools pull-right">
-                                           
+                                            
+                                            {this.state.isLoading || this.state.isUpdating ? 
+                                            <span><i className="fa fa-spinner fa-spin"></i>&nbsp;{this.state.waitStatus}</span>
+                                            : null
+                                            }
                                         </div>
 
                                       <form class="form-horizontal">

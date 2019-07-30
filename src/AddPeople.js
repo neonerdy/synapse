@@ -27,9 +27,7 @@ export class AddPeople extends Component
             address: '',
             phone: '',
             email: '',
-            activeProjectId : '00000000-0000-0000-0000-000000000000',
-            isHideClosedTask : false,
-            isShowAssignedToMe : false
+            isSaving: false
         }
     }
 
@@ -98,9 +96,14 @@ export class AddPeople extends Component
                 phone: this.state.phone,
             }
 
+            this.setState({
+                isSaving: true
+            })
+
             axios.post(config.serverUrl + "/api/people/save",people).then(response=> {
-                
-                console.log(people);
+                this.setState({
+                    isSaving: false
+                })                
                 this.props.history.push("/people");
             
             })
@@ -143,9 +146,21 @@ export class AddPeople extends Component
                  
                     <section class="content">
 
-                        <div class="box box-default">
+                    <div class="row">
+                       <div class="col-md-12">
+
+                         <div class="box box-default">
+                            
                             <div class="box-header with-border">
-                                <h3 class="box-title"></h3>
+                                 <h3 class="box-title"></h3>
+                                <div class="box-tools pull-right">
+                                    {this.state.isSaving ? 
+                                    <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Saving ...</span>
+                                    : null
+                                    }
+                                </div>
+
+                                 
                             </div>
 
                       <form class="form-horizontal">
@@ -220,6 +235,10 @@ export class AddPeople extends Component
                         </div>
 
 
+                        </div>
+
+
+                        </div>
                     </div>
 
                       

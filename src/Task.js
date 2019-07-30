@@ -23,7 +23,8 @@ export class Task extends Component {
             title: 'All Tasks',
             activeProjectId: '',
             isHideClosedTask: false,
-            isShowAssignedToMe: false
+            isShowAssignedToMe: false,
+            isLoading: true
         }
     }
 
@@ -36,17 +37,12 @@ export class Task extends Component {
 
     getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
-            this.setState({
-                activeProjectId: response.data.activeProjectId,
-                isHideClosedTask: response.data.isHideClosedTask,
-                isShowAssignedToMe: response.data.isShowAssignedToMe
-            })
-
+          
             if (this.state.isHideClosedTask) {
                 if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                     this.getAllAndOpenTask();
                 } else {
-                    this.getByProjectAndOpenTask(this.state.activeProjectId);
+                    this.getByProjectAndOpenTask(response.data.activeProjectId);
                 }
             }
             else {
@@ -54,9 +50,17 @@ export class Task extends Component {
                 if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                     this.getAllTask();
                 } else {
-                    this.getTaskByProject(this.state.activeProjectId);
+                    this.getTaskByProject(response.data.activeProjectId);
                 }
             }    
+
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+                isHideClosedTask: response.data.isHideClosedTask,
+                isShowAssignedToMe: response.data.isShowAssignedToMe,
+                isLoading: false
+            })
+
                 
             
         });
@@ -298,7 +302,6 @@ export class Task extends Component {
                            
                            <div class="box-body">
 
-
                            <div class="btn-group">
                                 <button class="btn btn-default" type="button">Task Category</button>
                                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
@@ -315,6 +318,7 @@ export class Task extends Component {
                             </div>
                             &nbsp; &nbsp;
 
+                          
                            <div class="btn-group">
                                 <button class="btn btn-default" type="button">Task Status</button>
                                 <button class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown" style={buttonStyle}>
@@ -332,8 +336,15 @@ export class Task extends Component {
                                     
                                 </ul>
                             </div>
-                              
-                               <div class="pull-right">
+
+                            &nbsp;&nbsp;&nbsp;&nbsp;
+                                 
+                            {this.state.isLoading ? 
+                            <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
+                            : null
+                            }
+                      
+                             <div class="pull-right">
                                     <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshTask}>
                                         <i class="fa fa-refresh"></i>
                                     </button>
@@ -385,7 +396,10 @@ export class Task extends Component {
                                <div class="pull-right search">
                                    <input class="form-control" type="text" placeholder="Search" onChange={this.onSearchChange}/>
                                </div>
-                               <br/><br/><br/>
+                            
+                               <br/>
+                               <br/>
+                               <br/>
                            
                         <div class="box-body table-responsive no-padding">
                         <table class="table table-hover">

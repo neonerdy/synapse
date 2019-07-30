@@ -24,7 +24,8 @@ export class Dashboard extends Component
            others: 0,
            activeProjectId: '',
            isHideClosedTask: false,
-           isShowAssignedToMe: false
+           isShowAssignedToMe: false,
+           isLoading: true
         }
     }
 
@@ -38,16 +39,18 @@ export class Dashboard extends Component
     getUserTaskCount = (id) => {
         
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
+         
+            this.getProjectCount(response.data.activeProjectId);
+            this.getBugsCount(response.data.activeProjectId);
+            this.getFeaturesCount(response.data.activeProjectId);
+            this.getOthersCount(response.data.activeProjectId);
+
             this.setState({
                 activeProjectId: response.data.activeProjectId,
                 isHideClosedTask: response.data.isHideClosedTask,
-                isShowAssignedToMe: response.data.isShowAssignedToMe
+                isShowAssignedToMe: response.data.isShowAssignedToMe,
+                isLoading: false
             })
-
-            this.getProjectCount(this.state.activeProjectId);
-            this.getBugsCount(this.state.activeProjectId);
-            this.getFeaturesCount(this.state.activeProjectId);
-            this.getOthersCount(this.state.activeProjectId);
 
         });
     }
@@ -179,16 +182,17 @@ export class Dashboard extends Component
                 <br></br>
 
                 <section class="content">
-
                  <div class="row">
                    <div class="col-md-12">
                        <div class="box box-default">
                        <div class="box-header with-border">
                         <h3 class="box-title"></h3>
-                        <div class="box-tools pull-right">
-                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                            </button>
-                        </div>
+                            <div class="box-tools pull-right">
+                                {this.state.isLoading ? 
+                                    <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
+                                    : null
+                                }
+                            </div>
                         </div>
                            
                            <div class="box-body">

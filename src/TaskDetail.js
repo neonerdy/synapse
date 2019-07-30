@@ -61,7 +61,8 @@ export class TaskDetail extends Component
             uploadPercentage: '',
             estimation: '',
             estimationUnit: '',
-            estimationInHour: ''
+            estimationInHour: '',
+            isLoading: true
         }
     }
 
@@ -126,7 +127,8 @@ export class TaskDetail extends Component
                 totalTimeSpentInHour: response.data.totalTimeSpentInHour,
                 estimation: response.data.estimation,
                 estimationUnit: response.data.estimationUnit,
-                estimationInHour: response.data.estimationInHour
+                estimationInHour: response.data.estimationInHour,
+                isLoading: false
             })
       })
         
@@ -945,8 +947,12 @@ export class TaskDetail extends Component
                                 <div class="box box-default">
                                     <br/>
                                     <div class="box-header with-border">
-                                        <h3 class="box-title">{this.renderTracker(this.state.category, this.state.tracker)}&nbsp;&nbsp;{this.state.title}</h3>
-                                        
+                                   
+                                     {this.state.isLoading ? 
+                                        <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
+                                        : <h3 class="box-title">{this.renderTracker(this.state.category, this.state.tracker)}&nbsp;&nbsp;{this.state.title}</h3>
+                                      }
+ 
                                      </div>
 
                                     <section class="content">

@@ -22,7 +22,8 @@ export class Project extends Component
         this.state = {
             user: user,
             projects: [],
-            initialProjects: []
+            initialProjects: [],
+            isLoading: true
         }
     }
 
@@ -31,10 +32,12 @@ export class Project extends Component
     }
 
     getAllProjects =() => {
+
         axios.get(config.serverUrl + "/api/project/getall").then(response=> {
             this.setState({
                 projects: response.data,
-                initialProjects: response.data
+                initialProjects: response.data,
+                isLoading: false
             })
         });
     }
@@ -147,6 +150,10 @@ export class Project extends Component
                             
                                 
                                 <div class="box-body">
+                                    {this.state.isLoading ? 
+                                        <span><i className="fa fa-spinner fa-spin"></i> Loading ...</span>
+                                        : null
+                                    }
                                     <div class="pull-right">
                                         <button class="btn btn-default" type="button" name="refresh" aria-label="refresh" title="Refresh" onClick={this.refreshProject}>
                                             <i class="fa fa-refresh"></i>

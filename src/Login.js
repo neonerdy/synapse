@@ -11,7 +11,10 @@ export class Login extends Component
         super(props);
         this.state = {
             username: '',
-            password: ''
+            isLoading: '',
+            password: '',
+            errStyle: '',
+            loginError: ''
         }
     }
 
@@ -21,33 +24,83 @@ export class Login extends Component
         })
     }
 
+
+    validateLogin =()=> {
+
+        let isValid = true;
+
+        let loginError = '';
+
+        if (this.state.username == '' && this.state.password == '') {
+            isValid = false;
+            loginError = "User name and password is required"
+        } else if (this.state.username == '') {
+            isValid = false;
+            loginError = "User name is required"
+        } else if (this.state.password == '') {
+            isValid = false;
+            loginError = "Password is required";
+        }
+
+        this.setState({
+            loginError: loginError
+        })
+
+        return isValid;
+    }
+
+
     login =() => {
 
        
-         var people = {
-             UserName: this.state.username,
-             Password: this.state.password
-         }
-      
-         console.log(people);
+         let isValid = this.validateLogin();
 
-         axios.post(config.serverUrl + "/api/people/login",people).then(response=>{
-            var result = response.data;
-
-            console.log(JSON.stringify(result));
-          
-            if (result != "") {
-                localStorage.setItem("user", JSON.stringify(result));
-                this.props.history.push("/dashboard");
+         if (isValid)
+         {
+            var people = {
+                UserName: this.state.username,
+                Password: this.state.password
             }
 
-         })
-           
+            this.setState({
+                isLoading: true
+            })
+
+        
+            console.log(people);
+
+            axios.post(config.serverUrl + "/api/people/login",people).then(response=>{
+                var result = response.data;
+
+                console.log("result=" + JSON.stringify(result));
+              
+                if (result != "") {
+                    this.setState({
+                        isLoading : false         
+                    })
+               
+                    localStorage.setItem("user", JSON.stringify(result));
+                    this.props.history.push("/dashboard");
+               
+                } else {
+                    this.setState({
+                        loginError: 'Authentication failed, please check to admin',
+                        isLoading: false
+                    })
+                }
+
+            })
+        }
 
     }
 
 
     render() {
+
+        let errStyle = {
+            color: 'darkred'
+        }
+
         return(
           
             <div>
@@ -73,6 +126,11 @@ export class Login extends Component
                             <input type="password" name="password" onChange={this.onValueChange} class="form-control" placeholder="Password"/>
                             <span class="glyphicon glyphicon-lock form-control-feedback"></span>
                         </div>
+                        <span style={errStyle}>{this.state.loginError}</span>
+                        {this.state.isLoading? 
+                            <span><i className="fa fa-spinner fa-spin"></i> Authenticating ...</span>
+                         : null
+                        }
                         <br/><br/>
                         <div clas="row">
                     
