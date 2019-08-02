@@ -23,6 +23,7 @@ export class File extends Component
         var user = JSON.parse(userJson)
 
         this.state = {
+            error: {},
             user: user,
             activeProjectId: '',
             projects: [],
@@ -154,37 +155,63 @@ export class File extends Component
     }
 
 
+    validate = () => {
+
+        let isValid = true;
+        let error = {};
+
+        if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
+            error.projectName = 'Project name is required';
+            isValid = false;
+        }
+
+        if (this.state.files[0] == undefined) {
+            error.fileName = 'File name is required';
+            isValid = false;
+        }
+
+        this.setState({
+            error: error
+        })
+
+        return isValid;
+
+    }
 
     uploadAttachment = () => {
      
-       
-        let formData = new FormData();
-        
-        formData.append('file', this.state.files[0]);
+       let isValid = this.validate();
 
-        axios.post(config.serverUrl + "/api/attachment/uploadfile",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: (progressEvent)=> {
-                var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
-                this.setState({
-                    uploadPercentage: percentDone + "%",
-                    barPercentage: percentDone + "%"
-                })
-                
+       if (isValid)
+       {
+        
+            let formData = new FormData();
+            
+            formData.append('file', this.state.files[0]);
+
+            axios.post(config.serverUrl + "/api/attachment/uploadfile",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent)=> {
+                    var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                    this.setState({
+                        uploadPercentage: percentDone + "%",
+                        barPercentage: percentDone + "%"
+                    })
+                    
+                }
             }
-        }
-      ).then(()=> {
-            console.log('SUCCESS UPLOAD FILE!!');
-            this.saveFile();
-      })
-      .catch(()=> {
-        console.log('UPLOAD FILE FAILURE!!');
-      });
-         
+            ).then(()=> {
+                    console.log('SUCCESS UPLOAD FILE!!');
+                    this.saveFile();
+            })
+            .catch(()=> {
+                console.log('UPLOAD FILE FAILURE!!');
+            });
+       }         
     }
 
 
@@ -192,6 +219,7 @@ export class File extends Component
         
         this.fileTxt.current.value = '';
         this.setState({
+            error: {},
             uploadPercentage: '',
             barPercentage: '0%',
             files: ''
@@ -346,6 +374,10 @@ export class File extends Component
             width: '500px'
         }
 
+        const errStyle = {
+            color: 'darkred'
+        }
+
 
         return(
             <div class="wrapper">
@@ -364,7 +396,7 @@ export class File extends Component
                         <div class="modal-dialog" style={modalStyle}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.doneUpload}>&times;</button>
                                     <h4 class="modal-title">Upload File</h4>
                                 </div>
                                 
@@ -381,9 +413,10 @@ export class File extends Component
                                                     <option key={p.id} value={p.id}>{p.projectName}</option>
                                                 )}
                                             </select>
+                                            <br/>        
+                                            <span style={errStyle}>{this.state.error.projectName}</span> 
                                          </div>
                                     </div>
-
                                     <div class="col-md-12">
                                         <div id="divFile" class="form-group">
                                              <label style={{fontWeight:'normal'}}>File</label>
@@ -393,6 +426,7 @@ export class File extends Component
                                             </div>
                                             {this.state.uploadPercentage}
                                         </div>
+                                        <span style={errStyle}>{this.state.error.fileName}</span>
                                     </div>
                                         
                                     </div>

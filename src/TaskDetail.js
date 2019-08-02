@@ -19,6 +19,7 @@ export class TaskDetail extends Component
         var user = JSON.parse(userJson);
 
         this.closeBtn = React.createRef();
+        this.commentCloseBtn = React.createRef();
         this.workLogCloseBtn = React.createRef();
         this.estimationCloseBtn = React.createRef();
         
@@ -225,7 +226,7 @@ export class TaskDetail extends Component
             error.estimation = 'is required';
             isValid = false;
         }
-           if (this.state.estimationUnit == '') {
+        if (this.state.estimationUnit == '') {
             error.estimationUnit = 'is required';
             isValid = false;
         }
@@ -265,18 +266,43 @@ export class TaskDetail extends Component
         }
     }
 
-    saveComment = () => {
 
-        var comment = {
-            taskId : this.state.id,
-            commenterId: this.state.user.id,
-            message: this.state.message
+    validateComment = () => {
+
+        let isValid = true;
+        let error = {};
+             
+        if (this.state.message == '') {
+            error.message = 'is required';
+            isValid = false;
         }
 
-        axios.post(config.serverUrl + "/api/comment/save", comment).then(response=> {
-            this.getCommentByTaskId(this.state.id);
-            this.getHistoriesByTaskId(this.state.id);
+        this.setState({
+            error: error
         })
+
+        return isValid;
+
+    }
+
+
+    saveComment = () => {
+
+        let isValid = this.validateComment();
+        if (isValid)
+        {
+            var comment = {
+                taskId : this.state.id,
+                commenterId: this.state.user.id,
+                message: this.state.message
+            }
+
+            axios.post(config.serverUrl + "/api/comment/save", comment).then(response=> {
+                this.commentCloseBtn.current.click();
+                this.getCommentByTaskId(this.state.id);
+                this.getHistoriesByTaskId(this.state.id);
+            })
+        }
     }
 
     editComment = (id) => {
@@ -288,20 +314,28 @@ export class TaskDetail extends Component
             })
 
         })
- 
     }
 
+
     updateComment = () => {
-        var comment = {
-            id: this.state.commentId,
-            taskId: this.state.id,
-            commenterId: this.state.user.id,
-            message: this.state.message,
-            createdDate: this.state.createdDate
+       
+       
+        let isValid = this.validateComment();
+        if (isValid)
+        {
+            var comment = {
+                id: this.state.commentId,
+                taskId: this.state.id,
+                commenterId: this.state.user.id,
+                message: this.state.message,
+                createdDate: this.state.createdDate
+            }
+         
+            axios.put(config.serverUrl + "/api/comment/update", comment).then(response=> {
+                this.commentCloseBtn.current.click();
+                this.getCommentByTaskId(this.state.id);
+            })
         }
-        axios.put(config.serverUrl + "/api/comment/update", comment).then(response=> {
-            this.getCommentByTaskId(this.state.id);
-        })
     }
 
 
@@ -309,6 +343,13 @@ export class TaskDetail extends Component
     deleteComment = (id) => {
         axios.delete(config.serverUrl + "/api/comment/delete/" + id).then(response=> {
             this.getCommentByTaskId(this.state.id);
+        })
+    }
+
+    closeComment = () => {
+        this.setState({
+            error: {},
+            message: ''
         })
     }
 
@@ -470,46 +511,71 @@ export class TaskDetail extends Component
 
     doneUpload =()=> {
         
-        //this.getAttachmentByTaskId(this.state.id);
-        
         this.fileTxt.current.value = '';
         this.setState({
+            error: {},
             uploadPercentage: '',
             barPercentage: '0%',
             files: ''
         })
     }
 
+
+    validateUpload = () => {
+
+        let isValid = true;
+        let error = {};
+
+        if (this.state.files[0] == undefined) {
+            error.fileName = 'File name is required';
+            isValid = false;
+        }
+
+        this.setState({
+            error: error
+        })
+
+        return isValid;
+
+    }
+
+
     uploadAttachment = () => {
 
-     
-        let formData = new FormData();
+        let isValid = this.validateUpload();
         
-        formData.append('file', this.state.files[0]);
+        if (isValid)
+        {
+     
+            let formData = new FormData();
+            
+            formData.append('file', this.state.files[0]);
 
-        axios.post(config.serverUrl + "/api/attachment/uploadfile",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: (progressEvent)=> {
-                var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
-                this.setState({
-                    displayProgress: 'true',
-                    uploadPercentage: percentDone + "%",
-                    barPercentage: percentDone + "%"
-                })
-                
+            axios.post(config.serverUrl + "/api/attachment/uploadfile",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent)=> {
+                    var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                    this.setState({
+                        displayProgress: 'true',
+                        uploadPercentage: percentDone + "%",
+                        barPercentage: percentDone + "%"
+                    })
+                    
+                }
             }
+            ).then(()=> {
+                    console.log('SUCCESS UPLOAD ATTACHMENT !!');
+                    this.saveAttachment();
+            })
+            .catch(()=> {
+                console.log('UPLOAD ATTACHMENT FAILURE !!');
+            });
+        
         }
-      ).then(()=> {
-            console.log('SUCCESS UPLOAD ATTACHMENT !!');
-            this.saveAttachment();
-      })
-      .catch(()=> {
-        console.log('UPLOAD ATTACHMENT FAILURE !!');
-      });
          
 
 
@@ -724,16 +790,18 @@ export class TaskDetail extends Component
                         <div class="modal-dialog" style={popupStyle}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.closeComment}>&times;</button>
                                     <h4 class="modal-title">Add Comment</h4>
                                 </div>
                                 <div class="modal-body">
                                     
                                 <textarea class="form-control" rows="8" name="message" onChange={this.onValueChange}></textarea>
                                 </div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.message}</span>
+                                <div></div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onClick={this.saveComment} data-dismiss="modal">Save</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentCloseBtn}>Close</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.saveComment}>Save</button>
                                 </div>
                             </div>
                         </div>
@@ -743,7 +811,7 @@ export class TaskDetail extends Component
                         <div class="modal-dialog" style={popupStyle}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.closeComment}>&times;</button>
                                     <h4 class="modal-title">Edit Comment</h4>
                                 </div>
                                 <div class="modal-body">
@@ -751,9 +819,11 @@ export class TaskDetail extends Component
                                 <textarea class="form-control" rows="8" name="message" 
                                     onChange={this.onValueChange} value={this.state.message}></textarea>
                                 </div>
+                                &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.message}</span>
+                               <div></div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" onClick={this.updateComment} data-dismiss="modal">Update</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentCloseBtn}>Close</button>
+                                    <button type="button" class="btn btn-primary" onClick={this.updateComment}>Update</button>
                                 </div>
                             </div>
                         </div>
@@ -763,7 +833,7 @@ export class TaskDetail extends Component
                         <div class="modal-dialog" style={modalStyle}>
                             <div class="modal-content">
                                 <div class="modal-header">
-                                    <button type="button" class="close" data-dismiss="modal">&times;</button>
+                                    <button type="button" class="close" data-dismiss="modal" onClick={this.doneUpload}>&times;</button>
                                     <h4 class="modal-title">Attachment</h4>
                                 </div>
                                 
@@ -779,17 +849,9 @@ export class TaskDetail extends Component
                                             {this.state.uploadPercentage}
                                           
                                             </div>
-                                          
+                                            <span style={errStyle}>{this.state.error.fileName}</span>
                                         </div>
-                                        
-                                        {/*}
-                                        <div class="col-md-12">
-                                            <div class="progress">
-                                                <div class="progress-bar progress-bar active" role="progressbar" aria-valuemin="0" aria-valuemax="100" style={barStyle}></div>
-                                            </div>
-                                            {this.state.uploadPercentage}
-                                        </div>
-                                        {*/}
+                                   
 
                                         <div id="errorAddAttachment" class="form-group col-md-12"></div>     
                                     </div>
