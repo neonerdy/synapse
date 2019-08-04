@@ -5,38 +5,20 @@
 CREATE TABLE public.attachments
 (
     id uuid NOT NULL,
-    bug_id uuid,
+    task_id uuid,
     file_name character varying(50) COLLATE pg_catalog."default",
     type character varying(15) COLLATE pg_catalog."default",
     size numeric,
+    uploaded_date timestamp without time zone,
     CONSTRAINT attachments_pkey PRIMARY KEY (id)
 )
-
-
--- Table: public.bugs
-
--- DROP TABLE public.bugs;
-
-CREATE TABLE public.bugs
-(
-    id uuid NOT NULL,
-    project_id uuid,
-    tracker character varying(25) COLLATE pg_catalog."default", 
-    title character varying(250) COLLATE pg_catalog."default",
-    priority character varying(10) COLLATE pg_catalog."default",
-    reporter_id uuid,
-    assignee_id uuid,
-    tester_id uuid,
-    platform character varying(25) COLLATE pg_catalog."default",
-    module character varying(25) COLLATE pg_catalog."default",
-    version character varying(10) COLLATE pg_catalog."default",
-    created_date timestamp without time zone,
-    modified_date timestamp without time zone,
-    closed_date timestamp without time zone,
-    status character varying(10) COLLATE pg_catalog."default",
-    description text COLLATE pg_catalog."default",
-    CONSTRAINT bugs_pkey PRIMARY KEY (id)
+WITH (
+    OIDS = FALSE
 )
+TABLESPACE pg_default;
+
+ALTER TABLE public.attachments
+    OWNER to postgres;
 
 
 
@@ -47,31 +29,44 @@ CREATE TABLE public.bugs
 CREATE TABLE public.comments
 (
     id uuid NOT NULL,
-    bug_id uuid,
+    task_id uuid,
     created_date timestamp without time zone,
     commenter_id uuid,
     message character varying(500) COLLATE pg_catalog."default",
     CONSTRAINT comments_pkey PRIMARY KEY (id)
 )
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.comments
+    OWNER to postgres;
 
 
--- Table: public.documents
 
--- DROP TABLE public.documents;
+-- Table: public.files
 
-CREATE TABLE public.documents
+-- DROP TABLE public.files;
+
+CREATE TABLE public.files
 (
     id uuid NOT NULL,
     project_id uuid,
-    title character varying(150) COLLATE pg_catalog."default",
-    author_id uuid,
-    version character varying(10) COLLATE pg_catalog."default",
-    file_name character varying(250) COLLATE pg_catalog."default",
+    file_name character varying(150) COLLATE pg_catalog."default",
     type character varying(10) COLLATE pg_catalog."default",
-    size numeric,
-    created_date timestamp without time zone,
-    CONSTRAINT documents_pkey PRIMARY KEY (id)
+    size character varying(50) COLLATE pg_catalog."default",
+    uploader_id uuid,
+    uploaded_date timestamp without time zone,
+    CONSTRAINT files_pkey PRIMARY KEY (id)
 )
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.files
+    OWNER to postgres;
 
 
 
@@ -82,11 +77,21 @@ CREATE TABLE public.documents
 CREATE TABLE public.histories
 (
     id uuid NOT NULL,
-    bug_id uuid,
-    date time without time zone,
+    task_id uuid,
+    user_id uuid,
+    date timestamp without time zone,
     activity_log character varying(50) COLLATE pg_catalog."default",
     CONSTRAINT histories_pkey PRIMARY KEY (id)
 )
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.histories
+    OWNER to postgres;
+
+
 
 -- Table: public.people
 
@@ -102,8 +107,19 @@ CREATE TABLE public.people
     address character varying(150) COLLATE pg_catalog."default",
     phone character varying(15) COLLATE pg_catalog."default",
     email character varying(25) COLLATE pg_catalog."default",
+    active_project_id uuid,
+    "Is_hide_closed_task" boolean,
+    photo character varying(50) COLLATE pg_catalog."default",
     CONSTRAINT people_pkey PRIMARY KEY (id)
 )
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.people
+    OWNER to postgres;
+
 
 
 -- Table: public.projects
@@ -121,18 +137,77 @@ CREATE TABLE public.projects
     description character varying(250) COLLATE pg_catalog."default",
     CONSTRAINT projects_pkey PRIMARY KEY (id)
 )
-
-
-
-
--- Table: public.settings
-
--- DROP TABLE public.settings;
-
-CREATE TABLE public.settings
-(
-    
-	_id uuid,
-    project_id uuid
+WITH (
+    OIDS = FALSE
 )
+TABLESPACE pg_default;
+
+ALTER TABLE public.projects
+    OWNER to postgres;
+
+
+
+-- Table: public.tasks
+
+-- DROP TABLE public.tasks;
+
+CREATE TABLE public.tasks
+(
+    id uuid NOT NULL,
+    project_id uuid,
+    category character varying(10) COLLATE pg_catalog."default",
+    tracker character varying(25) COLLATE pg_catalog."default",
+    title character varying(250) COLLATE pg_catalog."default",
+    priority character varying(10) COLLATE pg_catalog."default",
+    reporter_id uuid,
+    assignee_id uuid,
+    tester_id uuid,
+    platform character varying(25) COLLATE pg_catalog."default",
+    module character varying(25) COLLATE pg_catalog."default",
+    version character varying(10) COLLATE pg_catalog."default",
+    created_date timestamp without time zone,
+    modified_date timestamp without time zone,
+    closed_date timestamp without time zone,
+    status character varying(10) COLLATE pg_catalog."default",
+    description text COLLATE pg_catalog."default",
+    estimation integer,
+    estimation_unit character varying(10) COLLATE pg_catalog."default",
+    estimation_in_hour integer,
+    total_time_spent_in_hour integer,
+    CONSTRAINT bugs_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.tasks
+    OWNER to postgres;
+
+
+
+-- Table: public.worklogs
+
+-- DROP TABLE public.worklogs;
+
+CREATE TABLE public.worklogs
+(
+    id uuid NOT NULL,
+    task_id uuid,
+    user_id uuid,
+    logged_date timestamp without time zone,
+    time_spent integer,
+    unit character varying(10) COLLATE pg_catalog."default",
+    time_spent_in_hour integer,
+    CONSTRAINT worklogs_pkey PRIMARY KEY (id)
+)
+WITH (
+    OIDS = FALSE
+)
+TABLESPACE pg_default;
+
+ALTER TABLE public.worklogs
+    OWNER to postgres;
+
+
 
