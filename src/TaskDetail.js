@@ -19,7 +19,9 @@ export class TaskDetail extends Component
         var user = JSON.parse(userJson);
 
         this.closeBtn = React.createRef();
-        this.commentCloseBtn = React.createRef();
+        this.commentAddCloseBtn = React.createRef();
+        this.commentUpdateloseBtn = React.createRef();
+
         this.workLogCloseBtn = React.createRef();
         this.estimationCloseBtn = React.createRef();
         
@@ -298,7 +300,7 @@ export class TaskDetail extends Component
             }
 
             axios.post(config.serverUrl + "/api/comment/save", comment).then(response=> {
-                this.commentCloseBtn.current.click();
+                this.commentAddCloseBtn.current.click();
                 this.getCommentByTaskId(this.state.id);
                 this.getHistoriesByTaskId(this.state.id);
             })
@@ -332,7 +334,7 @@ export class TaskDetail extends Component
             }
          
             axios.put(config.serverUrl + "/api/comment/update", comment).then(response=> {
-                this.commentCloseBtn.current.click();
+                this.commentUpdateloseBtn.current.click();
                 this.getCommentByTaskId(this.state.id);
             })
         }
@@ -795,12 +797,12 @@ export class TaskDetail extends Component
                                 </div>
                                 <div class="modal-body">
                                     
-                                <textarea class="form-control" rows="8" name="message" onChange={this.onValueChange}></textarea>
+                                <textarea class="form-control" rows="8" name="message" value={this.state.message} onChange={this.onValueChange}></textarea>
                                 </div>
                                 &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.message}</span>
                                 <div></div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentCloseBtn}>Close</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentAddCloseBtn}>Close</button>
                                     <button type="button" class="btn btn-primary" onClick={this.saveComment}>Save</button>
                                 </div>
                             </div>
@@ -822,7 +824,7 @@ export class TaskDetail extends Component
                                 &nbsp;&nbsp;&nbsp;&nbsp;<span style={errStyle}>{this.state.error.message}</span>
                                <div></div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentCloseBtn}>Close</button>
+                                    <button type="button" class="btn btn-default pull-left" data-dismiss="modal" onClick={this.closeComment} ref={this.commentUpdateloseBtn}>Close</button>
                                     <button type="button" class="btn btn-primary" onClick={this.updateComment}>Update</button>
                                 </div>
                             </div>

@@ -116,6 +116,30 @@ export class Header extends Component {
         )
     }
 
+
+    renderAvatar = (photo) => {
+        
+        let avatar = '';
+
+        if (photo == '') {
+            avatar='';
+            return(
+                <div>
+                    <br/>
+                    <i className="fa fa-user-circle-o fa-4x" style={{color:'white'}}></i>
+                </div>
+            )
+        } else {
+            avatar = '/SynapseAPI/Resources/' + photo;
+            return(
+                <img src={avatar} class="img-circle"/>
+            )
+        }
+
+    }
+        
+        
+
     renderMyTaskTitle = (task) => {
         if (task.title.length > 25) {
             return(
@@ -152,8 +176,7 @@ export class Header extends Component {
     render() {
 
 
-       let avatar = '/SynapseAPI/Resources/' + this.props.user.photo;
-   
+    
         return(
 
                   <header class="main-header">
@@ -247,7 +270,7 @@ export class Header extends Component {
                             <ul class="dropdown-menu">
                             <li class="user-header">
                                 
-                                <img src={avatar} class="img-circle"/>
+                                {this.renderAvatar(this.props.user.photo)}
 
                                 <p>
                                 {this.props.user.fullName} - {this.props.user.role}

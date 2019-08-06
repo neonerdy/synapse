@@ -30,6 +30,7 @@ namespace TaskMaster.Controllers
         public async Task<IActionResult> GetAll()
         {
             var people = await context.People
+                .Where(p=>p.Role != "Admin")
                 .OrderBy(p=>p.FullName)
                 .ToListAsync();
             

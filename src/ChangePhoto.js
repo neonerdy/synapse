@@ -18,6 +18,7 @@ export class ChangePhoto extends Component {
 
         this.state = {
             user: user,
+            error: {},
             files: '',
             uploadPercentage: '',
             barPercentage: ''
@@ -45,35 +46,58 @@ export class ChangePhoto extends Component {
     }
 
 
+    validate = () => {
+
+        let isValid = true;
+        let error = {};
+
+        if (this.state.files[0] == undefined) {
+            error.fileName = 'File name is required';
+            isValid = false;
+        }
+
+        this.setState({
+            error: error
+        })
+
+        return isValid;
+    }
+
+
    
     uploadAttachment = () => {
      
-        let formData = new FormData();
+        let isValid = this.validate();
         
-        formData.append('file', this.state.files[0]);
+        if (isValid)
+        {
+            let formData = new FormData();
+            
+            formData.append('file', this.state.files[0]);
 
-        axios.post(config.serverUrl + "/api/attachment/uploadfile",
-            formData,
-            {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-            },
-            onUploadProgress: (progressEvent)=> {
-                var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
-                this.setState({
-                    uploadPercentage: percentDone + "%",
-                    barPercentage: percentDone + "%"
-                })
-                
-            }
+            axios.post(config.serverUrl + "/api/attachment/uploadfile",
+                formData,
+                {
+                    headers: {
+                        'Content-Type': 'multipart/form-data'
+                },
+                onUploadProgress: (progressEvent)=> {
+                    var percentDone = parseInt( Math.round( ( progressEvent.loaded * 100 ) / progressEvent.total ) );
+                    this.setState({
+                        uploadPercentage: percentDone + "%",
+                        barPercentage: percentDone + "%"
+                    })
+                    
+                }
+              }
+            ).then(()=> {
+                    console.log('SUCCESS UPLOAD PHOTO !!');
+                    this.updatePhoto();
+            })
+            .catch(()=> {
+                console.log('UPLOAD PHOTO FAILURE!!');
+            });
         }
-      ).then(()=> {
-            console.log('SUCCESS UPLOAD PHOTO !!');
-            this.updatePhoto();
-      })
-      .catch(()=> {
-        console.log('UPLOAD PHOTO FAILURE!!');
-      });
          
     }
 
@@ -82,6 +106,7 @@ export class ChangePhoto extends Component {
     doneUpload =()=> {
         this.fileTxt.current.value = '';
         this.setState({
+            error: {},
             uploadPercentage: '',
             barPercentage: '0%',
             files: ''
@@ -99,6 +124,10 @@ export class ChangePhoto extends Component {
 
         const attachmentStyle = {
             width: '470px'
+        }
+
+        const errStyle = {
+            color: 'darkred'
         }
 
 
@@ -123,11 +152,10 @@ export class ChangePhoto extends Component {
                                 {this.state.uploadPercentage}
                                 
                                 </div>
-                                
+                                <span style={errStyle}>{this.state.error.fileName}</span>
                             </div>
                       
-                            <div id="errorAddAttachment" class="form-group col-md-12"></div>     
-                        </div>
+                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-default pull-left" onClick={this.doneUpload} data-dismiss="modal">Close</button>
                             <button type="button" class="btn btn-primary" id="btnUpload" onClick={this.uploadAttachment}>Upload</button>
