@@ -166,6 +166,30 @@ namespace TaskMaster.Controllers
                 .Include(t=>t.Assignee)
                 .Include(t=>t.Tester)
                 .Where(t=>t.ID == id)
+                .Select(t=>new {
+                    t.ID,
+                    ProjectId = t.Project.ID,
+                    ProjectName = t.Project.ProjectName,
+                    t.Tracker,
+                    t.Category,
+                    t.Title,
+                    t.Priority,
+                    Reporter = t.Reporter.FullName,
+                    Assignee = t.Assignee.FullName,
+                    Tester = t.Tester.FullName,
+                    t.Module,
+                    t.Platform,
+                    t.Version,
+                    t.CreatedDate,
+                    t.ModifiedDate,
+                    t.ClosedDate,
+                    t.Status,
+                    t.Description,
+                    t.TotalTimeSpentInHour,
+                    t.Estimation,
+                    t.EstimationUnit,
+                    t.EstimationInHour
+                })
                 .SingleOrDefaultAsync();
             
             return Ok(task);

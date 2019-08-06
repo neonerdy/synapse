@@ -59,6 +59,27 @@ namespace TaskMaster.Models
         }
 
 
+        [HttpGet("{projectId}/{userId}")]
+        public async Task<IActionResult> GetByProjectAndUserId(Guid projectId, Guid userId)
+        {
+            var histories = await context.Histories
+             .Include(h=>h.User)
+             .Include(h=>h.Task)
+             .Where(h=>h.Task.ProjectId == projectId && h.Task.AssigneeId == userId && h.Task.Status != "Closed" && h.UserId != userId)
+             .OrderByDescending(h=>h.Date)
+             .Select(h=>new {
+                    h.ID,
+                    User = h.User.FullName,
+                    UserPhoto = h.User.Photo,
+                    Tracker = h.Task.Tracker,
+                    Date = h.Date,
+                    ActivityLog = h.ActivityLog
+                }).ToListAsync();
+              
+            return Ok(histories);
+        }
+
+
 
     }
 

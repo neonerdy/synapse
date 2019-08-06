@@ -60,15 +60,18 @@ export class File extends Component
 
     getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
-            
+           
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+            })
+           
             if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                 this.getAllFiles();
             } else {
-                this.getFilesByProject(response.data.activeProjectId);
+                this.getFilesByProject(this.state.activeProjectId);
             }
 
             this.setState({
-                activeProjectId: response.data.activeProjectId,
                 isLoading: false
             })
             

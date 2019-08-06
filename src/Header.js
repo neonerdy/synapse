@@ -20,8 +20,6 @@ export class Header extends Component {
 
     componentDidMount() {
         this.getUserById(this.props.user.id);
-        this.getHistoryByUserId(this.props.user.id);
-        this.getHistoryByUserId(this.props.user.id);
     }
 
 
@@ -32,9 +30,11 @@ export class Header extends Component {
             })
 
             if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
-                this.getMyTask();
+                this.getMyTask(id);
+                this.getHistoryByUserId(id)
             } else {
                 this.getMyTaskByProject(id, this.state.activeProjectId);
+                this.getHistoryByProjectAndUserId(this.state.activeProjectId, id);
             }
         });
     }
@@ -43,6 +43,7 @@ export class Header extends Component {
 
     getMyTask = (userId) => {
         axios.get(config.serverUrl + "/api/task/getmytask/" + userId).then(response=> {
+            
             this.setState({
                 tasks: response.data,
             })
@@ -52,6 +53,7 @@ export class Header extends Component {
 
     getMyTaskByProject = (userId, projectId) => {
         axios.get(config.serverUrl + "/api/task/getmytaskbyproject/" + userId + "/" + projectId).then(response=> {
+            
             this.setState({
                 tasks: response.data,
             })
@@ -64,9 +66,18 @@ export class Header extends Component {
             this.setState({
                 histories: response.data,
             })
-            console.log(response.data);
         })
     }
+
+
+    getHistoryByProjectAndUserId =(projectId, userId) => {
+        axios.get(config.serverUrl + "/api/history/getbyprojectanduserid/" + projectId + "/" + userId).then(response=> {
+            this.setState({
+                histories: response.data,
+            })
+        })
+    }
+    
 
     taskDetail = (id) => {
         this.props.history.push("/task-detail/" + id);

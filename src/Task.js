@@ -23,7 +23,6 @@ export class Task extends Component {
             title: 'All Tasks',
             activeProjectId: '',
             isHideClosedTask: false,
-            isShowAssignedToMe: false,
             isLoading: true
         }
     }
@@ -37,12 +36,18 @@ export class Task extends Component {
 
     getUserById =(id)=> {
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
-          
+            
+
+            this.setState({
+                activeProjectId: response.data.activeProjectId,
+                isHideClosedTask: response.data.isHideClosedTask,
+            })
+
             if (this.state.isHideClosedTask) {
                 if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                     this.getAllAndOpenTask();
                 } else {
-                    this.getByProjectAndOpenTask(response.data.activeProjectId);
+                    this.getByProjectAndOpenTask(this.state.activeProjectId);
                 }
             }
             else {
@@ -50,14 +55,11 @@ export class Task extends Component {
                 if (this.state.activeProjectId == '00000000-0000-0000-0000-000000000000') {
                     this.getAllTask();
                 } else {
-                    this.getTaskByProject(response.data.activeProjectId);
+                    this.getTaskByProject(this.state.activeProjectId);
                 }
             }    
 
             this.setState({
-                activeProjectId: response.data.activeProjectId,
-                isHideClosedTask: response.data.isHideClosedTask,
-                isShowAssignedToMe: response.data.isShowAssignedToMe,
                 isLoading: false
             })
 

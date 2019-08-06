@@ -103,7 +103,7 @@ export class EditTask extends Component
         axios.get(config.serverUrl + "/api/task/getbyid/" + id).then(response=> {
             this.setState({
                 id: response.data.id,
-                projectId: response.data.project.id,
+                projectId: response.data.projectId,
                 category: response.data.category,
                 tracker: response.data.tracker,
                 title: response.data.title,

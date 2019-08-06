@@ -111,14 +111,14 @@ export class TaskDetail extends Component
         axios.get(config.serverUrl + "/api/task/getbyid/" + id).then(response=> {
             this.setState({
                 id: response.data.id,
-                project: response.data.project.projectName,
+                project: response.data.projectName,
                 category: response.data.category,
                 tracker: response.data.tracker,
                 title: response.data.title,
                 priority: response.data.priority,
-                reporter: response.data.reporter.fullName,
-                assignee: response.data.assignee.fullName,
-                tester: response.data.tester.fullName,
+                reporter: response.data.reporter,
+                assignee: response.data.assignee,
+                tester: response.data.tester,
                 module: response.data.module,
                 platform: response.data.platform,
                 version: response.data.version,
@@ -204,6 +204,7 @@ export class TaskDetail extends Component
     }
 
     refreshTask = (id) => {
+
         this.getTaskById(id);
         this.getAttachmentByTaskId(id);
         this.getCommentByTaskId(id);
@@ -1035,7 +1036,7 @@ export class TaskDetail extends Component
                                         </div>
                                         &nbsp;&nbsp;&nbsp;&nbsp;
                                         <div class="btn-group">
-                                            <button class="btn btn-default" style={buttonStyle} type="button" onClick={this.refreshTask}><i class="fa fa-refresh"></i></button>    
+                                            <button class="btn btn-default" style={buttonStyle} type="button" onClick={()=>this.refreshTask(this.state.id)}><i class="fa fa-refresh"></i></button>    
                                             <button class="btn btn-default" style={buttonStyle} type="button" data-toggle="modal" data-target="#deleteTask">
                                                     <i class="fa fa-trash-o"></i>
                                             </button>
