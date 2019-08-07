@@ -140,7 +140,7 @@ namespace TaskMaster.Controllers
             
                 var tasks = await context.Tasks
                     .Include(t=>t.Assignee)
-                    .Where(t=>t.AssigneeId == userId && t.Status == "Rework")
+                    .Where(t=>t.AssigneeId == userId && t.Status != "Closed")
                     .Select(t=>new {
                         t.ID,
                         t.Tracker,
@@ -188,7 +188,7 @@ namespace TaskMaster.Controllers
 
                 var tasks = await context.Tasks
                     .Include(t=>t.Assignee)
-                    .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && t.Status == "Rework")
+                    .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && t.Status != "Closed")
                     .Select(t=>new {
                         t.ID,
                         t.Tracker,

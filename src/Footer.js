@@ -8,7 +8,7 @@ export class Footer extends Component {
         return(
            <footer class="main-footer">
             <div class="pull-right hidden-xs">
-              <b>Version</b> 2.4.0
+              <b>Version</b> 1.0.0
             </div>
             Copyright &copy; 2019 <b>RAVIGA</b>
           

@@ -51,7 +51,7 @@ namespace TaskMaster.Models
             return Ok(project);
         }
 
-
+        
         [HttpGet]
         public async Task<IActionResult> GetProjectCount()
         {

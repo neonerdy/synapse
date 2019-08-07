@@ -18,6 +18,7 @@ export class Dashboard extends Component
        
         this.state = {
            user: user,
+           project: {},
            projects: 0,
            bugs: 0,
            features: 0,
@@ -40,10 +41,12 @@ export class Dashboard extends Component
         
         axios.get(config.serverUrl + "/api/people/getbyid/" + id).then(response=> {
          
+            this.getProjectById(response.data.activeProjectId);
             this.getProjectCount(response.data.activeProjectId);
             this.getBugsCount(response.data.activeProjectId);
             this.getFeaturesCount(response.data.activeProjectId);
             this.getOthersCount(response.data.activeProjectId);
+        
 
             this.setState({
                 activeProjectId: response.data.activeProjectId,
@@ -55,6 +58,15 @@ export class Dashboard extends Component
         });
     }
 
+
+    getProjectById = (id) => {
+        axios.get(config.serverUrl + "/api/project/getbyid/" + id).then(response=> {
+            this.setState({
+                project: response.data
+            })
+
+        });
+    }
 
 
     getProjectCount = (projectId) => {
@@ -186,7 +198,12 @@ export class Dashboard extends Component
                    <div class="col-md-12">
                        <div class="box box-default">
                        <div class="box-header with-border">
-                        <h3 class="box-title"></h3>
+                        <h3 class="box-title">
+                            {this.state.project != null ? 
+                                <span>{this.state.project.projectName}</span>
+                              : null
+                            }  
+                        </h3>
                             <div class="box-tools pull-right">
                                 {this.state.isLoading ? 
                                     <span><i className="fa fa-spinner fa-spin"></i>&nbsp;Loading ...</span>
@@ -199,7 +216,7 @@ export class Dashboard extends Component
 
                               <div class="row">
                         <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-teal">
+                            <div class="small-box bg-purple">
                             <div class="inner">
                                 <h3>{this.state.projects}</h3>
                                 <p>Projects</p>
@@ -210,7 +227,7 @@ export class Dashboard extends Component
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-maroon">
+                            <div class="small-box bg-green">
                             <div class="inner">
                                 <h3>{this.state.features}</h3>
                                 <p>Features</p>
@@ -221,7 +238,7 @@ export class Dashboard extends Component
 
 
                         <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-orange">
+                            <div class="small-box bg-maroon">
                             <div class="inner">
                                 <h3>{this.state.bugs}</h3>
                                 <p>Bugs</p>
@@ -232,7 +249,7 @@ export class Dashboard extends Component
                         </div>
 
                         <div class="col-lg-3 col-xs-6">
-                            <div class="small-box bg-purple">
+                            <div class="small-box bg-orange">
                             <div class="inner">
                                 <h3>{this.state.others}</h3>
                                 <p>Others</p>

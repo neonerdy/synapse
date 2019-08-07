@@ -114,7 +114,7 @@ export class Login extends Component
                         <p class="login-box-msg">
 
                             <h1>TASK MASTER</h1>
-                            <p>Web Issue Tracker Version 1.0</p>
+                            <p>Task Manager Version 1.0</p>
 
                         </p>
                         <br/>
