@@ -186,7 +186,7 @@ export class Header extends Component {
 
     render() {
 
-
+        let url = "/task-detail/";
     
         return(
 
@@ -252,7 +252,7 @@ export class Header extends Component {
                             
                             {this.state.tasks.map(t=> 
                                 <li>
-                                    <a href="#!" onClick={()=>this.taskDetail(t.id)}>
+                                    <a href="#" onClick={()=>this.taskDetail(t.id)}>
                                     <h3>
                                         {this.renderMyTaskTitle(t)}
                                         <small class="pull-right">{Math.ceil((t.totalTimeSpentInHour/t.estimationInHour) * 100)}%</small>
@@ -260,8 +260,8 @@ export class Header extends Component {
                                     <div class="progress xs">
                                         {this.renderMyTaskProgress(t)}
                                     </div>
-
                                     </a>
+
                                 </li>
                             )}
 

@@ -1,5 +1,6 @@
 
 import React, {Component} from 'react';
+import ReactExport from 'react-export-excel'
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
@@ -122,8 +123,15 @@ export class People extends Component
     }
 
 
+  
+
    
     render() {
+
+
+        const ExcelFile = ReactExport.ExcelFile;
+        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
         const heightStyle = {
             minHeight: '959.8px'
@@ -210,9 +218,20 @@ export class People extends Component
                             </div>
 
                             <div class="export btn-group">
-                                <button class="btn btn-default" data-toggle="dropdown" type="button">
-                                    <i class="fa fa-download"></i> 
-                                </button>
+
+                                <ExcelFile element={ <button class="btn btn-default" data-toggle="dropdown" type="button">
+                                        <i class="fa fa-download"></i> 
+                                    </button>}>
+
+                                    <ExcelSheet data={this.state.people} name="People">
+                                        <ExcelColumn label="Full Name" value="fullName"/>
+                                        <ExcelColumn label="Role" value="role"/>
+                                        <ExcelColumn label="Address" value="address"/>
+                                        <ExcelColumn label="Phone" value="phone"/>
+                                        <ExcelColumn label="E-Mail" value="email"/>
+                                    </ExcelSheet>
+                                </ExcelFile>
+                               
                             </div>     
                         </div>
                         
@@ -222,7 +241,7 @@ export class People extends Component
                       
                         <br/><br/><br/>
 
-                         <table class="table table-hover">
+                         <table id="table-to-xls" class="table table-hover">
                                     <tbody>
                                         <tr>
                                             <th><u>FULL NAME</u></th>

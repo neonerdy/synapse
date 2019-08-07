@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import ReactExport from 'react-export-excel'
 import { Footer } from './Footer';
 import { Header } from './Header';
 import { NavBar } from './NavBar';
@@ -68,21 +69,50 @@ export class Task extends Component {
         });
     }
 
+    mapTask = (response) => {
+
+        let tasks = [];
+
+        for(let i=0; i < response.data.length; i++) {
+
+            let task = {};
+
+            task.id = response.data[i].id;
+            task.category = response.data[i].category; 
+            task.tracker = response.data[i].tracker;
+            task.title = response.data[i].title;
+            task.priority = response.data[i].priority;
+            task.assignee = response.data[i].assignee;
+            task.status = response.data[i].status;
+            task.createdDate = moment(response.data[i].createdDate).format("MM/DD/YYYY hh:mm:ss");
+
+            tasks.push(task);
+        }
+
+        return tasks;
+    }
+
 
     getAllTask = () => {
         axios.get(config.serverUrl + "/api/task/getall").then(response=> {
+            
+            let tasks = this.mapTask(response);
+
             this.setState({
-                tasks: response.data,
-                initialTasks: response.data
+                tasks: tasks,
+                initialTasks: tasks
             })
         })
     }
 
     getAllAndOpenTask = () => {
         axios.get(config.serverUrl + "/api/task/getallandopentask").then(response=> {
+
+            let tasks = this.mapTask(response);
+
             this.setState({
-                tasks: response.data,
-                initialTasks: response.data
+                tasks: tasks,
+                initialTasks: tasks
             })
         })
     }
@@ -90,20 +120,21 @@ export class Task extends Component {
 
     getTaskByProject = (projectId) => {
         axios.get(config.serverUrl + "/api/task/getbyproject/" + projectId).then(response=> {
+            let tasks = this.mapTask(response);
             this.setState({
-                tasks: response.data,
-                initialTasks: response.data
+                tasks: tasks,
+                initialTasks: tasks
             })
         })
     }
 
 
-
     getByProjectAndOpenTask = (projectId) => {
         axios.get(config.serverUrl + "/api/task/getbyprojectandopentask/" + projectId).then(response=> {
+            let tasks = this.mapTask(response);
             this.setState({
-                tasks: response.data,
-                initialTasks: response.data
+                tasks: tasks,
+                initialTasks: tasks
             })
         })
     }
@@ -120,7 +151,8 @@ export class Task extends Component {
 
 
     refreshTask = () => {
-        this.getAllTask();
+        
+        this.getUserById(this.state.user.id);
         this.setState({
             title: "All Tasks"
         })        
@@ -259,6 +291,10 @@ export class Task extends Component {
 
     render() {
 
+        const ExcelFile = ReactExport.ExcelFile;
+        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
         const fontStyle = {
             fontWeight:'normal'
         }
@@ -388,9 +424,23 @@ export class Task extends Component {
 
 
                                     <div class="export btn-group">
-                                       <button class="btn btn-default" data-toggle="dropdown" type="button">
-                                           <i class="fa fa-download"></i> 
-                                        </button>
+                                       
+                                        <ExcelFile element={ <button class="btn btn-default" data-toggle="dropdown" type="button">
+                                            <i class="fa fa-download"></i> 
+                                            </button>}>
+
+                                            <ExcelSheet data={this.state.tasks} name="Tasks">
+                                                <ExcelColumn label="Tracker" value="tracker"/>
+                                                <ExcelColumn label="Title" value="title"/>
+                                                <ExcelColumn label="Priority" value="priority"/>
+                                                <ExcelColumn label="Assignee" value="assignee"/>
+                                                <ExcelColumn label="Status" value="status"/>
+                                                <ExcelColumn label="Created Date" value="createdDate"/>
+                                                
+                                            </ExcelSheet>
+                                        </ExcelFile>
+
+
                                      </div>    
                                      
                                      
@@ -410,7 +460,6 @@ export class Task extends Component {
                             <th style={{width:'8%'}}><u>TRACKER</u></th>   
                             <th style={{width:'40%'}}><u>TITLE</u></th>
                             <th style={{width:'10%'}}><u>PRIORITY</u></th>
-                           
                             <th style={{width:'10%'}}><u>ASSIGNEE</u></th>
                             <th style={{width:'8%'}}><u>STATUS</u></th>
                             <th style={{width:'12%'}}><u>CREATED DATE</u></th>   
@@ -426,7 +475,7 @@ export class Task extends Component {
                               <td>{t.priority}</td>
                               <td>{t.assignee}</td>
                               <td>{t.status}</td>
-                              <td>{moment(t.createdDate).format("MM/DD/YYYY hh:mm:ss")}</td>
+                              <td>{t.createdDate}</td>
                           </tr>
                           )}
                        

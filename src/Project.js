@@ -1,6 +1,6 @@
 
-
 import React, {Component} from 'react';
+import ReactExport from 'react-export-excel'
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Footer } from './Footer';
@@ -33,12 +33,41 @@ export class Project extends Component
         this.getAllProjects();
     }
 
+
+    mapProject = (response) => {
+        
+        let projects = [];
+
+        for(let i=0;i<response.data.length;i++) {
+
+            let project = {};
+            
+            project.id = response.data[i].id;
+            project.projectName = response.data[i].projectName;
+            project.initial = response.data[i].initial;
+            project.projectManager = response.data[i].projectManager;
+            project.createdDate = moment(response.data[i].createdDate).format('MM/DD/YYYY');
+            project.description = response.data[i].description;
+            project.status = response.data[i].status;
+            
+            projects.push(project);
+        }
+
+        return projects;
+        
+    }
+
+
     getAllProjects =() => {
 
+
         axios.get(config.serverUrl + "/api/project/getall").then(response=> {
+        
+            let projects = this.mapProject(response);
+
             this.setState({
-                projects: response.data,
-                initialProjects: response.data,
+                projects: projects,
+                initialProjects: projects,
                 isLoading: false
             })
         });
@@ -118,6 +147,10 @@ export class Project extends Component
 
 
     render() {
+
+        const ExcelFile = ReactExport.ExcelFile;
+        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
 
         const heightStyle = {
             minHeight: '959.8px'
@@ -209,9 +242,22 @@ export class Project extends Component
 
                                         
                                         <div class="export btn-group">
-                                            <button class="btn btn-default" type="button">
-                                                <i class="fa fa-download"></i>
-                                            </button>
+                                            
+                                        <ExcelFile element={ <button class="btn btn-default" data-toggle="dropdown" type="button">
+                                                <i class="fa fa-download"></i> 
+                                            </button>}>
+
+                                            <ExcelSheet data={this.state.projects} name="Projects">
+                                                <ExcelColumn label="Project Name" value="projectName"/>
+                                                <ExcelColumn label="Initial" value="initial"/>
+                                                <ExcelColumn label="Project Manager" value="projectManager"/>
+                                                <ExcelColumn label="Created Date" value="createdDate"/>
+                                                <ExcelColumn label="Description" value="description"/>
+                                                <ExcelColumn label="Status" value="status"/>
+                                            </ExcelSheet>
+                                        </ExcelFile>
+
+                                            
                                         </div>
                                     </div>
                                     <div class="pull-right search">
@@ -236,7 +282,7 @@ export class Project extends Component
                                             <td>{p.projectName}</td>
                                             <td>{p.initial}</td>
                                             <td>{p.projectManager}</td>
-                                            <td>{moment(p.createdDate).format("MM/DD/YYYY")}</td>
+                                            <td>{p.createdDate}</td>
                                             <td>{p.description}</td>
                                             <td>{p.status}</td>
                                             <td>

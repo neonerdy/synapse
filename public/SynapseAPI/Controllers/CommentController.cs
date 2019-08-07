@@ -58,7 +58,7 @@ namespace TaskMaster.Controllers
             history.TaskId = comment.TaskId;
             history.UserId = comment.CommenterId;
             history.Date = DateTime.Now;
-            history.ActivityLog = "Add new comment";
+            history.ActivityLog = "Added new comment";
           
             context.Add(history);
 

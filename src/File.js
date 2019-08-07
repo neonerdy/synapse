@@ -1,5 +1,6 @@
 
 import React, {Component} from 'react';
+import ReactExport from 'react-export-excel'
 import { Header } from './Header';
 import { NavBar } from './NavBar';
 import { Link } from 'react-router-dom';
@@ -97,21 +98,54 @@ export class File extends Component
     }
 
 
+    mapFiles = (response) => {
+
+        let uploadedFiles = [];
+
+        for(let i=0; i < response.data.length;i++) {
+            
+            let file = {};
+
+            file.id = response.data[i].id;
+            file.fileName = response.data[i].fileName;
+            file.size = response.data[i].size;
+            file.type = response.data[i].type;
+            file.uploader = response.data[i].uploader;
+            file.uploadedDate = moment(response.data[i].uploadedDate).format("MM/DD/YYYY hh:mm:ss");
+            
+            uploadedFiles.push(file);
+
+        }
+
+        return uploadedFiles;
+
+    }
+
+
     getAllFiles = () => {
         axios.get(config.serverUrl +  "/api/file/getall").then(response=> {
+           
+            let uploadedFiles = this.mapFiles(response);
+           
             this.setState({
-                initialUploadedFiles: response.data,
-                uploadedFiles: response.data
+
+                initialUploadedFiles: uploadedFiles,
+                uploadedFiles: uploadedFiles
             })
         })
     }
 
 
     getFilesByProject = (projectId) => {
+
+        
         axios.get(config.serverUrl +  "/api/file/getbyproject/" + projectId).then(response=> {
+       
+            let uploadedFiles = this.mapFiles(response);
+       
             this.setState({
-                initialUploadedFiles: response.data,
-                uploadedFiles: response.data
+                initialUploadedFiles: uploadedFiles,
+                uploadedFiles: uploadedFiles
             })
         })
     }
@@ -343,6 +377,11 @@ export class File extends Component
 
     render() {
 
+        const ExcelFile = ReactExport.ExcelFile;
+        const ExcelSheet = ReactExport.ExcelFile.ExcelSheet;
+        const ExcelColumn = ReactExport.ExcelFile.ExcelColumn;
+
+
         const style1 = {
             width:'50%'
         }
@@ -513,9 +552,20 @@ export class File extends Component
                             </div>
 
                             <div class="export btn-group">
-                                <button class="btn btn-default" data-toggle="dropdown" type="button">
-                                    <i class="fa fa-download"></i> 
-                                </button>
+                                
+                            <ExcelFile element={ <button class="btn btn-default" data-toggle="dropdown" type="button">
+                                        <i class="fa fa-download"></i> 
+                                    </button>}>
+
+                                    <ExcelSheet data={this.state.uploadedFiles} name="Files">
+                                        <ExcelColumn label="File Name" value="fileName"/>
+                                        <ExcelColumn label="Size" value="size"/>
+                                        <ExcelColumn label="Type" value="type"/>
+                                        <ExcelColumn label="Uploader" value="uploader"/>
+                                        <ExcelColumn label="Uploaded Date" value="uploadedDate"/>
+                                    </ExcelSheet>
+                                </ExcelFile>
+
                             </div>     
                         </div>
                         
@@ -546,7 +596,7 @@ export class File extends Component
                                 <td>{f.size}</td>
                                 <td>{f.type}</td>
                                 <td>{f.uploader}</td>
-                                <td>{moment(f.uploadedDate).format('MM/DD/YYYY hh:mm:ss')}</td>
+                                <td>{f.uploadedDate}</td>
                                 <td>
                                 <a href="#" data-toggle="modal" data-target="#deleteFile" onClick={()=>this.getFileId(f.id, f.fileName)}>Delete</a>
                                 </td>
