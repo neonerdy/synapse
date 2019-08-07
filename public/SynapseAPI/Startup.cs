@@ -13,7 +13,7 @@ using Microsoft.Extensions.FileProviders;
 using System.IO;
 using Microsoft.AspNetCore.Http;
 
-namespace SynapseAPI
+namespace TaskMaster
 {
     public class Startup
     {
@@ -29,6 +29,7 @@ namespace SynapseAPI
         {
             services.AddMvc();
             services.AddCors();
+            AppDbContext.ConnectionString = Configuration.GetConnectionString("Default");
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

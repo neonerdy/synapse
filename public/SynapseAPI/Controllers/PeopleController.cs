@@ -44,7 +44,6 @@ namespace TaskMaster.Controllers
                 .Where(p=>p.UserName == people.UserName && p.Password == people.Password)
                 .SingleOrDefaultAsync();
 
-           
             return Ok(user);
         }
 

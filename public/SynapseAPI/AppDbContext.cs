@@ -20,9 +20,10 @@ namespace TaskMaster
         public DbSet<WorkLog> WorkLogs { get; set; }
 
 
+        public static string ConnectionString { get; set; }
         protected override void OnConfiguring(DbContextOptionsBuilder optionBuilder)
         {
-            optionBuilder.UseNpgsql("host=localhost;database=synapse;username=postgres;password=postgres");
+            optionBuilder.UseNpgsql(ConnectionString);
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

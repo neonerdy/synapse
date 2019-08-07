@@ -68,7 +68,8 @@ namespace TaskMaster.Models
                 
                 .Include(h=>h.User)
                 .Include(h=>h.Task)
-                .Where(h=>h.Task.AssigneeId == userId && h.Task.Status != "Closed" && h.UserId != userId)
+                .Where(h=>h.Task.AssigneeId == userId && h.Task.Status != "Closed" 
+                    &&  h.ActivityLog != "Changed to Closed" && h.UserId != userId)
                 .OrderByDescending(h=>h.Date)
                 .Select(h=>new {
                         h.ID,
@@ -113,7 +114,8 @@ namespace TaskMaster.Models
                 var histories = await context.Histories
                     .Include(h=>h.User)
                     .Include(h=>h.Task)
-                    .Where(h=>h.Task.ProjectId == projectId && h.Task.AssigneeId == userId && h.Task.Status != "Closed" && h.UserId != userId)
+                    .Where(h=>h.Task.ProjectId == projectId && h.Task.AssigneeId == userId && h.Task.Status != "Closed" 
+                        &&  h.ActivityLog != "Changed to Closed" && h.UserId != userId)
                     .OrderByDescending(h=>h.Date)
                     .Select(h=>new {
                             h.ID,
