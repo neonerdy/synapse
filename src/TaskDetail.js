@@ -609,7 +609,7 @@ export class TaskDetail extends Component
             return(
                 <i class="fa fa-circle-o text-blue"></i>
             )
-        }else if (status == "Coding") {
+        }else if (status == "In Progress") {
             return(
                 <i class="fa fa-circle-o text-orange"></i>
             )
@@ -1050,7 +1050,7 @@ export class TaskDetail extends Component
                                                 </button>
                                                 <ul class="dropdown-menu" role="menu">
                                                     <li><a href="#!" onClick={()=>this.updateStatus("New")}>New</a></li>
-                                                    <li><a href="#!" onClick={()=>this.updateStatus("Coding")}>Coding</a></li>
+                                                    <li><a href="#!" onClick={()=>this.updateStatus("In Progress")}>In Progress</a></li>
                                                     <li><a href="#!" onClick={()=>this.updateStatus("Resolved")}>Resolved</a></li>
                                                     <li><a href="#!" onClick={()=>this.updateStatus("Testing")}>Testing</a></li>
                                                     <li><a href="#!" onClick={()=>this.updateStatus("Rework")}>Rework</a></li>
@@ -1114,8 +1114,15 @@ export class TaskDetail extends Component
                                                 <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.createdDate).format("MM/DD/YYYY hh:mm")}</label></div>
                                         </div>
                                         <div class="row">
-                                                <div class="col-lg-3"><label style={fontStyle}>Modified Date </label> </div>
-                                                <div class="col-lg-6"><label style={fontStyle}>{moment(this.state.modifiedDate).format("MM/DD/YYYY hh:mm")}</label></div>
+                                                <div class="col-lg-3">
+                                                    <label style={fontStyle}>Modified Date </label> </div>
+                                                <div class="col-lg-6">
+                                                    {this.state.modifiedDate != null? 
+                                                    <label style={fontStyle}>{moment(this.state.modifiedDate).format("MM/DD/YYYY hh:mm")}</label>
+                                                    : (
+                                                        null     
+                                                    )}
+                                                </div>
                                         </div>
                                         <div class="row">
                                                 <div class="col-lg-3"><label style={fontStyle}>Closed Date </label> </div>
@@ -1125,8 +1132,7 @@ export class TaskDetail extends Component
                                                         {moment(this.state.closedDate).format("MM/DD/YYYY hh:mm")}
                                                     </label>
                                                     : (
-                                                        <label style={fontStyle}>
-                                                        </label>     
+                                                       null    
                                                     )}
                                                 </div>
                                         </div>

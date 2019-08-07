@@ -428,7 +428,7 @@ export class EditTask extends Component
                                                     onChange={this.onValueChange} value={this.state.status}>
                                                     <option>Select Status</option>
                                                     <option value="New">New</option>
-                                                    <option value="Coding">Coding</option>
+                                                    <option value="In Progress">In Progress</option>
                                                     <option value="Resolved">Resolved</option>
                                                     <option value="Testing">Testing</option>
                                                     <option value="Rework">Rework</option>

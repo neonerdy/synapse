@@ -94,6 +94,9 @@ export class AddPeople extends Component
                 address: this.state.address,
                 email: this.state.email,
                 phone: this.state.phone,
+                photo: '',
+                activeProjectId: '00000000-0000-0000-0000-000000000000',
+                isHideClosedTask: false
             }
 
             this.setState({

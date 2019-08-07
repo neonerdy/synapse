@@ -366,7 +366,7 @@ export class Task extends Component {
                                 <ul class="dropdown-menu" role="menu">
                                     <li><a href="#" onClick={()=>this.onStatusFilter("All")}>All</a></li>
                                     <li><a href="#" onClick={()=>this.onStatusFilter("New")}>New</a></li>
-                                    <li><a href="#" onClick={()=>this.onStatusFilter("Coding")}>Coding</a></li>
+                                    <li><a href="#" onClick={()=>this.onStatusFilter("In Progress")}>In Progress</a></li>
                                     <li><a href="#" onClick={()=>this.onStatusFilter("Resolved")}>Resolved</a></li>
                                     <li><a href="#" onClick={()=>this.onStatusFilter("Testing")}>Testing</a></li>
                                     <li><a href="#" onClick={()=>this.onStatusFilter("Rework")}>Rework</a></li>

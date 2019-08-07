@@ -116,7 +116,7 @@ namespace TaskMaster.Controllers
         {
             var tasks = await context.Tasks
                 .Include(t=>t.Assignee)
-                .Where(t=>t.AssigneeId == userId && (t.Status == "New" || t.Status == "Coding" || t.Status == "Rework"))
+                .Where(t=>t.AssigneeId == userId && (t.Status == "New" || t.Status == "In Progress" || t.Status == "Rework"))
                 .Select(t=>new {
                     t.ID,
                     t.Tracker,
@@ -129,6 +129,7 @@ namespace TaskMaster.Controllers
                 .OrderByDescending(t=>t.ModifiedDate)
                 .ToListAsync();
             
+            
             return Ok(tasks);
         }
 
@@ -139,7 +140,7 @@ namespace TaskMaster.Controllers
         {
             var tasks = await context.Tasks
                 .Include(t=>t.Assignee)
-                .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && (t.Status == "New" || t.Status == "Coding" || t.Status == "Rework"))
+                .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && (t.Status == "New" || t.Status == "In Progress" || t.Status == "Rework"))
                 .Select(t=>new {
                     t.ID,
                     t.Tracker,

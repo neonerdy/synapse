@@ -252,7 +252,7 @@ export class Header extends Component {
                             
                             {this.state.tasks.map(t=> 
                                 <li>
-                                    <a href="#" onClick={()=>this.taskDetail(t.id)}>
+                                    <a href="#">
                                     <h3>
                                         {this.renderMyTaskTitle(t)}
                                         <small class="pull-right">{Math.ceil((t.totalTimeSpentInHour/t.estimationInHour) * 100)}%</small>

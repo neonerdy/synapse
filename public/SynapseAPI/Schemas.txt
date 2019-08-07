@@ -168,7 +168,7 @@ CREATE TABLE public.tasks
     created_date timestamp without time zone,
     modified_date timestamp without time zone,
     closed_date timestamp without time zone,
-    status character varying(10) COLLATE pg_catalog."default",
+    status character varying(15) COLLATE pg_catalog."default",
     description text COLLATE pg_catalog."default",
     estimation integer,
     estimation_unit character varying(10) COLLATE pg_catalog."default",
@@ -208,6 +208,11 @@ TABLESPACE pg_default;
 
 ALTER TABLE public.worklogs
     OWNER to postgres;
+
+
+
+INSERT INTO people VALUES ('00000000-0000-0000-0000-000000000000','admin','admin','Administrator','Admin','','','','00000000-0000-0000-0000-000000000000','false','')
+
 
 
 
