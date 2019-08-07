@@ -114,23 +114,47 @@ namespace TaskMaster.Controllers
         [HttpGet("{userId}")]
         public async Task<IActionResult> GetMyTask(Guid userId)
         {
-            var tasks = await context.Tasks
-                .Include(t=>t.Assignee)
-                .Where(t=>t.AssigneeId == userId && (t.Status == "New" || t.Status == "In Progress" || t.Status == "Rework"))
-                .Select(t=>new {
-                    t.ID,
-                    t.Tracker,
-                    t.Category,
-                    t.Title,
-                    t.EstimationInHour,
-                    t.TotalTimeSpentInHour,
-                    t.ModifiedDate
-                })
-                .OrderByDescending(t=>t.ModifiedDate)
-                .ToListAsync();
+
+            var user = await context.People.FindAsync(userId);
+            if (user.Role == "Tester") {
+
+                var tasks = await context.Tasks
+                    .Include(t=>t.Assignee)
+                    .Where(t=>t.TesterId == userId && t.Status == "Testing")
+                    .Select(t=>new {
+                        t.ID,
+                        t.Tracker,
+                        t.Category,
+                        t.Title,
+                        t.EstimationInHour,
+                        t.TotalTimeSpentInHour,
+                        t.ModifiedDate
+                    })
+                    .OrderByDescending(t=>t.ModifiedDate)
+                    .ToListAsync();
             
+                    return Ok(tasks);
+            }
+            else 
+            {     
             
-            return Ok(tasks);
+                var tasks = await context.Tasks
+                    .Include(t=>t.Assignee)
+                    .Where(t=>t.AssigneeId == userId && t.Status == "Rework")
+                    .Select(t=>new {
+                        t.ID,
+                        t.Tracker,
+                        t.Category,
+                        t.Title,
+                        t.EstimationInHour,
+                        t.TotalTimeSpentInHour,
+                        t.ModifiedDate
+                    })
+                    .OrderByDescending(t=>t.ModifiedDate)
+                    .ToListAsync();
+            
+                    return Ok(tasks);
+            }
         }
 
 
@@ -138,22 +162,48 @@ namespace TaskMaster.Controllers
         [HttpGet("{userId}/{projectId}")]
         public async Task<IActionResult> GetMyTaskByProject(Guid userId, Guid projectId)
         {
-            var tasks = await context.Tasks
-                .Include(t=>t.Assignee)
-                .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && (t.Status == "New" || t.Status == "In Progress" || t.Status == "Rework"))
-                .Select(t=>new {
-                    t.ID,
-                    t.Tracker,
-                    t.Category,
-                    t.Title,
-                    t.EstimationInHour,
-                    t.TotalTimeSpentInHour,
-                    t.ModifiedDate
-                })
-                .OrderByDescending(t=>t.ModifiedDate)
-                .ToListAsync();
+            var user = await context.People.FindAsync(userId);
+            if (user.Role == "Tester")
+            {
+                 var tasks = await context.Tasks
+                    .Include(t=>t.Assignee)
+                    .Where(t=>t.TesterId == userId && t.ProjectId == projectId && t.Status =="Testing")
+                    .Select(t=>new {
+                        t.ID,
+                        t.Tracker,
+                        t.Category,
+                        t.Title,
+                        t.EstimationInHour,
+                        t.TotalTimeSpentInHour,
+                        t.ModifiedDate
+                    })
+                    .OrderByDescending(t=>t.ModifiedDate)
+                    .ToListAsync();
+                
+                return Ok(tasks);
+
+            }
+            else
+            {
+
+                var tasks = await context.Tasks
+                    .Include(t=>t.Assignee)
+                    .Where(t=>t.AssigneeId == userId && t.ProjectId == projectId && t.Status == "Rework")
+                    .Select(t=>new {
+                        t.ID,
+                        t.Tracker,
+                        t.Category,
+                        t.Title,
+                        t.EstimationInHour,
+                        t.TotalTimeSpentInHour,
+                        t.ModifiedDate
+                    })
+                    .OrderByDescending(t=>t.ModifiedDate)
+                    .ToListAsync();
+                
+                return Ok(tasks);
             
-            return Ok(tasks);
+            }
         }
 
 
