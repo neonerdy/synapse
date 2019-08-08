@@ -1168,61 +1168,63 @@ export class TaskDetail extends Component
                                   
                                 </div>
 
+
                          </section>
+
+                         <br></br>
+
+
+                            <div class="box-header with-border">
                             
-
-                                <br></br>
-                                <div class="box-header with-border">
-                                    <h3 class="box-title"><b>Description</b></h3>
-                                    <div class="box-tools pull-right">
-                                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                                        </button>
-                                    </div>
-                                   
+                                <h3 class="box-title"><b>Description</b></h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                                    </button>
                                 </div>
 
-                                <div class="box-body">
-                                    <div class="row">
-                                      <div class="col-md-12">
-                                       {this.state.description}
-                                       </div>
+                            </div>
+
+                            <div class="box-body">
+
+                                <div class="row">
+                                    <div class="col-md-12">
+                                        <div className="memo">{this.state.description}</div>
                                     </div>
                                 </div>
-                                <br/><br/>
-                              
+
+                            </div>
+
+
+                            <br/><br/>                    
+
 
                                 {/* Attachment */}
 
-                                   <div class="box-header with-border">
-                                    <h3 class="box-title"><b>Attachments</b></h3>
+                                <div class="box-header with-border">
+                                    <h3 class="box-title"><b>Attachments ({this.state.attachments.length}) </b></h3>
                                     <div class="box-tools pull-right">
                                         <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
                                         </button>
                                     </div>
-                                    <br/><br/>
-                                  
-                                
-                                    <div class="box-body">
-                                        <div class="row">
-                                            <div class="col-md-12">
-                                                
-                                                                                                
-                                                <ul class="mailbox-attachments clearfix">
-                                                   {this.state.attachments.map(a=>          
-                                                      <div>{this.renderAttachment(a)}</div>
-                                                    )}      
-                                                </ul>
-
-                                            </div>    
-                                        </div>
-                                    </div>    
-
                                 </div>
-                                
+
+                                <div class="box-body">
+                                        
+                                    <div class="row">
+                                        <div class="col-md-12">
+                                            <ul class="mailbox-attachments clearfix">
+                                            {this.state.attachments.map(a=>          
+                                                <div>{this.renderAttachment(a)}</div>
+                                                )}      
+                                            </ul>
+                                        </div>    
+                                    </div>
+
+                                </div>    
 
 
+                              <br/><br/>
 
-                                <br/>
 
                                   <div class="box-header with-border" >
                                     <h3 class="box-title"><b>Activity</b></h3>
@@ -1253,7 +1255,7 @@ export class TaskDetail extends Component
                                                         <div> 
                                                         <div><b>{c.commenter}</b> - {moment(this.state.commendDate).format("MM/DD/YYYY hh:mm")}</div>
                                                         <br/>
-                                                        <div>{c.message}</div> 
+                                                        <div className="memo">{c.message}</div> 
                                                         <br/>
                                                         <div><a href="#!" onClick={()=>this.editComment(c.id)}  data-toggle="modal" data-target="#editComment">Edit</a>&nbsp;|&nbsp;
                                                              <a href="#!" onClick={()=>this.deleteComment(c.id)}>Delete</a></div>
@@ -1303,17 +1305,6 @@ export class TaskDetail extends Component
 
                                         </div>
                                 </div>
-
-
-
-
-
-
-
-
-
-
-
 
 
 

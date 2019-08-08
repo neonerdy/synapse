@@ -11,6 +11,7 @@ import config from './Config';
 import CKEditor from 'ckeditor4-react';
 import { ChangePhoto } from './ChangePhoto';
 
+
 export class EditTask extends Component
 {
 
@@ -125,6 +126,8 @@ export class EditTask extends Component
                 estimationInHour: response.data.estimationInHour,
                 isLoading: false
             })
+
+            console.log(response.data);
            
         })
     }
@@ -232,6 +235,10 @@ export class EditTask extends Component
 
         const heightStyle = {
             minHeight: '959.8px'
+        }
+
+        const preview = {
+            whiteSpace: 'pre;'
         }
 
         const selectStyle = {
@@ -450,13 +457,14 @@ export class EditTask extends Component
                                                 <div id="title" class="form-group">
                                                 <label class="col-md-3 control-label">Describe Issue</label>
                                                 <div class="col-md-7 col-sm-12">
-                                                    {/*}            
-                                                    <CKEditor name="description" data={this.state.description} onChange={this.onEditorChange}/> 
+
+                                                    {/*}
+                                                    <CKEditor name="description" value={this.state.description} onChange={this.onEditorChange} /> 
                                                     {*/}
-                                                   
+
                                                     <textarea id="editor1" class="form-control" name="description" rows="15"
                                                         onChange={this.onValueChange} value={this.state.description}></textarea>
-                                                   
+                                               
                                                 </div>
                                                 </div>
                                             </div>         
