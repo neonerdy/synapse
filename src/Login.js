@@ -57,7 +57,7 @@ export class Login extends Component
 
          if (isValid)
          {
-            var people = {
+            var login = {
                 UserName: this.state.username,
                 Password: this.state.password
             }
@@ -67,13 +67,9 @@ export class Login extends Component
             })
 
         
-            console.log(people);
-
-            axios.post(config.serverUrl + "/api/people/login",people).then(response=>{
+            axios.post(config.serverUrl + "/api/people/login",login).then(response=>{
                 var result = response.data;
 
-                console.log("result=" + JSON.stringify(result));
-              
                 if (result != "") {
                     this.setState({
                         isLoading : false         

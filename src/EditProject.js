@@ -117,8 +117,6 @@ export class EditProject extends Component
 
         let isValid = this.validate();
 
-       console.log(isValid); 
-
         if (isValid)
         {
             let project = {

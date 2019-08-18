@@ -69,7 +69,6 @@ export class EditTask extends Component
 			description: e.editor.getData()
         });
         
-        console.log("data=" + e.editor.getData());
     }
     
     onValueChange = (e) => {
@@ -127,8 +126,6 @@ export class EditTask extends Component
                 isLoading: false
             })
 
-            console.log(response.data);
-           
         })
     }
 

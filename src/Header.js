@@ -121,10 +121,12 @@ export class Header extends Component {
     renderPhoto = (photo) => {
 
         let userPhoto = '/SynapseAPI/Resources/' + photo;
-
-        return(
-            <img src={userPhoto} class="img-circle"/>
-        )
+      
+        if (photo != '') {
+            return(
+                <img src={userPhoto} class="img-circle"/>
+            )
+        } 
     }
 
 

@@ -325,6 +325,9 @@ export class File extends Component
         this.getFiles();
     }
 
+    openNewTab = (fileName)=> {
+        window.open(fileName, '_blank');
+    }
 
 
     renderIcon = (file) => {
@@ -366,11 +369,17 @@ export class File extends Component
             iconColor = 'brown';
         }
       
-        return(
-            <a href={fileName}>
-                <i class={fileIcon} style={{color: iconColor}}></i>&nbsp; {file.fileName}
-            </a>
-        )
+        if (file.type.toLowerCase() == 'pdf') {
+            return (
+                <a href="#!" onClick={()=>this.openNewTab(fileName)}>
+                    <i class={fileIcon} style={{color: iconColor}}></i>&nbsp; {file.fileName}
+                </a>
+            )
+        } else {
+            return(
+                <a href={fileName}><i class={fileIcon} style={{color: iconColor}}></i>&nbsp; {file.fileName}</a>
+            )
+        }
 
     }
 
@@ -598,7 +607,7 @@ export class File extends Component
                                 <td>{f.uploader}</td>
                                 <td>{f.uploadedDate}</td>
                                 <td>
-                                <a href="#" data-toggle="modal" data-target="#deleteFile" onClick={()=>this.getFileId(f.id, f.fileName)}>Delete</a>
+                                   <a href="#" data-toggle="modal" data-target="#deleteFile" onClick={()=>this.getFileId(f.id, f.fileName)}>Delete</a>
                                 </td>
                             </tr>
                             )}
