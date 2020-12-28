@@ -8,6 +8,8 @@ namespace SynapseAPI
     {
         public DbSet<Attendance> Attendances { get; set; }
         public DbSet<Branch> Branches { get; set; }
+        public DbSet<Department> Departments { get; set; }
+        public DbSet<Employee> Employees { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
