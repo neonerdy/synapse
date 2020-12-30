@@ -35,6 +35,41 @@ namespace SynapseAPI.Controllers
         }
 
 
+        [HttpPost]
+        public async Task<IActionResult> Save([FromBody] Department department)
+        {
+            int result = 0;
+
+            department.ID = Guid.NewGuid();
+            context.Departments.Add(department);
+            result = await context.SaveChangesAsync();
+
+            return Ok(result);
+        }
+
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] Department department)
+        {
+            int result = 0;
+            context.Update(department);
+            result = await context.SaveChangesAsync();
+            return Ok(result);
+        }
+        
+
+        [HttpDelete]
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            int result = 0;
+
+            var department = await context.Departments.FindAsync(id);
+            context.Remove(department);
+            result = await context.SaveChangesAsync();
+
+            return Ok(result);
+        }
+
+
 
     }
 
